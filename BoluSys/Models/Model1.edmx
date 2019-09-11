@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DB_A4A060_csModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bolus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bolus_id" Type="int" Nullable="false" />
+          <Property Name="animal_id" Type="int" />
+        </EntityType>
+        <EntityType Name="MeasData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_id" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="bolus_id" Type="int" Nullable="false" />
+          <Property Name="animal_id" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="temperature" Type="float" Nullable="false" />
+          <Property Name="bolus_timestamp" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="bolus_full_date" Type="datetime2" Precision="7" />
+          <Property Name="base_station_id" Type="int" Nullable="false" />
+          <Property Name="is_average" Type="bit" Nullable="false" />
+        </EntityType>
+        <Function Name="ChartsXY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="tmin" Type="float" Mode="In" />
+          <Parameter Name="tmax" Type="float" Mode="In" />
+        </Function>
+        <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="date" Type="datetime" Mode="In" />
+          <Parameter Name="temp_limit" Type="float" Mode="In" />
+          <Parameter Name="measurements" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="DB_A4A060_csModelStoreContainer">
+          <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DB_A4A060_csModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Bolu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bolus_id" Type="Int32" Nullable="false" />
+          <Property Name="animal_id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MeasData">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="bolus_id" Type="Int32" Nullable="false" />
+          <Property Name="animal_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="temperature" Type="Double" Nullable="false" />
+          <Property Name="bolus_timestamp" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="bolus_full_date" Type="DateTime" Precision="7" />
+          <Property Name="base_station_id" Type="Int32" Nullable="false" />
+          <Property Name="is_average" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="DB_A4A060_csEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bolus" EntityType="Self.Bolu" />
+          <EntitySet Name="MeasDatas" EntityType="Self.MeasData" />
+          <FunctionImport Name="SP_GET_FARM_STAT" ReturnType="Collection(DB_A4A060_csModel.SP_GET_FARM_STAT_Result)">
+            <Parameter Name="date" Mode="In" Type="DateTime" />
+            <Parameter Name="temp_limit" Mode="In" Type="Double" />
+            <Parameter Name="measurements" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ChartsXY" ReturnType="Collection(DB_A4A060_csModel.ChartsXY_Result)">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+            <Parameter Name="tmin" Mode="In" Type="Double" />
+            <Parameter Name="tmax" Mode="In" Type="Double" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="SP_GET_FARM_STAT_Result">
+          <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
+          <Property Type="Int32" Name="BOLUS_ID" Nullable="false" />
+          <Property Type="Int32" Name="OUT_OF_RANGE" Nullable="true" />
+          <Property Type="Int32" Name="NUMBER_OF_WATER_INTAKES" Nullable="true" />
+          <Property Type="Int32" Name="AVG_NUMBER_OF_WATER_INTAKES" Nullable="false" />
+          <Property Type="Decimal" Name="TEMPERATURE" Nullable="true" Precision="10" Scale="2" />
+          <Property Type="Int32" Name="OVERLIMIT" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ChartsXY_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="DateTime" Name="bolus_full_date" Nullable="true" />
+          <Property Type="Int32" Name="dhours" Nullable="true" />
+          <Property Type="Int32" Name="dminutes" Nullable="true" />
+          <Property Type="Int32" Name="dseconds" Nullable="true" />
+          <Property Type="Double" Name="temperature" Nullable="false" />
+          <Property Type="Double" Name="tmin" Nullable="true" />
+          <Property Type="Double" Name="tmax" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DB_A4A060_csModelStoreContainer" CdmEntityContainer="DB_A4A060_csEntities">
+          <EntitySetMapping Name="Bolus">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
+              <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MeasDatas">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.MeasData">
+              <MappingFragment StoreEntitySet="MeasData">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+                <ScalarProperty Name="temperature" ColumnName="temperature" />
+                <ScalarProperty Name="bolus_timestamp" ColumnName="bolus_timestamp" />
+                <ScalarProperty Name="bolus_full_date" ColumnName="bolus_full_date" />
+                <ScalarProperty Name="base_station_id" ColumnName="base_station_id" />
+                <ScalarProperty Name="is_average" ColumnName="is_average" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_FARM_STAT" FunctionName="DB_A4A060_csModel.Store.SP_GET_FARM_STAT">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_GET_FARM_STAT_Result">
+                <ScalarProperty Name="ANIMAL_ID" ColumnName="ANIMAL_ID" />
+                <ScalarProperty Name="BOLUS_ID" ColumnName="BOLUS_ID" />
+                <ScalarProperty Name="OUT_OF_RANGE" ColumnName="OUT_OF_RANGE" />
+                <ScalarProperty Name="NUMBER_OF_WATER_INTAKES" ColumnName="NUMBER_OF_WATER_INTAKES" />
+                <ScalarProperty Name="AVG_NUMBER_OF_WATER_INTAKES" ColumnName="AVG_NUMBER_OF_WATER_INTAKES" />
+                <ScalarProperty Name="TEMPERATURE" ColumnName="TEMPERATURE" />
+                <ScalarProperty Name="OVERLIMIT" ColumnName="OVERLIMIT" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ChartsXY" FunctionName="DB_A4A060_csModel.Store.ChartsXY">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.ChartsXY_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bolus_full_date" ColumnName="bolus_full_date" />
+                <ScalarProperty Name="dhours" ColumnName="dhours" />
+                <ScalarProperty Name="dminutes" ColumnName="dminutes" />
+                <ScalarProperty Name="dseconds" ColumnName="dseconds" />
+                <ScalarProperty Name="temperature" ColumnName="temperature" />
+                <ScalarProperty Name="tmin" ColumnName="tmin" />
+                <ScalarProperty Name="tmax" ColumnName="tmax" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

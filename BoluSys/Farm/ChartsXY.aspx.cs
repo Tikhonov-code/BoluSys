@@ -1,0 +1,144 @@
+﻿using BoluSys.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.Services;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace BoluSys.Farm
+{
+    public partial class ChartsXY : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+        }
+        [WebMethod]
+        public static string GetDayBolusList(string DateSearch)//, int age)
+        {
+            //string DateSearch = "9/8/2019";
+            DateTime dt = (!string.IsNullOrEmpty(DateSearch)) ? DateTime.Parse(DateSearch) : DateTime.Now;
+            DateTime dtStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+            DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var b = context.MeasDatas.Where(a => a.bolus_full_date >= dtStart && a.bolus_full_date <= dtEnd).Select(x => new
+                {
+                    x.bolus_id,
+                    x.animal_id
+                }).Distinct().ToList();
+                //-----------------------------------------------------
+                var res_json = JsonConvert.SerializeObject(b);
+                return res_json;
+            }
+        }
+        [WebMethod]
+        public static ArrayList GetDataAll(string DateSearch)
+        {
+            DateTime dt = (!string.IsNullOrEmpty(DateSearch)) ? DateTime.Parse(DateSearch) : DateTime.Now;
+
+            DateTime dtStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+            DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
+
+            //--------------------------------------------------------------
+            //object r = context.ChartsXY_All(dtStart, dtEnd);
+
+            string cnnString = "Data Source=SQL7002.site4now.net;Initial Catalog=DB_A4A060_cs;User Id=DB_A4A060_cs_admin;Password=Nikita13;";
+
+            SqlConnection cnn = new SqlConnection(cnnString);
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = cnn;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "ChartsXY_All";
+            //add any parameters the stored procedure might require
+            cmd.Parameters.Add("@dt1", SqlDbType.DateTime).Value = dtStart;
+            cmd.Parameters.Add("@dt2", SqlDbType.DateTime).Value = dtEnd;
+
+            cnn.Open();
+
+            //string[] header = { "Time", "Bolus#587 ,T ℃", "Bolus#588 ,T ℃", "Bolus#589 ,T ℃", "Bolus#590 ,T ℃", "Bolus#591 ,T ℃" };
+            string[] header = GetHeaderForAllChart(dtStart, dtEnd);
+            //-----------------------------------------------------------------------------------------------------------------
+            ArrayList rowList = new ArrayList();
+            rowList.Add(header);
+            SqlDataReader r = cmd.ExecuteReader();
+            // Process each result in the result set
+            while (r.Read())
+            {
+                // Create an array big enough to hold the column values
+                object[] values = new object[r.FieldCount];
+                // Get the column values into the array
+                r.GetValues(values);
+                // Add the array to the ArrayList
+                rowList.Add(values);
+            }
+            cnn.Close();
+            //--------------------------------------------------------------
+            //ArrayList rowListFull;
+            ;
+            if (rowList.Count == 1)
+            {
+                rowList.Remove(header);
+            }
+            return rowList;
+            //var res_json = JsonConvert.SerializeObject(rowList);
+            //return res_json;
+        }
+        private static string[] GetHeaderForAllChart(DateTime dtStart, DateTime dtEnd)
+        {
+            //string[] header = { "Time", "Bolus#587 ,T ℃", "Bolus#588 ,T ℃", "Bolus#589 ,T ℃", "Bolus#590 ,T ℃", "Bolus#591 ,T ℃" };
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var b = context.MeasDatas.Where(a => a.bolus_full_date >= dtStart && a.bolus_full_date <= dtEnd).Select(x => new
+                {
+                    x.bolus_id,
+                    x.animal_id
+                }).Distinct().OrderBy(d => d.bolus_id).ToList();
+
+                string[] result = new string[b.Count + 1];
+                int i = 0;
+                result[i++] = "Time";
+                foreach (var item in b)
+                {
+                    //result[i++] = "#" + item.bolus_id.ToString();
+                    result[i++] = "#" + item.animal_id.ToString();
+                }
+                return result;
+            }
+        }
+
+
+        [WebMethod]
+        public static List<ChartsXY_Result> GetData(string DateSearch, int Bolus_id)
+        {
+            DateTime dt = (!string.IsNullOrEmpty(DateSearch)) ? DateTime.Parse(DateSearch) : DateTime.Now;
+
+            DateTime dtStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+            DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
+            float Tmin = Properties.Settings.Default.Tmin;
+            float Tmax = Properties.Settings.Default.Tmax;
+
+            try
+            {
+                List<ChartsXY_Result> r = new List<ChartsXY_Result>();
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    r = context.ChartsXY(dtStart, dtEnd, Bolus_id, Tmin, Tmax).ToList();
+                    return r;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+
+        }
+    }
+}

@@ -1,0 +1,56 @@
+﻿ .zoom:hover
+
+{
+    -ms-transform: scale(2.0); /* IE 9 */
+    -webkit-transform: scale(2.0); /* Safari 3-8 */
+    transform: scale(2.0);
+}
+
+.hline {
+    width: 1000px;
+    border-top: 1px solid black;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-inverse {
+    background-color: white;
+    border-color: white;
+    justify-content: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 600px;
+    background-color: white;
+    
+}
+
+li a {
+    display: block;
+    color: #000;
+    text-decoration: none;
+}
+
+    li a.active {
+        color: darkblue;
+    }
+
+.navbar-inverse .navbar-nav > li > a {
+    color: black;
+}
+
+    .navbar-inverse .navbar-nav > li > a:hover {
+        color: red;
+    }
+
+.navbar-nav.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+}

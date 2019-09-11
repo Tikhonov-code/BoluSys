@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BoluSys.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Tmin" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">38.5</Value>
+    </Setting>
+    <Setting Name="Tmax" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">39.5</Value>
+    </Setting>
+    <Setting Name="SingapureURL" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://ptstechanalytics.com/bolus/api/PTS-BOLUS-008/sensor/get/180d3438e73fdd0fd9640b7c293ad7d9/PTSBOLUS-008/</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
