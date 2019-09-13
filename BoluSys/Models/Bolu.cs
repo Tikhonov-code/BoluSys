@@ -17,5 +17,6 @@ namespace BoluSys.Models
         public int id { get; set; }
         public int bolus_id { get; set; }
         public Nullable<int> animal_id { get; set; }
+        public string AnimalInfo { get; set; }
     }
 }

@@ -27,6 +27,8 @@ function GetToday() {
     return t;
 }
 
+//0. Clean description div
+$("#Description").text('');
 var tdy = GetToday();
 //1. request DateSearch BolusList
 NewBolusList(tdy);
@@ -37,6 +39,8 @@ ChartsShowAllRequest();
 
 // Request data for All Boluses from database
 function ChartsShowAllRequest() {
+    //0. Clean description div
+    $("#Description").text('');
     var DateSearch = $("#DateSearch").val();
     $("#ProgressBar").attr("style", "visibility: visible");
     NewBolusList(DateSearch);
@@ -177,9 +181,20 @@ function drawChart(result, pbolusID, animalid) {
         crosshair: { 'trigger': 'both' },
         vAxis: { gridlines: { count: 8 } }
     };
-
+    
     var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
+   
     chart.draw(data, options);
+   // alert(pbolusID);
+    GetIndividualDescription(pbolusID);
 }
-//-----------------------------------------------------------------
+
+//------------------------Description for Individual Chart-----------------------------------------
+function GetIndividualDescription(bolus_id) {
+    var Param = {};
+    Param.Bolus_id = bolus_id;
+    myAjaxRequestJson('ChartsXY.aspx/GetIndividualDescription', Param, GetIndividualDescription_Suc);
+}
+function GetIndividualDescription_Suc(result) {
+    $("#Description").text(result.d);
+}

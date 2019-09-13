@@ -12,6 +12,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="bolus_id" Type="int" Nullable="false" />
           <Property Name="animal_id" Type="int" />
+          <Property Name="AnimalInfo" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -54,6 +55,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="bolus_id" Type="Int32" Nullable="false" />
           <Property Name="animal_id" Type="Int32" />
+          <Property Name="AnimalInfo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -113,6 +115,7 @@
           <EntitySetMapping Name="Bolus">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
               <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="AnimalInfo" ColumnName="AnimalInfo" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
                 <ScalarProperty Name="animal_id" ColumnName="animal_id" />

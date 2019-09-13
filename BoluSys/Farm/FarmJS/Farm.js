@@ -74,7 +74,12 @@ function ShowReport(date_time) {
             },
         ],
         onRowPrepared: function (e) {
-            // console.log(e);
+             console.log(e);
+            if (e.rowType == "header") {
+                e.rowElement.css('color', 'black');
+                e.rowElement.css('font-weight', 'bold');
+                e.rowElement.css('background', '#e6ff99');
+            }
             if (e.rowType != "header" && e.data.OVERLIMIT > 0) {
                 e.rowElement.css('background', '#facbb6');
             }

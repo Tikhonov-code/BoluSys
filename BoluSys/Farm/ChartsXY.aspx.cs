@@ -123,7 +123,7 @@ namespace BoluSys.Farm
             DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
             float Tmin = Properties.Settings.Default.Tmin;
             float Tmax = Properties.Settings.Default.Tmax;
-
+           
             try
             {
                 List<ChartsXY_Result> r = new List<ChartsXY_Result>();
@@ -137,8 +137,25 @@ namespace BoluSys.Farm
             {
                 return null;
             }
+        }
+        [WebMethod]
+        public static string GetIndividualDescription(string Bolus_id)
+        {
+            string result = string.Empty;
+            Int32 bid = 0;
+            if (Int32.TryParse(Bolus_id, out bid))
+            {
 
-
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    result = context.Bolus.Where(x => x.bolus_id == bid).FirstOrDefault().AnimalInfo;
+                }
+            }
+            else
+            {
+                result = string.Empty;
+            }
+            return result;
         }
     }
 }
