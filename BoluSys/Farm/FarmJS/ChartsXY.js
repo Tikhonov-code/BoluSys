@@ -31,7 +31,7 @@ function GetToday() {
 $("#Description").text('');
 var tdy = GetToday();
 //1. request DateSearch BolusList
-NewBolusList(tdy);
+//NewBolusList(tdy);
 $("#DateSearch").val(tdy);
 //2. Charts Creating for all boluses
 google.charts.load('current', { 'packages': ['corechart'] });
@@ -43,10 +43,16 @@ function ChartsShowAllRequest() {
     $("#Description").text('');
     var DateSearch = $("#DateSearch").val();
     $("#ProgressBar").attr("style", "visibility: visible");
-    NewBolusList(DateSearch);
-    var Param = {};
-    Param.DateSearch = DateSearch;
-    myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+
+    var sss = NewBolusList(DateSearch);
+    if (!sss) {
+        return;
+    }
+    else {
+        var Param = {};
+        Param.DateSearch = DateSearch;
+        myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+    }
 }
 function ChartsShowAllRequestSuc(result) {
     $("#ProgressBar").attr("style", "visibility: hidden");
@@ -91,13 +97,16 @@ function NewBolusList(dt) {
     var Param = {};
     Param.DateSearch = dt;
     myAjaxRequestJson("ChartsXY.aspx/GetDayBolusList", Param, BolusList);
-    return false;
+    return true;
 }
 function BolusList(result) {
     //alert(result.d);
     var resultJson = JSON.parse(result.d);
-    if (resultJson.length == 0) {
-        $("#bolus_list").text('No Data');
+    if (result.d == null) {
+        //$("#bolus_list").text('No Data'); 
+        $("#curve_chart").html('<h2>No Data</h2>');
+        $("#ProgressBar").attr("style", "visibility: hidden");
+        return false;
     }
     else {
         var newInnerText = "<button type='button' class='btn btn - light' onclick='ChartsShowAllRequest();'>All</button>";
@@ -110,7 +119,7 @@ function BolusList(result) {
         $("#bolus_list").html(newInnerText);
     }
     $("#ProgressBar").attr("style", "visibility: hidden");
-    return;
+    return true;
 }
 
 //---------------------------------------------------------------------------------------
@@ -181,11 +190,11 @@ function drawChart(result, pbolusID, animalid) {
         crosshair: { 'trigger': 'both' },
         vAxis: { gridlines: { count: 8 } }
     };
-    
+
     var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-   
+
     chart.draw(data, options);
-   // alert(pbolusID);
+    // alert(pbolusID);
     GetIndividualDescription(pbolusID);
 }
 
@@ -197,4 +206,5 @@ function GetIndividualDescription(bolus_id) {
 }
 function GetIndividualDescription_Suc(result) {
     $("#Description").text(result.d);
+    return true;
 }

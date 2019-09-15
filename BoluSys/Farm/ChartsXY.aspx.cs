@@ -10,39 +10,47 @@ using System.Web;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.AspNet.Identity;
 
 namespace BoluSys.Farm
 {
     public partial class ChartsXY : System.Web.UI.Page
     {
+        public static string user_id { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            user_id = User.Identity.GetUserId();
         }
         [WebMethod]
         public static string GetDayBolusList(string DateSearch)//, int age)
         {
-            //string DateSearch = "9/8/2019";
+            // User ID
             DateTime dt = (!string.IsNullOrEmpty(DateSearch)) ? DateTime.Parse(DateSearch) : DateTime.Now;
             DateTime dtStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
             DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
+                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
                 var b = context.MeasDatas.Where(a => a.bolus_full_date >= dtStart && a.bolus_full_date <= dtEnd).Select(x => new
                 {
                     x.bolus_id,
                     x.animal_id
-                }).Distinct().ToList();
+                //}).Distinct().ToList();
+                }).Distinct().Where(x => bolusIdList.Contains(x.bolus_id)).ToList();
                 //-----------------------------------------------------
+                if (b.Count == 0)
+                {
+                    return null;
+                }
                 var res_json = JsonConvert.SerializeObject(b);
                 return res_json;
             }
         }
+
         [WebMethod]
         public static ArrayList GetDataAll(string DateSearch)
         {
             DateTime dt = (!string.IsNullOrEmpty(DateSearch)) ? DateTime.Parse(DateSearch) : DateTime.Now;
-
             DateTime dtStart = new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
             DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
 
@@ -64,6 +72,9 @@ namespace BoluSys.Farm
 
             //string[] header = { "Time", "Bolus#587 ,T ℃", "Bolus#588 ,T ℃", "Bolus#589 ,T ℃", "Bolus#590 ,T ℃", "Bolus#591 ,T ℃" };
             string[] header = GetHeaderForAllChart(dtStart, dtEnd);
+
+            if (header == null) { return null; }
+
             //-----------------------------------------------------------------------------------------------------------------
             ArrayList rowList = new ArrayList();
             rowList.Add(header);
@@ -95,12 +106,19 @@ namespace BoluSys.Farm
             //string[] header = { "Time", "Bolus#587 ,T ℃", "Bolus#588 ,T ℃", "Bolus#589 ,T ℃", "Bolus#590 ,T ℃", "Bolus#591 ,T ℃" };
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
+                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
+
                 var b = context.MeasDatas.Where(a => a.bolus_full_date >= dtStart && a.bolus_full_date <= dtEnd).Select(x => new
                 {
                     x.bolus_id,
                     x.animal_id
-                }).Distinct().OrderBy(d => d.bolus_id).ToList();
+                    //}).Distinct().OrderBy(d => d.bolus_id).ToList();
+                }).Distinct().Where(bl => bolusIdList.Contains(bl.bolus_id)).OrderBy(d => d.bolus_id).ToList();
 
+                if (b.Count == 0)
+                {
+                    return null;
+                }
                 string[] result = new string[b.Count + 1];
                 int i = 0;
                 result[i++] = "Time";
@@ -123,7 +141,7 @@ namespace BoluSys.Farm
             DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
             float Tmin = Properties.Settings.Default.Tmin;
             float Tmax = Properties.Settings.Default.Tmax;
-           
+
             try
             {
                 List<ChartsXY_Result> r = new List<ChartsXY_Result>();
