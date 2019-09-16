@@ -5,13 +5,25 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DB_A4A060_csModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Bolus">
           <Key>
             <PropertyRef Name="id" />
+            
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="bolus_id" Type="int" Nullable="false" />
           <Property Name="animal_id" Type="int" />
+          <Property Name="AnimalInfo" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="FarmCows">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AspNetUser_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Bolus_ID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -40,8 +52,16 @@
           <Parameter Name="measurements" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
-          <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bolus" EntityType="Self.Bolus" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Bolus].[id] AS [id], 
+    [Bolus].[bolus_id] AS [bolus_id], 
+    [Bolus].[animal_id] AS [animal_id], 
+    [Bolus].[AnimalInfo] AS [AnimalInfo]
+    FROM [dbo].[Bolus] AS [Bolus]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -54,6 +74,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="bolus_id" Type="Int32" Nullable="false" />
           <Property Name="animal_id" Type="Int32" />
+          <Property Name="AnimalInfo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -84,6 +105,7 @@
             <Parameter Name="tmin" Mode="In" Type="Double" />
             <Parameter Name="tmax" Mode="In" Type="Double" />
           </FunctionImport>
+          <EntitySet Name="FarmCows" EntityType="DB_A4A060_csModel.FarmCow" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -104,6 +126,14 @@
           <Property Type="Double" Name="tmin" Nullable="true" />
           <Property Type="Double" Name="tmax" Nullable="true" />
         </ComplexType>
+        <EntityType Name="FarmCow">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUser_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Bolus_ID" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -113,6 +143,7 @@
           <EntitySetMapping Name="Bolus">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
               <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="AnimalInfo" ColumnName="AnimalInfo" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
                 <ScalarProperty Name="animal_id" ColumnName="animal_id" />
@@ -161,6 +192,15 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="FarmCows">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.FarmCow">
+              <MappingFragment StoreEntitySet="FarmCows">
+                <ScalarProperty Name="Bolus_ID" ColumnName="Bolus_ID" />
+                <ScalarProperty Name="AspNetUser_ID" ColumnName="AspNetUser_ID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

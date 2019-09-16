@@ -15,11 +15,13 @@
         <tr>
             <td width="20px" style="vertical-align: top;">Animal_ID<br />
                 <div id="bolus_list" class="btn-group-vertical table-bordered">
-
                 </div>
             </td>
             <td>
-                <div id="curve_chart" style="width: 1100px; height: 500px"></div>
+                <div id="curve_chart" style="width: 1000px; height: 500px"></div>
+            </td>
+            <td>
+                <div id="Description" style="background-color: #e6e6e6;"></div>
             </td>
         </tr>
     </table>

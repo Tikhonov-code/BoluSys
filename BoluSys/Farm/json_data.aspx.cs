@@ -1,8 +1,10 @@
 ﻿using BoluSys.Models;
+using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Services;
 using System.Web.UI;
@@ -21,11 +23,16 @@ namespace BoluSys.Farm
         [WebMethod]
         public void GetDataFarmStat(string SP, string PARAMS )
         {
-            DateTime? dt = DateTime.Parse(PARAMS);
+            //------------------------------------------------------------------------
+            DateTime ? dt = DateTime.Parse(PARAMS);
             List<SP_GET_FARM_STAT_Result> result;
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
-                result = context.SP_GET_FARM_STAT(dt, 40.0, 32).ToList();
+                var userid = User.Identity.GetUserId();
+                ;
+                var bolusIDarr = context.FarmCows.Where(x => x.AspNetUser_ID == userid).Select(b => b.Bolus_ID).ToArray();
+                // result = context.SP_GET_FARM_STAT(dt, 40.0, 32).ToList();
+                result = context.SP_GET_FARM_STAT(dt, 40.0, 32).Where(x=>bolusIDarr.Contains(x.BOLUS_ID)).ToList();
             }
             var res_json = JsonConvert.SerializeObject(result);
             Response.Clear();
@@ -37,7 +44,7 @@ namespace BoluSys.Farm
         {
             DateTime dd = DateTime.Parse("9/6/2019 13:00:00");
             GetDataFarmStat("001", "9/6/2019 13:00:00");
-            
+
         }
     }
 }
