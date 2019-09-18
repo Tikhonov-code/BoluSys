@@ -50,5 +50,14 @@ namespace BoluSys.Properties {
                 return ((string)(this["SingapureURL"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("temperature.csv")]
+        public string DownLoadFile {
+            get {
+                return ((string)(this["DownLoadFile"]));
+            }
+        }
     }
 }
