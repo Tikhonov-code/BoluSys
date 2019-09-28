@@ -9,11 +9,17 @@
     <script src="FarmJS/ChartsXY.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
-
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        .w3-btn {
+            width: 70px;
+            background-color:#e6ff99;
+        }
+    </style>
     <!--Chart Section-->
     <table>
         <tr>
-            <td width="20px" style="vertical-align: top;">Animal_ID<br />
+            <td style="vertical-align: top;">Animal_ID<br />
                 <div id="bolus_list" class="btn-group-vertical table-bordered">
                 </div>
             </td>

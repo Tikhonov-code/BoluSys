@@ -223,9 +223,12 @@
     <Content Include="dx\css\dx.common.css" />
     <Content Include="dx\css\dx.light.css" />
     <Content Include="dx\js\dx.all.js" />
+    <Content Include="Farm\BolusChart.aspx" />
     <Content Include="Farm\ChartsXY.aspx" />
+    <Content Include="Farm\FarmJS\BolusChart.js" />
     <Content Include="Farm\FarmJS\ChartsXY.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
+    <Content Include="Farm\FarmJS\FarmGeneral.js" />
     <Content Include="Farm\json_data.aspx" />
     <Content Include="Farm\Stat.aspx" />
     <Content Include="favicon.ico" />
@@ -433,6 +436,13 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Farm\BolusChart.aspx.cs">
+      <DependentUpon>BolusChart.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\BolusChart.aspx.designer.cs">
+      <DependentUpon>BolusChart.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Farm\ChartsXY.aspx.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -460,6 +470,7 @@
     <Compile Include="Models\Bolu.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BolusIDChart.cs" />
     <Compile Include="Models\ChartsXY_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
