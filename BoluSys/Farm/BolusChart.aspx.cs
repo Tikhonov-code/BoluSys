@@ -64,7 +64,7 @@ namespace BoluSys.Farm
                         {
                             t = y.bolus_full_date.Value,
                             Temperature = y.temperature
-                        }).ToList();
+                        }).OrderBy(y=>y.t).ToList();
                     //----------------------------------------------------
                     List<BolusIDChart> res = new List<BolusIDChart>();
                     foreach (var item in result)
