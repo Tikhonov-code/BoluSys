@@ -39,12 +39,31 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
           <Property Name="base_station_id" Type="int" Nullable="false" />
           <Property Name="is_average" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="UserCabinet">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AspNetUsersID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="AlertTemperatureInd" Type="bit" Nullable="false" />
+          <Property Name="AlertWaterIntakesInd" Type="bit" Nullable="false" />
+          <Property Name="AlertOutOfRangeInd" Type="bit" Nullable="false" />
+          <Property Name="ReportAnimalsIdList" Type="nvarchar(max)" />
+          <Property Name="ReportTempChartInd" Type="bit" Nullable="false" />
+          <Property Name="ReportStatInd" Type="bit" Nullable="false" />
+        </EntityType>
         <Function Name="ChartsXY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt1" Type="datetime2" Mode="In" />
           <Parameter Name="dt2" Type="datetime2" Mode="In" />
           <Parameter Name="bolus_id" Type="int" Mode="In" />
           <Parameter Name="tmin" Type="float" Mode="In" />
           <Parameter Name="tmax" Type="float" Mode="In" />
+        </Function>
+        <Function Name="ChartsXY_All" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="userid" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
@@ -54,6 +73,7 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserCabinet" EntityType="Self.UserCabinet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bolus" EntityType="Self.Bolus" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [Bolus].[id] AS [id], 
@@ -106,6 +126,12 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
             <Parameter Name="tmax" Mode="In" Type="Double" />
           </FunctionImport>
           <EntitySet Name="FarmCows" EntityType="DB_A4A060_csModel.FarmCow" />
+          <EntitySet Name="UserCabinets" EntityType="DB_A4A060_csModel.UserCabinet" />
+          <FunctionImport Name="ChartsXY_All">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="userid" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -133,6 +159,20 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AspNetUser_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="Bolus_ID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserCabinet">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUsersID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="AlertTemperatureInd" Type="Boolean" Nullable="false" />
+          <Property Name="AlertWaterIntakesInd" Type="Boolean" Nullable="false" />
+          <Property Name="AlertOutOfRangeInd" Type="Boolean" Nullable="false" />
+          <Property Name="ReportAnimalsIdList" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReportTempChartInd" Type="Boolean" Nullable="false" />
+          <Property Name="ReportStatInd" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -201,6 +241,22 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="UserCabinets">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.UserCabinet">
+              <MappingFragment StoreEntitySet="UserCabinet">
+                <ScalarProperty Name="ReportStatInd" ColumnName="ReportStatInd" />
+                <ScalarProperty Name="ReportTempChartInd" ColumnName="ReportTempChartInd" />
+                <ScalarProperty Name="ReportAnimalsIdList" ColumnName="ReportAnimalsIdList" />
+                <ScalarProperty Name="AlertOutOfRangeInd" ColumnName="AlertOutOfRangeInd" />
+                <ScalarProperty Name="AlertWaterIntakesInd" ColumnName="AlertWaterIntakesInd" />
+                <ScalarProperty Name="AlertTemperatureInd" ColumnName="AlertTemperatureInd" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AspNetUsersID" ColumnName="AspNetUsersID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ChartsXY_All" FunctionName="DB_A4A060_csModel.Store.ChartsXY_All" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

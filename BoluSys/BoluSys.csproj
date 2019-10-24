@@ -229,8 +229,13 @@
     <Content Include="Farm\FarmJS\ChartsXY.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
     <Content Include="Farm\FarmJS\FarmGeneral.js" />
+    <Content Include="Farm\FarmJS\UserCabinet.js" />
+    <Content Include="Farm\imgs\DayReportChart.jpg" />
+    <Content Include="Farm\imgs\DayReportFull.jpg" />
+    <Content Include="Farm\imgs\DayReportStat.jpg" />
     <Content Include="Farm\json_data.aspx" />
     <Content Include="Farm\Stat.aspx" />
+    <Content Include="Farm\UserCabinet.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -464,6 +469,13 @@
     <Compile Include="Farm\Stat.aspx.designer.cs">
       <DependentUpon>Stat.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Farm\UserCabinet.aspx.cs">
+      <DependentUpon>UserCabinet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\UserCabinet.aspx.designer.cs">
+      <DependentUpon>UserCabinet.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -497,6 +509,9 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_GET_FARM_STAT_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserCabinet.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

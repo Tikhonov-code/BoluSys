@@ -14,6 +14,7 @@ namespace BoluSys.Farm
     public partial class BolusChart : System.Web.UI.Page
     {
         public int Bolus_id { get; set; }
+        public int Bolus_id_Ini { get; set; }
         public string Animal_id { get; set; }
         public string DateSearch { get; set; }
         public static string user_id { get; set; }
@@ -21,24 +22,26 @@ namespace BoluSys.Farm
         protected void Page_Load(object sender, EventArgs e)
         {
             user_id = User.Identity.GetUserId();
-            Animal_id = Request.QueryString["Animal_id"];
             string SP = Request.QueryString["SP"];
+            Animal_id = Request.QueryString["Animal_id"];
             DateSearch = Request.QueryString["DateSearch"];
+            DateSearch = (DateSearch == "today") ? DateTime.Now.ToShortDateString() : DateSearch;
+
+            Bolus_id_Ini = GetBolusIdInitial(user_id);
+
             switch (SP)
             {
                 case "GetBolusIDList":
                     GetBolusIDList();
                     break;
-                case "ShowChart":
-                    // ShowChart(Request.QueryString["DateSearch"], Request.QueryString["Animal_id"], Request.QueryString["Bolus_id"]);
-                    break;
                 default:
                     break;
             }
-
+            //-------------------------------------------------------------------------------
             string DateFrom = Request.QueryString["DateFrom"];
             string DateTo = Request.QueryString["DateTo"];
-            Bolus_id = Convert.ToInt16(Request.QueryString["Bolus_id"]);
+
+            Bolus_id = Convert.ToUInt16(Request.QueryString["Bolus_id"]);
             Animal_id = Request.QueryString["Animal_id"];
 
             Page.DataBind();
@@ -48,6 +51,26 @@ namespace BoluSys.Farm
                 GetDataForChart(DateFrom, DateTo, Bolus_id);
             }
         }
+
+        private int GetBolusIdInitial(string userid)
+        {
+            int result = 0;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var bidini = context.FarmCows.Where(x => x.AspNetUser_ID == userid).OrderBy(x => x.Bolus_ID).Take(1).ToList();
+                    result = bidini[0].Bolus_ID;
+                    
+                }
+            }
+            catch (Exception)
+            {
+                result=-1;
+            }
+            return result;
+        }
+
         [WebMethod]
         public void GetDataForChart(string DateFrom, string DateTo, int Bolus_id)
         {
@@ -64,7 +87,7 @@ namespace BoluSys.Farm
                         {
                             t = y.bolus_full_date.Value,
                             Temperature = y.temperature
-                        }).OrderBy(y=>y.t).ToList();
+                        }).OrderBy(y => y.t).ToList();
                     //----------------------------------------------------
                     List<BolusIDChart> res = new List<BolusIDChart>();
                     foreach (var item in result)

@@ -30,6 +30,7 @@ namespace BoluSys.Models
         public virtual DbSet<Bolu> Bolus { get; set; }
         public virtual DbSet<MeasData> MeasDatas { get; set; }
         public virtual DbSet<FarmCow> FarmCows { get; set; }
+        public virtual DbSet<UserCabinet> UserCabinets { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
@@ -71,6 +72,23 @@ namespace BoluSys.Models
                 new ObjectParameter("tmax", typeof(double));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ChartsXY_Result>("ChartsXY", dt1Parameter, dt2Parameter, bolus_idParameter, tminParameter, tmaxParameter);
+        }
+    
+        public virtual int ChartsXY_All(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, string userid)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var useridParameter = userid != null ?
+                new ObjectParameter("userid", userid) :
+                new ObjectParameter("userid", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ChartsXY_All", dt1Parameter, dt2Parameter, useridParameter);
         }
     }
 }
