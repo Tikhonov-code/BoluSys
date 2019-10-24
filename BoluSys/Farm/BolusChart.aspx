@@ -26,9 +26,10 @@
         </tr>
     </table>
     <div style="display:none;">
-    <input id="Bolus_id" type="text" value="<%# Bolus_id %>" />
-    <input id="Animal_id" type="text" value="<%# Animal_id %>" />DateSearch
+    Bolus_id<input id="Bolus_id" type="text" value="<%# Bolus_id %>" />
+    aid<input id="Animal_id" type="text" value="<%# Animal_id %>" />DateSearch
     <input id="DateSearch" type="text" value="<%# DateSearch %>" />
+        <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">

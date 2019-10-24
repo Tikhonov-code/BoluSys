@@ -67,6 +67,7 @@ namespace BoluSys.Farm
             //add any parameters the stored procedure might require
             cmd.Parameters.Add("@dt1", SqlDbType.DateTime).Value = dtStart;
             cmd.Parameters.Add("@dt2", SqlDbType.DateTime).Value = dtEnd;
+            cmd.Parameters.Add("@userid", SqlDbType.NVarChar).Value = user_id;
 
             cnn.Open();
 
