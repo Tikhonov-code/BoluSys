@@ -13,8 +13,10 @@ namespace BoluSys.Farm
 {
     public partial class BolusChart : System.Web.UI.Page
     {
+        public string CowInfo { get; set; }
         public int Bolus_id { get; set; }
         public int Bolus_id_Ini { get; set; }
+        public string Animal_id_Ini { get; set; }
         public string Animal_id { get; set; }
         public string DateSearch { get; set; }
         public static string user_id { get; set; }
@@ -28,11 +30,15 @@ namespace BoluSys.Farm
             DateSearch = (DateSearch == "today") ? DateTime.Now.ToShortDateString() : DateSearch;
 
             Bolus_id_Ini = GetBolusIdInitial(user_id);
+            CowInfo = GetCowInfo(Bolus_id, Bolus_id_Ini);
 
             switch (SP)
             {
                 case "GetBolusIDList":
                     GetBolusIDList();
+                    break;
+                case "GetCowInfoSt":
+                    GetCowInfoSt(Convert.ToUInt16(Request.QueryString["bolus_id"]));
                     break;
                 default:
                     break;
@@ -43,6 +49,7 @@ namespace BoluSys.Farm
 
             Bolus_id = Convert.ToUInt16(Request.QueryString["Bolus_id"]);
             Animal_id = Request.QueryString["Animal_id"];
+            
 
             Page.DataBind();
 
@@ -50,6 +57,61 @@ namespace BoluSys.Farm
             {
                 GetDataForChart(DateFrom, DateTo, Bolus_id);
             }
+        }
+        [WebMethod]
+        private string GetCowInfo(int bolus_id, int bolus_id_Ini)
+        {
+            string result = string.Empty;
+            int bid = (bolus_id != 0) ? bolus_id : bolus_id_Ini;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
+                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation+ "</td></tr>" +
+                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation+ "</td></tr>" +
+                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History+ "</td></tr>" +
+                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health+ "</td></tr>" +
+                             "<tr><td>Comments : </td><td>" + bidini[0].Comments+ "</td></tr>" +
+                             "</table>"
+                             ;
+                    Animal_id_Ini = bidini[0].animal_id.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                result = "None";
+            }
+            //var res_json = JsonConvert.SerializeObject(result);
+            return result;
+        }
+        [WebMethod]
+        public static string GetCowInfoSt(int bolus_id)
+        {
+            string result = string.Empty;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var bidini = context.Bolus.Where(x => x.bolus_id == bolus_id).DefaultIfEmpty().ToList();
+                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
+                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
+                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
+                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
+                             "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td></tr>" +
+                             "</table>";
+
+                }
+            }
+            catch (Exception)
+            {
+                result = "None";
+            }
+            //Response.Clear();
+            ////Response.ContentType = "application/json;charset=UTF-8";
+            //Response.Write(result);
+            //Response.End();
+            return result;
         }
 
         private int GetBolusIdInitial(string userid)
@@ -74,6 +136,8 @@ namespace BoluSys.Farm
         [WebMethod]
         public void GetDataForChart(string DateFrom, string DateTo, int Bolus_id)
         {
+            //GetCowInfo(Bolus_id, Bolus_id_Ini);
+            //1. get data for chart
             DateTime dt_from = DateTime.Parse(DateFrom);
             DateTime dt_to = DateTime.Parse(DateTo);
             //---------------------

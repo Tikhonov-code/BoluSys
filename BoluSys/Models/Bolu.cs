@@ -18,5 +18,10 @@ namespace BoluSys.Models
         public int bolus_id { get; set; }
         public Nullable<int> animal_id { get; set; }
         public string AnimalInfo { get; set; }
+        public Nullable<int> Age_Lactation { get; set; }
+        public string Current_Stage_Of_Lactation { get; set; }
+        public string Health_Concerns_Illness_History { get; set; }
+        public string Overall_Health { get; set; }
+        public string Comments { get; set; }
     }
 }

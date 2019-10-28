@@ -17,10 +17,38 @@ namespace BoluSys.Farm
     public partial class ChartsXY : System.Web.UI.Page
     {
         public static string user_id { get; set; }
+        public int TotalCowsNumberInfo { get; set; }
+        public int CowsUnderMonitoring { get; set; }
+        public int CowsToCheck { get; set; }
+        public int CowsAtRisk { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             user_id = User.Identity.GetUserId();
+            GetTotalCountsForDashboard(user_id);
         }
+
+        private void GetTotalCountsForDashboard(string user_id)
+        {
+            TotalCowsNumberInfo = 0;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
+                TotalCowsNumberInfo = bolusIdList.Count();
+                
+                DateTime dt_to = DateTime.Now;
+                DateTime dt_from = dt_to.AddHours(-12);
+
+                CowsUnderMonitoring = context.MeasDatas.Where(x => x.bolus_full_date >= dt_from && x.bolus_full_date <= dt_to && bolusIdList.Contains(x.bolus_id)).Select(
+                    x=> new {
+                        bl = x.bolus_id
+                    }).Distinct().Count();
+                ;
+            }
+            CowsToCheck = 2;
+            CowsAtRisk = 3;
+        }
+
         [WebMethod]
         public static string GetDayBolusList(string DateSearch)//, int age)
         {
@@ -35,7 +63,7 @@ namespace BoluSys.Farm
                 {
                     x.bolus_id,
                     x.animal_id
-                //}).Distinct().ToList();
+                    //}).Distinct().ToList();
                 }).Distinct().Where(x => bolusIdList.Contains(x.bolus_id)).ToList();
                 //-----------------------------------------------------
                 if (b.Count == 0)

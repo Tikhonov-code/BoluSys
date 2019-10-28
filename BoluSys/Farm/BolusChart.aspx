@@ -12,9 +12,7 @@
             <td>
                 <div id="dateTo"></div>
             </td>
-            <td>
-                
-            </td>
+            <td></td>
             <td>
                 <div class="dx-field">
                     <div class="dx-field-label">Animal ID:</div>
@@ -25,16 +23,23 @@
             </td>
         </tr>
     </table>
-    <div style="display:none;">
-    Bolus_id<input id="Bolus_id" type="text" value="<%# Bolus_id %>" />
-    aid<input id="Animal_id" type="text" value="<%# Animal_id %>" />DateSearch
+    <div style="display: none;">
+        DateSearch
     <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />  
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">
         <div id="chart"></div>
     </div>
+    <!---------------------------------------------------------------->
+    <div class="jumbotron">
+        Cow #:<input id="Animal_id" type="text" value="<%# Animal_id %>" style="border: hidden;" aria-disabled="True" disabled="disabled" />
+        Bolus:<input id="Bolus_id" type="text" value="<%# Bolus_id %>" style="border: hidden;" disabled="disabled" /><br />
+        <div id="CowInfo"><%# CowInfo %></div>
+    </div>
+    <!---------------------------------------------------------------->
 
     <!--Script Section-->
     <link href="../dx/css/dx.light.css" rel="stylesheet" />
@@ -45,6 +50,10 @@
     <style>
         #chart {
             height: 440px;
+        }
+        .auto-style1 {
+            width: 840px;
+            height: 222px;
         }
     </style>
 </asp:Content>

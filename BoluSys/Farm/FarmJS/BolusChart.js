@@ -118,6 +118,7 @@ function ChartCreate(df, dt, bid) {
         }
     });
 }
+
 //-----------------------------------------------------------
 var AnimalIDlist = [];
 var BolusIDlist = [];
@@ -150,6 +151,8 @@ $(document).ready(function () {
     var dto = $("#dateTo").dxDateBox("instance").option('value');
     var dfr = $("#dateFrom").dxDateBox("instance").option('value');
     ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), $("#Bolus_id_Ini").val());
+    $("#Bolus_id").val($("#Bolus_id_Ini").val());
+    $("#Animal_id").val($("#Animal_id_Ini").val());
     return;
 });
 
@@ -174,23 +177,33 @@ function Success_BolusIDList(result) {
         //------------------------------------------------------
 
         onValueChanged: function (e) {
-
-            $("#Bolus_id").val(e.value);
-
+            var bid = e.value;
+            $("#Bolus_id").val(bid);
             //----------------------------------------------------------
             //var bl_c = BolusIDlist.filter(a => a.animal_id == e.value);
-            var aid_c = BolusIDlist.filter(a => a.bolus_id == e.value);
+            var aid_c = BolusIDlist.filter(a => a.bolus_id == bid);
 
             $("#Animal_id").val(aid_c[0].animal_id);
 
             var dto = $("#dateTo").dxDateBox("instance").option('value');
             var dfr = $("#dateFrom").dxDateBox("instance").option('value');
-            ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), e.value);            //------------------------------------
-            //--------------------------------------
+            ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
 
+            GetCowInfo(bid);
         }
     });
-    //var aid = $("#Animal_id").val();
-    // $("#BolusIDList").dxSelectBox("instance").option("value", aid);
     return;
+}
+function GetCowInfo(bidpar) {
+    //-------------------------------------------
+    var url = 'BolusChart.aspx/GetCowInfoSt?SP=GetCowInfoSt';
+    var Param = {};
+    Param.SP = "GetCowInfoSt";
+    Param.bolus_id = bidpar;
+    myAjaxRequestJson(url, Param, Success_GetCowInfo);
+    //----------------------------------------------------
+}
+function Success_GetCowInfo(result) {
+    var xx = result.d;
+    $("#CowInfo").html(xx);;
 }
