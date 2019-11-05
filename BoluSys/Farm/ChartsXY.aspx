@@ -35,7 +35,7 @@
             <td>
                 <!----------------Dashboard Indicators------------------------------------------------>
                 <div class="well" style="text-align: center;">
-                    <mark style="font-size: large; font-weight: bold;">Total Number of Cows: <%= TotalCowsNumberInfo %></mark>
+                    <mark style="font-size: large; font-weight: bold; background-color: #e6ff99;">Total Number of Cows: <%= TotalCowsNumberInfo %></mark>
                 </div>
 
                 <div id="gauge"></div>

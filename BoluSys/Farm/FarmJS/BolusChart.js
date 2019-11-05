@@ -40,6 +40,7 @@ function ChartCreate(df, dt, bid) {
     }
     //------------------------------------------------------------------------------------
     var ds = "BolusChart.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart";
+    //var ds = "BolusChart.aspx/GetDataForChart?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid;
     $("#chart").dxChart({
         dataSource: ds,
         series: {
@@ -146,13 +147,26 @@ $(document).ready(function () {
     var Param = {};
     Param.SP = "GetBolusIDList";
     myAjaxRequestJson(url, Param, Success_BolusIDList);
+
     //----------------------------------------------------
-    //var bx = 11;//BolusIDlist[0].bolus_id;
+    var aid0 = $("#Animal_id").val();
+
+    bidc = (bidc != 0) ? bidc : $("#Bolus_id_Ini").val();
+    aid0 = (aid0 != 0) ? aid0 : $("#Animal_id_Ini").val();
+    //choose bid and aid!!!!
     var dto = $("#dateTo").dxDateBox("instance").option('value');
     var dfr = $("#dateFrom").dxDateBox("instance").option('value');
-    ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), $("#Bolus_id_Ini").val());
-    $("#Bolus_id").val($("#Bolus_id_Ini").val());
-    $("#Animal_id").val($("#Animal_id_Ini").val());
+
+    //ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), $("#Bolus_id_Ini").val());
+    //$("#Bolus_id").val($("#Bolus_id_Ini").val());
+    //$("#Animal_id").val($("#Animal_id_Ini").val());
+
+    ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bidc);
+    $("#BolusIDList").dxSelectBox("instance").option("value", bidc);
+    $("#Bolus_id").val(bidc);
+    $("#Animal_id").val(aid0);
+    GetCowInfo(bid0);
+
     return;
 });
 

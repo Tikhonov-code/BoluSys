@@ -5,12 +5,9 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DB_A4A060_csModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Bolus">
           <Key>
             <PropertyRef Name="id" />
-            
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="bolus_id" Type="int" Nullable="false" />
@@ -76,41 +73,15 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
           <Parameter Name="measurements" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
+          <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCabinet" EntityType="Self.UserCabinet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Bolus" EntityType="Self.Bolus" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Bolus].[id] AS [id], 
-    [Bolus].[bolus_id] AS [bolus_id], 
-    [Bolus].[animal_id] AS [animal_id], 
-    [Bolus].[AnimalInfo] AS [AnimalInfo], 
-    [Bolus].[Age_Lactation] AS [Age_Lactation], 
-    [Bolus].[Current_Stage_Of_Lactation] AS [Current_Stage_Of_Lactation], 
-    [Bolus].[Health_Concerns_Illness_History] AS [Health_Concerns_Illness_History], 
-    [Bolus].[Overall_Health] AS [Overall_Health], 
-    [Bolus].[Comments] AS [Comments]
-    FROM [dbo].[Bolus] AS [Bolus]</DefiningQuery>
-          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_A4A060_csModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Bolu">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="bolus_id" Type="Int32" Nullable="false" />
-          <Property Name="animal_id" Type="Int32" />
-          <Property Name="AnimalInfo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Age_Lactation" Type="Int32" />
-          <Property Name="Current_Stage_Of_Lactation" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Health_Concerns_Illness_History" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Overall_Health" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="MeasData">
           <Key>
             <PropertyRef Name="id" />
@@ -126,7 +97,6 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
           <Property Name="is_average" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityContainer Name="DB_A4A060_csEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Bolus" EntityType="Self.Bolu" />
           <EntitySet Name="MeasDatas" EntityType="Self.MeasData" />
           <FunctionImport Name="SP_GET_FARM_STAT" ReturnType="Collection(DB_A4A060_csModel.SP_GET_FARM_STAT_Result)">
             <Parameter Name="date" Mode="In" Type="DateTime" />
@@ -147,6 +117,7 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
             <Parameter Name="dt2" Mode="In" Type="DateTime" />
             <Parameter Name="userid" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="Bolus" EntityType="DB_A4A060_csModel.Bolu" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -189,27 +160,26 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
           <Property Name="ReportTempChartInd" Type="Boolean" Nullable="false" />
           <Property Name="ReportStatInd" Type="Boolean" Nullable="false" />
         </EntityType>
+        <EntityType Name="Bolu">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bolus_id" Type="Int32" Nullable="false" />
+          <Property Name="animal_id" Type="Int32" />
+          <Property Name="AnimalInfo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Age_Lactation" Type="Int32" />
+          <Property Name="Current_Stage_Of_Lactation" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Health_Concerns_Illness_History" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Overall_Health" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DB_A4A060_csModelStoreContainer" CdmEntityContainer="DB_A4A060_csEntities">
-          <EntitySetMapping Name="Bolus">
-            <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
-              <MappingFragment StoreEntitySet="Bolus">
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="Overall_Health" ColumnName="Overall_Health" />
-                <ScalarProperty Name="Health_Concerns_Illness_History" ColumnName="Health_Concerns_Illness_History" />
-                <ScalarProperty Name="Current_Stage_Of_Lactation" ColumnName="Current_Stage_Of_Lactation" />
-                <ScalarProperty Name="Age_Lactation" ColumnName="Age_Lactation" />
-                <ScalarProperty Name="AnimalInfo" ColumnName="AnimalInfo" />
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
-                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MeasDatas">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.MeasData">
               <MappingFragment StoreEntitySet="MeasData">
@@ -277,6 +247,21 @@ warning 6002: The table/view 'DB_A4A060_cs.dbo.Bolus' does not have a primary ke
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="ChartsXY_All" FunctionName="DB_A4A060_csModel.Store.ChartsXY_All" />
+          <EntitySetMapping Name="Bolus">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
+              <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="Overall_Health" ColumnName="Overall_Health" />
+                <ScalarProperty Name="Health_Concerns_Illness_History" ColumnName="Health_Concerns_Illness_History" />
+                <ScalarProperty Name="Current_Stage_Of_Lactation" ColumnName="Current_Stage_Of_Lactation" />
+                <ScalarProperty Name="Age_Lactation" ColumnName="Age_Lactation" />
+                <ScalarProperty Name="AnimalInfo" ColumnName="AnimalInfo" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

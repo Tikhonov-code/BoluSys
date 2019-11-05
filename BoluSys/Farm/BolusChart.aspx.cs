@@ -30,7 +30,7 @@ namespace BoluSys.Farm
             DateSearch = (DateSearch == "today") ? DateTime.Now.ToShortDateString() : DateSearch;
 
             Bolus_id_Ini = GetBolusIdInitial(user_id);
-            CowInfo = GetCowInfo(Bolus_id, Bolus_id_Ini);
+            //CowInfo = GetCowInfo(Bolus_id, Bolus_id_Ini);
 
             switch (SP)
             {
@@ -44,12 +44,23 @@ namespace BoluSys.Farm
                     break;
             }
             //-------------------------------------------------------------------------------
-            string DateFrom = Request.QueryString["DateFrom"];
-            string DateTo = Request.QueryString["DateTo"];
+            string DateFrom, DateTo;
+            //if (!string.IsNullOrEmpty(DateSearch))
+            //{
+            //    DateTime ddtt = DateTime.Parse(DateSearch);
+            //    DateFrom = (new DateTime(ddtt.Year, ddtt.Month, ddtt.Day, 0, 0, 0)).ToString();
+            //    DateTo = (new DateTime(ddtt.Year, ddtt.Month, ddtt.Day, 23, 59, 59)).ToString();
+            //}
+            //else
+            {
+                DateFrom = Request.QueryString["DateFrom"];
+                DateTo = Request.QueryString["DateTo"];
+            }
+
 
             Bolus_id = Convert.ToUInt16(Request.QueryString["Bolus_id"]);
             Animal_id = Request.QueryString["Animal_id"];
-            
+            CowInfo = GetCowInfo(Bolus_id, Bolus_id_Ini);
 
             Page.DataBind();
 
@@ -68,11 +79,11 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
-                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation+ "</td></tr>" +
-                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation+ "</td></tr>" +
-                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History+ "</td></tr>" +
-                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health+ "</td></tr>" +
-                             "<tr><td>Comments : </td><td>" + bidini[0].Comments+ "</td></tr>" +
+                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
+                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
+                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
+                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
+                             "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td></tr>" +
                              "</table>"
                              ;
                     Animal_id_Ini = bidini[0].animal_id.ToString();
@@ -116,19 +127,20 @@ namespace BoluSys.Farm
 
         private int GetBolusIdInitial(string userid)
         {
-            int result = 0;
+            int result = Convert.ToUInt16(Request.QueryString["Bolus_id"]);
+            if (result != 0) return result;
             try
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.FarmCows.Where(x => x.AspNetUser_ID == userid).OrderBy(x => x.Bolus_ID).Take(1).ToList();
                     result = bidini[0].Bolus_ID;
-                    
+
                 }
             }
             catch (Exception)
             {
-                result=-1;
+                result = -1;
             }
             return result;
         }
@@ -185,21 +197,17 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
-                    var result = context.Bolus.Distinct().Select(
-                        y => new
-                        {
-                            bolus_id = y.bolus_id,
-                            animal_id = y.animal_id
-                        }).Where(x => bolusIdList.Contains(x.bolus_id)).ToArray();
                     //----------------------------------------------------
-                    String[] res_array = new String[result.Length];
-                    int i = 0;
-                    foreach (var item in result)
-                    {
-                        res_array[i++] = item.animal_id.ToString();
-                    }
-
-                    //return res_array;
+                    var result = (from bl in context.Bolus
+                              join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
+                              where fc.AspNetUser_ID == user_id
+                              select new
+                              {
+                                  bolus_id = bl.bolus_id,
+                                  animal_id = bl.animal_id
+                              }
+                             ).Distinct().OrderBy(x => x.animal_id).ToArray();
+                    //----------------------------------------------------
                     return result;
                 }
             }
@@ -210,15 +218,15 @@ namespace BoluSys.Farm
             }
         }
 
-        [WebMethod]
-        public void ShowChart(string DateSearch, string Animal_id, string Bolus_id)
-        {
-            //1. Set dateboxes and selecBox
-            //2. create chart
-            ;
-            string DateFrom = "9/22/2019";
-            string DateTo = "9/22/2019 23:00:00";
-            GetDataForChart(DateFrom, DateTo, Convert.ToInt16(Bolus_id));
-        }
+        //[WebMethod]
+        //public void ShowChart(string DateSearch, string Animal_id, string Bolus_id)
+        //{
+        //    //1. Set dateboxes and selecBox
+        //    //2. create chart
+        //    ;
+        //    string DateFrom = "9/22/2019";
+        //    string DateTo = "9/22/2019 23:00:00";
+        //    GetDataForChart(DateFrom, DateTo, Convert.ToInt16(Bolus_id));
+        //}
     }
 }

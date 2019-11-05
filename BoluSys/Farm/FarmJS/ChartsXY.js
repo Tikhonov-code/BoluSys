@@ -8,6 +8,21 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: Success_function_name
+        
+    });
+    return false;
+}
+function myAjaxRequestJsonE(URL, Param, Success_function_name, Error_function_name) {
+    //var obj = {};
+    //obj.DateSearch = Param;
+    $.ajax({
+        type: "POST",
+        url: URL,
+        data: JSON.stringify(Param),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: Success_function_name,
+        error: Error_function_name
     });
     return false;
 }
@@ -51,8 +66,13 @@ function ChartsShowAllRequest() {
     else {
         var Param = {};
         Param.DateSearch = DateSearch;
-        myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+        //myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+        myAjaxRequestJsonE('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc, ChartsShowAllRequestErr);
     }
+}
+function ChartsShowAllRequestErr(xhr) {
+    var x = xhr;
+    return;
 }
 function ChartsShowAllRequestSuc(result) {
     $("#ProgressBar").attr("style", "visibility: hidden");

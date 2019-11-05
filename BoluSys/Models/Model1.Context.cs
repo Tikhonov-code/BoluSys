@@ -27,10 +27,10 @@ namespace BoluSys.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Bolu> Bolus { get; set; }
         public virtual DbSet<MeasData> MeasDatas { get; set; }
         public virtual DbSet<FarmCow> FarmCows { get; set; }
         public virtual DbSet<UserCabinet> UserCabinets { get; set; }
+        public virtual DbSet<Bolu> Bolus { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {

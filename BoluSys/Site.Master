@@ -67,7 +67,7 @@
                             </ul>
                         </AnonymousTemplate>
                         <LoggedInTemplate>
-                            <ul class="nav navbar-nav navbar-center">
+                            <ul class="nav navbar-nav navbar-center" style="width:700px;">
       <%--                          <li><a runat="server" href="~/">Home</a></li>
                                 <li><a runat="server" href="~/About">About</a></li>
                                 <li><a runat="server" href="~/Contact">Contact</a></li>--%>
