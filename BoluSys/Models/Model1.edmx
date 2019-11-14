@@ -67,10 +67,23 @@
           <Parameter Name="dt2" Type="datetime2" Mode="In" />
           <Parameter Name="userid" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="ChartsXY_sig" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="tmin" Type="float" Mode="In" />
+          <Parameter Name="tmax" Type="float" Mode="In" />
+        </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
           <Parameter Name="temp_limit" Type="float" Mode="In" />
           <Parameter Name="measurements" Type="int" Mode="In" />
+        </Function>
+        <Function Name="WaterIntakes_sig" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="wi_calbr" Type="float" Mode="In" />
         </Function>
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
           <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
@@ -118,6 +131,19 @@
             <Parameter Name="userid" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="Bolus" EntityType="DB_A4A060_csModel.Bolu" />
+          <FunctionImport Name="ChartsXY_sig" ReturnType="Collection(DB_A4A060_csModel.ChartsXY_sig_Result)">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+            <Parameter Name="tmin" Mode="In" Type="Double" />
+            <Parameter Name="tmax" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="WaterIntakes_sig" ReturnType="Collection(DB_A4A060_csModel.WaterIntakes_sig_Result)">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+            <Parameter Name="wi_calbr" Mode="In" Type="Double" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -174,6 +200,21 @@
           <Property Name="Overall_Health" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="ChartsXY_sig_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="DateTime" Name="bolus_full_date" Nullable="true" />
+          <Property Type="Int32" Name="dhours" Nullable="true" />
+          <Property Type="Int32" Name="dminutes" Nullable="true" />
+          <Property Type="Int32" Name="dseconds" Nullable="true" />
+          <Property Type="Double" Name="temperature" Nullable="false" />
+          <Property Type="Double" Name="tmin" Nullable="true" />
+          <Property Type="Double" Name="tmax" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="WaterIntakes_sig_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="DateTime" Name="bolus_full_date" Nullable="true" />
+          <Property Type="Double" Name="intakes" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -262,6 +303,29 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ChartsXY_sig" FunctionName="DB_A4A060_csModel.Store.ChartsXY_sig">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.ChartsXY_sig_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bolus_full_date" ColumnName="bolus_full_date" />
+                <ScalarProperty Name="dhours" ColumnName="dhours" />
+                <ScalarProperty Name="dminutes" ColumnName="dminutes" />
+                <ScalarProperty Name="dseconds" ColumnName="dseconds" />
+                <ScalarProperty Name="temperature" ColumnName="temperature" />
+                <ScalarProperty Name="tmin" ColumnName="tmin" />
+                <ScalarProperty Name="tmax" ColumnName="tmax" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="WaterIntakes_sig" FunctionName="DB_A4A060_csModel.Store.WaterIntakes_sig">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.WaterIntakes_sig_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="bolus_full_date" ColumnName="bolus_full_date" />
+                <ScalarProperty Name="intakes" ColumnName="intakes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -34,13 +34,15 @@ $(function () {
         }
     });
 });
+var ds;
 function ChartCreate(df, dt, bid) {
     if (df == "" || dt == "") {
         return;
     }
-    //------------------------------------------------------------------------------------
-    var ds = "BolusChart.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart";
-    //var ds = "BolusChart.aspx/GetDataForChart?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid;
+    var ds = "BolusChart_new.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart";
+    return;
+}
+$(function () {
     $("#chart").dxChart({
         dataSource: ds,
         series: {
@@ -118,8 +120,8 @@ function ChartCreate(df, dt, bid) {
             text: "Loading..."
         }
     });
-}
 
+});
 //-----------------------------------------------------------
 var AnimalIDlist = [];
 var BolusIDlist = [];
@@ -128,9 +130,18 @@ var BolusIDlist = [];
 //------Page Load Section--------------------------------------------------------------------------
 
 $(document).ready(function () {
+
     var d = $("#DateSearch").val();
     //Request data for initial chart
     var bidc = $("#Bolus_id").val();
+    //--------------------------------
+    DayIntakesChart(bidc);
+    //--------------------------------
+    if (bidc == 0 && d != null) {
+        bidc = $("#Bolus_id_Ini").val();
+        ChartCreate(d + ' 12:00 AM', d + '  11:59 PM', bidc);
+    }
+
     if (bidc != 0 && d != null) {
         ChartCreate(d + ' 12:00 AM', d + '  11:59 PM', bidc);
     }
@@ -143,7 +154,7 @@ $(document).ready(function () {
     $("#dateTo").dxDateBox("instance").option("value", d_to);
 
     //-------------------------------------------
-    var url = 'BolusChart.aspx/GetBolusIDList?SP=GetBolusIDList';
+    var url = 'BolusChart_new.aspx/GetBolusIDList?SP=GetBolusIDList';
     var Param = {};
     Param.SP = "GetBolusIDList";
     myAjaxRequestJson(url, Param, Success_BolusIDList);
@@ -157,15 +168,12 @@ $(document).ready(function () {
     var dto = $("#dateTo").dxDateBox("instance").option('value');
     var dfr = $("#dateFrom").dxDateBox("instance").option('value');
 
-    //ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), $("#Bolus_id_Ini").val());
-    //$("#Bolus_id").val($("#Bolus_id_Ini").val());
-    //$("#Animal_id").val($("#Animal_id_Ini").val());
 
-    ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bidc);
-    $("#BolusIDList").dxSelectBox("instance").option("value", bidc);
+    // ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bidc);
+    // $("#BolusIDList").dxSelectBox("instance").option("value", bidc);
     $("#Bolus_id").val(bidc);
     $("#Animal_id").val(aid0);
-    GetCowInfo(bid0);
+    // GetCowInfo(bid0);
 
     return;
 });
@@ -176,9 +184,8 @@ function Success_BolusIDList(result) {
         AnimalIDlist.push(result.d[item].animal_id);
         BolusIDlist.push(result.d[item]);
     }
-    return;
-}
-$(function () {
+    //var aid = BolusIDlist.findIndex(a => a.animal_id == $("#Animal_id").val());
+
     $("#BolusIDList").dxSelectBox({
         //items: AnimalIDlist,
         placeholder: "Choose Animal_id",
@@ -188,7 +195,7 @@ $(function () {
         dataSource: BolusIDlist,
         displayExpr: "animal_id",
         valueExpr: "bolus_id",
-        value: 12,//BolusIDlist[0].bolus_id,    //*********************Debug************************
+        value: BolusIDlist[0].bolus_id,
         //------------------------------------------------------
 
         onValueChanged: function (e) {
@@ -205,15 +212,19 @@ $(function () {
             ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
 
             GetCowInfo(bid);
+            //--------------------------------
+            DayIntakesChart(bid);
+            //--------------------------------
         }
     });
-});
-
+    return;
+}
 function GetCowInfo(bidpar) {
     //-------------------------------------------
-    var url = 'BolusChart.aspx/GetCowInfoSt?SP=GetCowInfoSt';
+    //var url = 'BolusChart_new.aspx/GetCowInfoSt?SP=GetCowInfoSt';
+    var url = 'BolusChart_new.aspx/GetCowInfoSt';
     var Param = {};
-    Param.SP = "GetCowInfoSt";
+    //Param.SP = "GetCowInfoSt";
     Param.bolus_id = bidpar;
     myAjaxRequestJson(url, Param, Success_GetCowInfo);
     //----------------------------------------------------
@@ -222,3 +233,50 @@ function Success_GetCowInfo(result) {
     var xx = result.d;
     $("#CowInfo").html(xx);;
 }
+
+// intakes charts-------------------------------------
+//var ds = "BolusChart_new.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart";
+var dataSource_intakes = new DevExpress.data.CustomStore({
+    loadMode: "raw",
+    load: function () {
+        var dt = $("#dateTo").dxDateBox("instance").option('value');
+        var df = $("#dateFrom").dxDateBox("instance").option('value');
+        var bidx = $("#Bolus_id").val();
+        if (dt != null && df != null && bidx != 0) {
+
+            dt = ConvertDateToMyF(dt);
+            df = ConvertDateToMyF(df);
+
+            return $.getJSON("BolusChart_new.aspx?SP=GetDataSource_intakes&DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bidx);
+        }
+    }
+});
+function DayIntakesChart(bol_id) {
+    var dataSource_intakes = new DevExpress.data.CustomStore({
+        loadMode: "raw",
+        load: function () {
+            var dt = $("#dateTo").dxDateBox("instance").option('value');
+            var df = $("#dateFrom").dxDateBox("instance").option('value');
+            var bidx = $("#Bolus_id").val();
+            if (dt != null && df != null && bidx != 0) {
+
+                dt = ConvertDateToMyF(dt);
+                df = ConvertDateToMyF(df);
+                //return $.getJSON("BolusChart_new.aspx?SP=GetDataSource_intakes" + "&bolus_id=" + bol_id);//?DateFrom = " + df + " &DateTO=" + dt + " &Bolus_id=" + bid );
+                return $.getJSON("BolusChart_new.aspx?SP=GetDataSource_intakes&DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bidx);
+            }
+        }
+    });
+    $("#chart_intakes").dxChart({
+        //dataSource: "BolusChart_new.aspx?SP=GetDataSource_intakes",
+        dataSource: dataSource_intakes,
+        series: {
+            argumentField: "bolus_full_date",
+            valueField: "intakes",
+            name: "Water Intakes:" + $("#TotalWaterIntakes").val(),
+            type: "bar",
+            color: '#80bfff'
+        }
+    });
+}
+// intakes charts-------------------------------------
