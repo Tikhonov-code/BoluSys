@@ -18,6 +18,9 @@
           <Property Name="Health_Concerns_Illness_History" Type="nvarchar" MaxLength="500" />
           <Property Name="Overall_Health" Type="nvarchar" MaxLength="10" />
           <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+          <Property Name="Date_of_Birth" Type="datetime" />
+          <Property Name="Calving_Due_Date" Type="datetime" />
+          <Property Name="Actual_Calving_Date" Type="datetime" />
         </EntityType>
         <EntityType Name="FarmCows">
           <Key>
@@ -201,6 +204,9 @@
           <Property Name="Health_Concerns_Illness_History" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Overall_Health" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Date_of_Birth" Type="DateTime" Precision="3" />
+          <Property Name="Calving_Due_Date" Type="DateTime" Precision="3" />
+          <Property Name="Actual_Calving_Date" Type="DateTime" Precision="3" />
         </EntityType>
         <ComplexType Name="ChartsXY_sig_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -294,6 +300,9 @@
           <EntitySetMapping Name="Bolus">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
               <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="Actual_Calving_Date" ColumnName="Actual_Calving_Date" />
+                <ScalarProperty Name="Calving_Due_Date" ColumnName="Calving_Due_Date" />
+                <ScalarProperty Name="Date_of_Birth" ColumnName="Date_of_Birth" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="Overall_Health" ColumnName="Overall_Health" />
                 <ScalarProperty Name="Health_Concerns_Illness_History" ColumnName="Health_Concerns_Illness_History" />

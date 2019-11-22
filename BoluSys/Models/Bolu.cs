@@ -23,5 +23,8 @@ namespace BoluSys.Models
         public string Health_Concerns_Illness_History { get; set; }
         public string Overall_Health { get; set; }
         public string Comments { get; set; }
+        public Nullable<System.DateTime> Date_of_Birth { get; set; }
+        public Nullable<System.DateTime> Calving_Due_Date { get; set; }
+        public Nullable<System.DateTime> Actual_Calving_Date { get; set; }
     }
 }
