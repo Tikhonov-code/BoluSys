@@ -67,16 +67,17 @@
                             </ul>
                         </AnonymousTemplate>
                         <LoggedInTemplate>
-                            <ul class="nav navbar-nav navbar-center">
+                            <ul class="nav navbar-nav navbar-center" style="width:700px;">
       <%--                          <li><a runat="server" href="~/">Home</a></li>
                                 <li><a runat="server" href="~/About">About</a></li>
                                 <li><a runat="server" href="~/Contact">Contact</a></li>--%>
-<%--                                <li><a runat="server" href="~/Farm/ChartsXY">Temperature Monitoring</a></li>--%>
-                                <li><a runat="server" href="~/Farm/BolusChart?DateSearch=today">Dashboard</a></li>
+                                <li><a runat="server" href="~/Farm/ChartsXY">Dashboard</a></li>
+                                <li><a runat="server" href="~/Farm/BolusChart?DateSearch=today">Animals</a></li>
                                 <li><a runat="server" href="~/Farm/Stat">Stat</a></li>
                             <%--</ul>
                             <ul class="nav navbar-nav navbar-right">--%>
-                                <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
+<%--                                <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>--%>
+                                <li><a runat="server" href="#" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
                                 <li>
                                     <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                 </li>

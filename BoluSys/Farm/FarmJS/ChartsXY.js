@@ -8,6 +8,21 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: Success_function_name
+        
+    });
+    return false;
+}
+function myAjaxRequestJsonE(URL, Param, Success_function_name, Error_function_name) {
+    //var obj = {};
+    //obj.DateSearch = Param;
+    $.ajax({
+        type: "POST",
+        url: URL,
+        data: JSON.stringify(Param),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: Success_function_name,
+        error: Error_function_name
     });
     return false;
 }
@@ -51,8 +66,13 @@ function ChartsShowAllRequest() {
     else {
         var Param = {};
         Param.DateSearch = DateSearch;
-        myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+        //myAjaxRequestJson('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc);
+        myAjaxRequestJsonE('ChartsXY.aspx/GetDataAll', Param, ChartsShowAllRequestSuc, ChartsShowAllRequestErr);
     }
+}
+function ChartsShowAllRequestErr(xhr) {
+    var x = xhr;
+    return;
 }
 function ChartsShowAllRequestSuc(result) {
     $("#ProgressBar").attr("style", "visibility: hidden");
@@ -216,3 +236,126 @@ function GetIndividualDescription_Suc(result) {
     $("#Description").text(result.d);
     return true;
 }
+
+//Palette for Ranges Section
+$(function () {
+    $("#gauge").dxCircularGauge({
+        scale: {
+            startValue: 0,
+            endValue: $("#TotalCowsNumberInfo").val(),
+            tick: {
+                color: "black"
+            },
+            minorTick: {
+                color: "black",
+                visible: true
+            },
+            tickInterval: 1
+        },
+        rangeContainer: {
+            backgroundColor: "green"
+        },
+        title: {
+            text: "Healthy Cows Under Monitoring",
+            font: { size: 14,  weight: "bold"}
+        },
+        "export": {
+            enabled: false
+        },
+        value: $("#CowsUnderMonitoring").val(),
+        subvalues: [$("#CowsUnderMonitoring").val()],
+        subvalueIndicator: {
+            type: "triangleMarker",
+            color: "red"
+        },
+        valueIndicator: {
+            color: "green"
+        },
+        subvalueIndicator: {
+            type: "textCloud",
+            color: "green"
+        }
+        
+    });
+});
+$(function () {
+    $("#gauge1").dxCircularGauge({
+        scale: {
+            startValue: 0,
+            endValue: $("#TotalCowsNumberInfo").val(),
+            tick: {
+                color: "black"
+            },
+            minorTick: {
+                color: "black",
+                visible: true
+            },
+            tickInterval: 1
+            //,minorTickInterval: 0
+        },
+        rangeContainer: {
+            backgroundColor: "#ffcc00"
+        },
+        title: {
+            text: "Cows To Check",
+            font: { size: 14,  weight: "bold" }
+        },
+        "export": {
+            enabled: false
+        },
+        value: $("#CowsToCheck").val(),
+        subvalues: [$("#CowsToCheck").val()],
+        subvalueIndicator: {
+            type: "triangleMarker",
+            color: "red"
+        },
+        valueIndicator: {
+            color: "#ffcc00"
+        },
+        subvalueIndicator: {
+            type: "textCloud",
+            color: "#ffcc00"
+        }
+    });
+});
+$(function () {
+    $("#gauge2").dxCircularGauge({
+        scale: {
+            startValue: 0,
+            endValue: $("#TotalCowsNumberInfo").val(),
+            tick: {
+                color: "black"
+            },
+            minorTick: {
+                color: "black",
+                visible: true
+            },
+            tickInterval: 1
+            //,minorTickInterval: 0
+        },
+        rangeContainer: {
+            backgroundColor: "#ffb3b3"
+        },
+        title: {
+            text: "Cows At Risk",
+            font: { size: 14, weight: "bold" }
+        },
+        "export": {
+            enabled: false
+        },
+        value: $("#CowsAtRisk").val(),
+        subvalues: [$("#CowsAtRisk").val()],
+        subvalueIndicator: {
+            type: "triangleMarker",
+            color: "red"
+        }        ,
+        valueIndicator: {
+            color: "red"
+        },
+        subvalueIndicator: {
+            type: "textCloud",
+            color: "red"
+        }
+
+    });
+});

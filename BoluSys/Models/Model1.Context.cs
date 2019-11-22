@@ -27,10 +27,10 @@ namespace BoluSys.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Bolu> Bolus { get; set; }
         public virtual DbSet<MeasData> MeasDatas { get; set; }
         public virtual DbSet<FarmCow> FarmCows { get; set; }
         public virtual DbSet<UserCabinet> UserCabinets { get; set; }
+        public virtual DbSet<Bolu> Bolus { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
@@ -89,6 +89,52 @@ namespace BoluSys.Models
                 new ObjectParameter("userid", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ChartsXY_All", dt1Parameter, dt2Parameter, useridParameter);
+        }
+    
+        public virtual ObjectResult<ChartsXY_sig_Result> ChartsXY_sig(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> tmin, Nullable<double> tmax)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            var tminParameter = tmin.HasValue ?
+                new ObjectParameter("tmin", tmin) :
+                new ObjectParameter("tmin", typeof(double));
+    
+            var tmaxParameter = tmax.HasValue ?
+                new ObjectParameter("tmax", tmax) :
+                new ObjectParameter("tmax", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ChartsXY_sig_Result>("ChartsXY_sig", dt1Parameter, dt2Parameter, bolus_idParameter, tminParameter, tmaxParameter);
+        }
+    
+        public virtual ObjectResult<WaterIntakes_sig_Result> WaterIntakes_sig(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> wi_calbr)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            var wi_calbrParameter = wi_calbr.HasValue ?
+                new ObjectParameter("wi_calbr", wi_calbr) :
+                new ObjectParameter("wi_calbr", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<WaterIntakes_sig_Result>("WaterIntakes_sig", dt1Parameter, dt2Parameter, bolus_idParameter, wi_calbrParameter);
         }
     }
 }

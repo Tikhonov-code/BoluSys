@@ -17,10 +17,39 @@ namespace BoluSys.Farm
     public partial class ChartsXY : System.Web.UI.Page
     {
         public static string user_id { get; set; }
+        public int TotalCowsNumberInfo { get; set; }
+        public int CowsUnderMonitoring { get; set; }
+        public int CowsToCheck { get; set; }
+        public int CowsAtRisk { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             user_id = User.Identity.GetUserId();
+            GetTotalCountsForDashboard(user_id);
         }
+
+        private void GetTotalCountsForDashboard(string user_id)
+        {
+            TotalCowsNumberInfo = 0;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
+                TotalCowsNumberInfo = bolusIdList.Count();
+
+                DateTime dt_to = DateTime.Now;
+                DateTime dt_from = dt_to.AddHours(-12);
+
+                CowsUnderMonitoring = context.MeasDatas.Where(x => x.bolus_full_date >= dt_from && x.bolus_full_date <= dt_to && bolusIdList.Contains(x.bolus_id)).Select(
+                    x => new
+                    {
+                        bl = x.bolus_id
+                    }).Distinct().Count();
+                ;
+            }
+            CowsToCheck = 2;
+            CowsAtRisk = 3;
+        }
+
         [WebMethod]
         public static string GetDayBolusList(string DateSearch)//, int age)
         {
@@ -30,19 +59,23 @@ namespace BoluSys.Farm
             DateTime dtEnd = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
-                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
-                var b = context.MeasDatas.Where(a => a.bolus_full_date >= dtStart && a.bolus_full_date <= dtEnd).Select(x => new
-                {
-                    x.bolus_id,
-                    x.animal_id
-                //}).Distinct().ToList();
-                }).Distinct().Where(x => bolusIdList.Contains(x.bolus_id)).ToList();
+                var bolusIdList = (from bl in context.Bolus
+                                   join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
+                                   join mes in context.MeasDatas on bl.bolus_id equals mes.bolus_id
+                                   where fc.AspNetUser_ID == user_id
+                                   && mes.bolus_full_date >= dtStart && mes.bolus_full_date <= dtEnd
+                                   select new
+                                   {
+                                       bolus_id = bl.bolus_id,
+                                       animal_id = bl.animal_id
+                                   }
+                             ).Distinct().OrderBy(x => x.animal_id).ToList();
                 //-----------------------------------------------------
-                if (b.Count == 0)
+                if (bolusIdList.Count == 0)
                 {
                     return null;
                 }
-                var res_json = JsonConvert.SerializeObject(b);
+                var res_json = JsonConvert.SerializeObject(bolusIdList);
                 return res_json;
             }
         }

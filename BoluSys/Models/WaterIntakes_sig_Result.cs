@@ -10,18 +10,11 @@
 namespace BoluSys.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Bolu
+    public partial class WaterIntakes_sig_Result
     {
         public int id { get; set; }
-        public int bolus_id { get; set; }
-        public Nullable<int> animal_id { get; set; }
-        public string AnimalInfo { get; set; }
-        public Nullable<int> Age_Lactation { get; set; }
-        public string Current_Stage_Of_Lactation { get; set; }
-        public string Health_Concerns_Illness_History { get; set; }
-        public string Overall_Health { get; set; }
-        public string Comments { get; set; }
+        public Nullable<System.DateTime> bolus_full_date { get; set; }
+        public Nullable<double> intakes { get; set; }
     }
 }

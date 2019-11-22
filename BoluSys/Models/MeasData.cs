@@ -23,5 +23,6 @@ namespace BoluSys.Models
         public Nullable<System.DateTime> bolus_full_date { get; set; }
         public int base_station_id { get; set; }
         public bool is_average { get; set; }
+        public string raw { get; set; }
     }
 }

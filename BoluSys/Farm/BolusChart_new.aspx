@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BolusChart.aspx.cs" Inherits="BoluSys.Farm.BolusChart" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BolusChart_new.aspx.cs" Inherits="BoluSys.Farm.BolusChart_new" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <table>
@@ -23,15 +23,17 @@
             </td>
         </tr>
     </table>
-    <div style="display: none;">
+    <div style="display: inline;">
         DateSearch
     <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
-        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />  
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />
+        <input id="TotalWaterIntakes" type="text" value="<%# TotalWaterIntakes %>" />
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">
         <div id="chart"></div>
+        <div id="chart_intakes"></div>
     </div>
     <!---------------------------------------------------------------->
     <div class="jumbotron">
@@ -46,7 +48,7 @@
     <link href="../dx/css/dx.common.css" rel="stylesheet" />
     <script src="../dx/js/dx.all.js"></script>
     <script src="FarmJS/FarmGeneral.js"></script>
-    <script src="FarmJS/BolusChart.js"></script>
+    <script src="FarmJS/BolusChart_new.js"></script>
     <style>
         #chart {
             height: 440px;
@@ -57,3 +59,4 @@
         }
     </style>
 </asp:Content>
+

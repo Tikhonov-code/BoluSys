@@ -11,8 +11,9 @@ using System.Web.UI.WebControls;
 
 namespace BoluSys.Farm
 {
-    public partial class BolusChart : System.Web.UI.Page
+    public partial class BolusChart_new : System.Web.UI.Page
     {
+        public int TotalWaterIntakes { get; set; }
         public string CowInfo { get; set; }
         public int Bolus_id { get; set; }
         public int Bolus_id_Ini { get; set; }
@@ -40,23 +41,17 @@ namespace BoluSys.Farm
                 case "GetCowInfoSt":
                     GetCowInfoSt(Convert.ToUInt16(Request.QueryString["bolus_id"]));
                     break;
+                case "GetDataSource_intakes"://DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bidx
+                    GetDataSource_intakes(Request.QueryString["DateFrom"], Request.QueryString["DateTO"], Convert.ToUInt16(Request.QueryString["bolus_id"]));
+                    break;
                 default:
                     break;
             }
             //-------------------------------------------------------------------------------
             string DateFrom, DateTo;
-            //if (!string.IsNullOrEmpty(DateSearch))
-            //{
-            //    DateTime ddtt = DateTime.Parse(DateSearch);
-            //    DateFrom = (new DateTime(ddtt.Year, ddtt.Month, ddtt.Day, 0, 0, 0)).ToString();
-            //    DateTo = (new DateTime(ddtt.Year, ddtt.Month, ddtt.Day, 23, 59, 59)).ToString();
-            //}
-            //else
-            {
-                DateFrom = Request.QueryString["DateFrom"];
-                DateTo = Request.QueryString["DateTo"];
-            }
 
+            DateFrom = Request.QueryString["DateFrom"];
+            DateTo = Request.QueryString["DateTo"];
 
             Bolus_id = Convert.ToUInt16(Request.QueryString["Bolus_id"]);
             Animal_id = Request.QueryString["Animal_id"];
@@ -79,7 +74,7 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
-                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
+                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
                              "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
                              "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
                              "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
@@ -157,13 +152,13 @@ namespace BoluSys.Farm
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
-                    var result = context.MeasDatas.Where(x => x.bolus_id == Bolus_id &&
-                            (x.bolus_full_date >= dt_from && x.bolus_full_date <= dt_to)).Select(
-                        y => new
-                        {
-                            t = y.bolus_full_date.Value,
-                            Temperature = y.temperature
-                        }).OrderBy(y => y.t).ToList();
+                    var result0 = context.ChartsXY_sig(dt_from, dt_to, Bolus_id, 38.5, 39.5).ToList();
+                    var result = result0.Select(y => new
+                    {
+                        t = y.bolus_full_date.Value,
+                        Temperature = y.temperature
+                    });
+
                     //----------------------------------------------------
                     List<BolusIDChart> res = new List<BolusIDChart>();
                     foreach (var item in result)
@@ -179,7 +174,6 @@ namespace BoluSys.Farm
                     Response.ContentType = "application/json;charset=UTF-8";
                     Response.Write(res_json);
                     Response.End();
-                    // return res_json;
                 }
             }
             catch (Exception ex)
@@ -199,13 +193,13 @@ namespace BoluSys.Farm
                     var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
                     //----------------------------------------------------
                     var result = (from bl in context.Bolus
-                              join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
-                              where fc.AspNetUser_ID == user_id
-                              select new
-                              {
-                                  bolus_id = bl.bolus_id,
-                                  animal_id = bl.animal_id
-                              }
+                                  join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
+                                  where fc.AspNetUser_ID == user_id
+                                  select new
+                                  {
+                                      bolus_id = bl.bolus_id,
+                                      animal_id = bl.animal_id
+                                  }
                              ).Distinct().OrderBy(x => x.animal_id).ToArray();
                     //----------------------------------------------------
                     return result;
@@ -218,6 +212,37 @@ namespace BoluSys.Farm
             }
         }
 
-       
+        public void GetDataSource_intakes(string df, string dt, int Bolus_id)
+        {
+            if (!(string.IsNullOrEmpty(df) || string.IsNullOrEmpty(df) || string.IsNullOrEmpty(df)))
+            {
+
+                DateTime dt_from = DateTime.Parse(df);
+                DateTime dt_to = DateTime.Parse(dt);
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var result = context.WaterIntakes_sig(dt_from, dt_to, Bolus_id, 2).ToList();
+                    //-------TotalWaterIntakes-------------------------
+                    TotalWaterIntakes = GetTotalIntakes(result);
+                    Page.DataBind();
+                    //-------TotalWaterIntakes-------------------------
+                    var res_json = JsonConvert.SerializeObject(result);
+                    Response.Clear();
+                    Response.ContentType = "application/json;charset=UTF-8";
+                    Response.Write(res_json);
+                    Response.End();
+                }
+            }
+        }
+
+        private int GetTotalIntakes(List<WaterIntakes_sig_Result> result)
+        {
+            int sum = 0;
+            foreach (var item in result)
+            {
+                sum +=Convert.ToInt32( item.intakes);
+            }
+            return sum;
+        }
     }
 }
