@@ -20,7 +20,7 @@ namespace BoluSys.Farm
             string PARAMS = Request.QueryString["PARAMS"];
             switch (SP)
             {
-                case "GetDataFarmStat":
+                case "001":
                     GetDataFarmStat(SP, PARAMS);
                     break;
                 case "GetDS_bolusListJson":

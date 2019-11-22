@@ -79,11 +79,18 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
-                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
-                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
-                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
-                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
-                             "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td></tr>" +
+                    string dob = (bidini[0].Date_of_Birth == null)? "N/A": bidini[0].Date_of_Birth.Value.ToShortDateString();
+                    string cdd = (bidini[0].Calving_Due_Date == null) ? "N/A" : bidini[0].Calving_Due_Date.Value.ToShortDateString();
+                    string acd = (bidini[0].Actual_Calving_Date == null) ? "N/A" : bidini[0].Actual_Calving_Date.Value.ToShortDateString();
+
+                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation +
+                        "</td><td>&nbsp;&nbsp;</td><td>Date of Birth :</td><td>" + dob + "</td></tr>" +
+                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation +
+                                "</td><td>&nbsp;&nbsp;</td><td>Calving Due Date :</td><td>" + cdd + "</td></tr>" +
+                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History +
+                             "</td><td>&nbsp;&nbsp;</td><td>Actual Calving Date : </td><td>" + acd + "</td></tr>" +
+                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td><td></td></tr>" +
+                             "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td><td></td></tr>" +
                              "</table>"
                              ;
                     Animal_id_Ini = bidini[0].animal_id.ToString();
@@ -105,12 +112,20 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bolus_id).DefaultIfEmpty().ToList();
-                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
-                             "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
-                             "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
-                             "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
-                             "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td></tr>" +
-                             "</table>";
+                    string dob = (bidini[0].Date_of_Birth == null) ? "N/A" : bidini[0].Date_of_Birth.Value.ToShortDateString();
+                    string cdd = (bidini[0].Calving_Due_Date == null) ? "N/A" : bidini[0].Calving_Due_Date.Value.ToShortDateString();
+                    string acd = (bidini[0].Actual_Calving_Date == null) ? "N/A" : bidini[0].Actual_Calving_Date.Value.ToShortDateString();
+
+                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation +
+                         "</td><td>&nbsp;&nbsp;</td><td>Date of Birth :</td><td>" + dob + "</td></tr>" +
+                              "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation +
+                                 "</td><td>&nbsp;&nbsp;</td><td>Calving Due Date :</td><td>" + cdd + "</td></tr>" +
+                              "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History +
+                              "</td><td>&nbsp;&nbsp;</td><td>Actual Calving Date : </td><td>" + acd + "</td></tr>" +
+                              "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td><td></td></tr>" +
+                              "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td><td></td></tr>" +
+                              "</table>"
+                              ;
 
                 }
             }
