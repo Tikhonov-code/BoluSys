@@ -79,7 +79,7 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
-                    result = "<table><tr><td>Age Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
+                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation + "</td></tr>" +
                              "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation + "</td></tr>" +
                              "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History + "</td></tr>" +
                              "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td></tr>" +
@@ -218,15 +218,6 @@ namespace BoluSys.Farm
             }
         }
 
-        //[WebMethod]
-        //public void ShowChart(string DateSearch, string Animal_id, string Bolus_id)
-        //{
-        //    //1. Set dateboxes and selecBox
-        //    //2. create chart
-        //    ;
-        //    string DateFrom = "9/22/2019";
-        //    string DateTo = "9/22/2019 23:00:00";
-        //    GetDataForChart(DateFrom, DateTo, Convert.ToInt16(Bolus_id));
-        //}
+       
     }
 }

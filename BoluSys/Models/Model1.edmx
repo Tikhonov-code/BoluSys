@@ -40,6 +40,7 @@
           <Property Name="bolus_full_date" Type="datetime2" Precision="7" />
           <Property Name="base_station_id" Type="int" Nullable="false" />
           <Property Name="is_average" Type="bit" Nullable="false" />
+          <Property Name="raw" Type="varchar" MaxLength="64" />
         </EntityType>
         <EntityType Name="UserCabinet">
           <Key>
@@ -108,6 +109,7 @@
           <Property Name="bolus_full_date" Type="DateTime" Precision="7" />
           <Property Name="base_station_id" Type="Int32" Nullable="false" />
           <Property Name="is_average" Type="Boolean" Nullable="false" />
+          <Property Name="raw" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityContainer Name="DB_A4A060_csEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="MeasDatas" EntityType="Self.MeasData" />
@@ -224,6 +226,7 @@
           <EntitySetMapping Name="MeasDatas">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.MeasData">
               <MappingFragment StoreEntitySet="MeasData">
+                <ScalarProperty Name="raw" ColumnName="raw" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
                 <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BoluSys.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,9 @@ namespace BoluSys.Services
 {
     public partial class TTNrawConverter : System.Web.UI.Page
     {
+        public DateTime[] time_arr;
+        public double[] temp_arr;
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -21,9 +25,9 @@ namespace BoluSys.Services
             //2. check raw data
             var raw = txb_Raw.Text;
             //3. convert temperature
-            double[] temp_arr = GetTemperatureArr(raw);
+            temp_arr = GetTemperatureArr(raw);
             //4. convert time
-            DateTime[] time_arr = GetTimePointArr(tz);
+            time_arr = GetTimePointArr(tz);
             //5. print results
             for (int i = 0; i < time_arr.Length; i++)
             {
@@ -59,6 +63,36 @@ namespace BoluSys.Services
             var est = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
             var targetTime = TimeZoneInfo.ConvertTime(dtZ, est);
             return targetTime;
+        }
+
+        protected void btn_CheckRaw_Click(object sender, EventArgs e)
+        {
+
+        }
+        private bool IsdataExitsInDB(MeasData data)
+        {
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                //var searchdata = context.MeasDatas.Where(x => x.bolus_full_date == data.bolus_full_date
+                //&& x.bolus_id == data.bolus_id
+                //&& x.temperature == data.temperature).FirstOrDefault();
+                DateTime ddt = DateTime.Parse(data.bolus_full_date.ToString());
+                var searchdata = context.MeasDatas.Where(x =>
+                                    x.bolus_full_date.Value.Hour == data.bolus_full_date.Value.Hour
+                                    && x.bolus_full_date.Value.Minute == data.bolus_full_date.Value.Minute
+                                    && x.bolus_full_date.Value.Second == data.bolus_full_date.Value.Second
+                                    && x.bolus_id == data.bolus_id
+                                    && x.temperature == data.temperature).FirstOrDefault();
+
+                if (searchdata == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
     }
 }

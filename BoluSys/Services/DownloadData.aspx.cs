@@ -44,7 +44,8 @@ namespace BoluSys.Services
                             item.bolus_timestamp + "," +
                             item.bolus_full_date + "," +
                             item.base_station_id + "," +
-                            item.is_average;
+                            item.is_average + "," +
+                            item.raw;
                     sw.WriteLine(line);
                 }
             }

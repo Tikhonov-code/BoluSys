@@ -26,7 +26,9 @@
             <tr>
                 <td>
                     <asp:Button ID="btn_ConvertData" runat="server" Text="Convert  Data" OnClick="btn_ConvertData_Click" /></td>
-                <td></td>
+                <td>
+                    <asp:Button ID="btn_CheckRaw" runat="server" BackColor="#CC99FF" OnClick="btn_CheckRaw_Click" Text="Check Raw in Database" Width="263px" />
+                </td>
             </tr>
         </table>
         <br />Results:
