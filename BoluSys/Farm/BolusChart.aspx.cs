@@ -40,6 +40,9 @@ namespace BoluSys.Farm
                 case "GetCowInfoSt":
                     GetCowInfoSt(Convert.ToUInt16(Request.QueryString["bolus_id"]));
                     break;
+                case "GetCowsLogs_2":
+                    GetCowsLogs_2(Convert.ToUInt16(Request.QueryString["Animal_id"]));
+                    break;
                 default:
                     break;
             }
@@ -70,6 +73,26 @@ namespace BoluSys.Farm
             }
         }
         [WebMethod]
+        public static string GetCowsLogs_2(int aid)
+        {
+            //------------------------------------------------------------------------
+            string res_json;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+
+                var result = context.Cows_log.Where(x => x.animal_id == aid).Select(x => new
+                {
+                    raw = x.Event_Date.Value.ToString() + "  : " + x.Event + ". " + x.Description
+                }).ToList();
+                res_json = JsonConvert.SerializeObject(result);
+            }
+            return res_json;
+            //Response.Clear();
+            //Response.ContentType = "application/json;charset=UTF-8";
+            //Response.Write(res_json);
+            //Response.End();
+        }
+        [WebMethod]
         private string GetCowInfo(int bolus_id, int bolus_id_Ini)
         {
             string result = string.Empty;
@@ -79,7 +102,7 @@ namespace BoluSys.Farm
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     var bidini = context.Bolus.Where(x => x.bolus_id == bid).DefaultIfEmpty().ToList();
-                    string dob = (bidini[0].Date_of_Birth == null)? "N/A": bidini[0].Date_of_Birth.Value.ToShortDateString();
+                    string dob = (bidini[0].Date_of_Birth == null) ? "N/A" : bidini[0].Date_of_Birth.Value.ToShortDateString();
                     string cdd = (bidini[0].Calving_Due_Date == null) ? "N/A" : bidini[0].Calving_Due_Date.Value.ToShortDateString();
                     string acd = (bidini[0].Actual_Calving_Date == null) ? "N/A" : bidini[0].Actual_Calving_Date.Value.ToShortDateString();
 
@@ -214,13 +237,13 @@ namespace BoluSys.Farm
                     var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
                     //----------------------------------------------------
                     var result = (from bl in context.Bolus
-                              join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
-                              where fc.AspNetUser_ID == user_id
-                              select new
-                              {
-                                  bolus_id = bl.bolus_id,
-                                  animal_id = bl.animal_id
-                              }
+                                  join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
+                                  where fc.AspNetUser_ID == user_id
+                                  select new
+                                  {
+                                      bolus_id = bl.bolus_id,
+                                      animal_id = bl.animal_id
+                                  }
                              ).Distinct().OrderBy(x => x.animal_id).ToArray();
                     //----------------------------------------------------
                     return result;
@@ -232,7 +255,5 @@ namespace BoluSys.Farm
                 return null;
             }
         }
-
-       
     }
 }

@@ -22,6 +22,16 @@
           <Property Name="Calving_Due_Date" Type="datetime" />
           <Property Name="Actual_Calving_Date" Type="datetime" />
         </EntityType>
+        <EntityType Name="Cows_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="animal_id" Type="int" Nullable="false" />
+          <Property Name="Event" Type="nvarchar" MaxLength="200" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="Event_Date" Type="datetime" />
+        </EntityType>
         <EntityType Name="FarmCows">
           <Key>
             <PropertyRef Name="id" />
@@ -91,6 +101,7 @@
         </Function>
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
           <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cows_log" EntityType="Self.Cows_log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCabinet" EntityType="Self.UserCabinet" Schema="dbo" store:Type="Tables" />
@@ -149,6 +160,7 @@
             <Parameter Name="bolus_id" Mode="In" Type="Int32" />
             <Parameter Name="wi_calbr" Mode="In" Type="Double" />
           </FunctionImport>
+          <EntitySet Name="Cows_log" EntityType="DB_A4A060_csModel.Cows_log" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -223,6 +235,16 @@
           <Property Type="DateTime" Name="bolus_full_date" Nullable="true" />
           <Property Type="Double" Name="intakes" Nullable="true" />
         </ComplexType>
+        <EntityType Name="Cows_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="animal_id" Type="Int32" Nullable="false" />
+          <Property Name="Event" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Event_Date" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -338,6 +360,17 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Cows_log">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.Cows_log">
+              <MappingFragment StoreEntitySet="Cows_log">
+                <ScalarProperty Name="Event_Date" ColumnName="Event_Date" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Event" ColumnName="Event" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

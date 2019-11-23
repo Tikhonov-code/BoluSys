@@ -31,6 +31,7 @@ namespace BoluSys.Models
         public virtual DbSet<FarmCow> FarmCows { get; set; }
         public virtual DbSet<UserCabinet> UserCabinets { get; set; }
         public virtual DbSet<Bolu> Bolus { get; set; }
+        public virtual DbSet<Cows_log> Cows_log { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {

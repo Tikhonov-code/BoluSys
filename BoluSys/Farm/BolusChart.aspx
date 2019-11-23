@@ -27,7 +27,7 @@
         DateSearch
     <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
-        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />  
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">
@@ -38,6 +38,8 @@
         Cow #:<input id="Animal_id" type="text" value="<%# Animal_id %>" style="border: hidden;" aria-disabled="True" disabled="disabled" />
         Bolus:<input id="Bolus_id" type="text" value="<%# Bolus_id %>" style="border: hidden;" disabled="disabled" /><br />
         <div id="CowInfo"><%# CowInfo %></div>
+
+        <%--<div id="CowsLogList" style="border-style: solid; border-color: #999999;"></div>--%>
     </div>
     <!---------------------------------------------------------------->
 
@@ -51,9 +53,29 @@
         #chart {
             height: 440px;
         }
+
         .auto-style1 {
             width: 840px;
             height: 222px;
         }
+/*   Logs list css       */
+        .selected-data,
+        .options {
+            margin-top: 20px;
+            padding: 20px;
+            background: #0000cc;
+        }
+            .options .caption {
+                font-size: 18px;
+                font-weight: 500;
+            }
+
+        .option {
+            margin-top: 10px;
+        }
+
+            .option > span {
+                margin-right: 10px;
+            }
     </style>
 </asp:Content>

@@ -166,7 +166,6 @@ $(document).ready(function () {
     $("#Bolus_id").val(bidc);
     $("#Animal_id").val(aid0);
     GetCowInfo(bid0);
-
     return;
 });
 
@@ -222,3 +221,35 @@ function Success_GetCowInfo(result) {
     var xx = result.d;
     $("#CowInfo").html(xx);;
 }
+
+//// Logs list Section---------Begin-------------------------------
+//$(function () {
+//    var listWidget = $("#CowsLogList").dxList({
+//        dataSource: cowsList,
+//        height: 300,
+//        allowItemDeleting: false,
+//        itemDeleteMode: "toggle",
+//    }).dxList("instance");
+//});
+//// Logs list Section----------End---------------------------
+//var cowsList = GetCowsLogs_2(831);
+////    new DevExpress.data.CustomStore({
+////    loadMode: "raw",
+////    cacheRawData: true,
+////    //key: "id",
+////    load: function (loadOptions) {
+////        return $.getJSON('BolusChart.aspx?SP=GetCowsLogs_2&animal_id=' + $("Animal_id").val());
+////    }
+////});
+//function GetCowsLogs_2(aid_par) {
+//    //-------------------------------------------
+//    var url = 'BolusChart.aspx?SP=GetCowsLogs_2&Animal_id=' + aid_par;
+//    var Param = {};
+//    Param.SP = "GetCowInfoSt";
+//    Param.Animal_id = aid_par;
+//    myAjaxRequestJson(url, Param, Success_GetCowsLogs_2);
+//    //----------------------------------------------------
+//}
+//function Success_GetCowsLogs_2(result) {
+//    return result.d;
+//}
