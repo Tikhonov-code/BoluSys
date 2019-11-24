@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
@@ -43,15 +44,15 @@ namespace BoluSys.Services
             int id_Update = Convert.ToInt32(Request.QueryString["id"]);
             string Evnt = Request.Form["Event"];
             string Descr = Request.Form["Description"];
-            string Evnt_Date =Request.Form["Event_Date"];
+            string Evnt_Date = Request.Form["Event_Date"];
 
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
-                var cl = context.Cows_log.SingleOrDefault(x=>x.id==id_Update);
+                var cl = context.Cows_log.SingleOrDefault(x => x.id == id_Update);
 
                 if (!string.IsNullOrEmpty(Evnt)) cl.Event = Evnt;
                 if (!string.IsNullOrEmpty(Descr)) cl.Description = Descr;
-                if (!string.IsNullOrEmpty(Evnt_Date)) cl.Event_Date = DateTime.Parse( Evnt_Date);
+                if (!string.IsNullOrEmpty(Evnt_Date)) cl.Event_Date = DateTime.Parse(Evnt_Date);
 
                 context.SaveChanges();
 
@@ -105,7 +106,21 @@ namespace BoluSys.Services
             int aid = Convert.ToInt32(Request.Form["animal_id"]);
             string Evnt = Request.Form["Event"];
             string Descr = Request.Form["Description"];
-            DateTime Evnt_Date = DateTime.Parse(Request.Form["Event_Date"]);
+
+            DateTime Evnt_Date = new DateTime();
+            string dt = Request.Form["Event_Date"];
+
+            //dt = "Sun Nov 24 2019 00:00:00 GMT + 0200(Eastern European Standard Time)";
+
+            bool dtct = DateTime.TryParse(dt, out Evnt_Date);
+            if (!dtct)
+            {
+                string date = dt.Substring(4, 11);
+                string s = DateTime.ParseExact(date, "MMM dd yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                Evnt_Date = (DateTime.TryParse(s, out Evnt_Date)) ? Evnt_Date :  DateTime.Now ;
+            }
+
+
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
                 Cows_log cl = new Cows_log();

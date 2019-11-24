@@ -231,9 +231,7 @@
     <Content Include="Farm\FarmJS\ChartsXY.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
     <Content Include="Farm\FarmJS\FarmGeneral.js" />
-    <Content Include="Farm\FarmJS\ht.js" />
     <Content Include="Farm\FarmJS\UserCabinet.js" />
-    <Content Include="Farm\ht.aspx" />
     <Content Include="Farm\imgs\DayReportChart.jpg" />
     <Content Include="Farm\imgs\DayReportFull.jpg" />
     <Content Include="Farm\imgs\DayReportStat.jpg" />
@@ -470,13 +468,6 @@
     </Compile>
     <Compile Include="Farm\ChartsXY.aspx.designer.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Farm\ht.aspx.cs">
-      <DependentUpon>ht.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Farm\ht.aspx.designer.cs">
-      <DependentUpon>ht.aspx</DependentUpon>
     </Compile>
     <Compile Include="Farm\json_data.aspx.cs">
       <DependentUpon>json_data.aspx</DependentUpon>
