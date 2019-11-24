@@ -1,0 +1,23 @@
+﻿#grid {
+    height: 500px;
+}
+
+
+
+.caption {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.option {
+    margin-top: 10px;
+}
+
+    .option > span {
+        margin-right: 10px;
+    }
+
+    .option > .dx-widget {
+        display: inline-block;
+        vertical-align: middle;
+    }
