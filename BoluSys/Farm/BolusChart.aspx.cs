@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -40,8 +41,8 @@ namespace BoluSys.Farm
                 case "GetCowInfoSt":
                     GetCowInfoSt(Convert.ToUInt16(Request.QueryString["bolus_id"]));
                     break;
-                case "GetCowsLogs_2":
-                    GetCowsLogs_2(Convert.ToUInt16(Request.QueryString["Animal_id"]));
+                case "GetCowsLogs":
+                    GetCowsLogs(Convert.ToUInt16(Request.QueryString["Animal_id"]));
                     break;
                 default:
                     break;
@@ -73,10 +74,12 @@ namespace BoluSys.Farm
             }
         }
         [WebMethod]
-        public static string GetCowsLogs_2(int aid)
+        public void GetCowsLogs(int aid)
         {
             //------------------------------------------------------------------------
             string res_json;
+            ArrayList ds = new ArrayList();
+
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
 
@@ -84,13 +87,19 @@ namespace BoluSys.Farm
                 {
                     raw = x.Event_Date.Value.ToString() + "  : " + x.Event + ". " + x.Description
                 }).ToList();
-                res_json = JsonConvert.SerializeObject(result);
+                //---------------------------------------
+                foreach (var item in result)
+                {
+                    ds.Add(item.raw);
+                }
+                //---------------------------------------
+                res_json = JsonConvert.SerializeObject(ds);
             }
-            return res_json;
-            //Response.Clear();
-            //Response.ContentType = "application/json;charset=UTF-8";
-            //Response.Write(res_json);
-            //Response.End();
+            //return res_json;
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
         [WebMethod]
         private string GetCowInfo(int bolus_id, int bolus_id_Ini)

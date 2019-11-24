@@ -39,7 +39,7 @@
         Bolus:<input id="Bolus_id" type="text" value="<%# Bolus_id %>" style="border: hidden;" disabled="disabled" /><br />
         <div id="CowInfo"><%# CowInfo %></div>
 
-        <%--<div id="CowsLogList" style="border-style: solid; border-color: #999999;"></div>--%>
+        <div id="CowsLogList" style="border-style: solid; border-color: #999999;"></div>
     </div>
     <!---------------------------------------------------------------->
 

@@ -162,10 +162,11 @@ $(document).ready(function () {
     //$("#Animal_id").val($("#Animal_id_Ini").val());
 
     ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bidc);
-    $("#BolusIDList").dxSelectBox("instance").option("value", bidc);
+    //$("#BolusIDList").dxSelectBox("instance").option("value", bidc);
     $("#Bolus_id").val(bidc);
     $("#Animal_id").val(aid0);
-    GetCowInfo(bid0);
+    GetCowInfo(bidc);
+    GetCowsLogs(aid0);
     return;
 });
 
@@ -204,6 +205,7 @@ $(function () {
             ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
 
             GetCowInfo(bid);
+            GetCowsLogs(aid_c[0].animal_id);
         }
     });
 });
@@ -222,34 +224,45 @@ function Success_GetCowInfo(result) {
     $("#CowInfo").html(xx);;
 }
 
-//// Logs list Section---------Begin-------------------------------
-//$(function () {
-//    var listWidget = $("#CowsLogList").dxList({
-//        dataSource: cowsList,
-//        height: 300,
-//        allowItemDeleting: false,
-//        itemDeleteMode: "toggle",
-//    }).dxList("instance");
-//});
+//===============================================================
+// Logs list Section---------Begin-------------------------------
+function ShowLogList(cl) {
+    var listWidget = $("#CowsLogList").dxList({
+        dataSource: cl,
+        height: 200,
+        allowItemDeleting: false,
+        itemDeleteMode: "toggle",
+    }).dxList("instance");
+};
+
+function GetCowsLogs(aid_par) {
+    //-------------------------------------------
+    var url = 'BolusChart.aspx?SP=GetCowsLogs&Animal_id=' + aid_par;
+    var Param = {};
+    Param.SP = "GetCowsLogs";
+    Param.Animal_id = aid_par;
+    myAjaxRequestJsonE(url, Param, Success_GetCowsLogs, Error_GetCowsLogs);
+    //----------------------------------------------------
+}
+function Success_GetCowsLogs(result) {
+    ShowLogList(result);
+    return;
+}
+function Error_GetCowsLogs(xhr, status, error) {
+    return false;
+}
+function myAjaxRequestJsonE(URL, Param, Success_function_name, Error_function_name) {
+    //var obj = {};
+    //obj.DateSearch = Param;
+    $.ajax({
+        type: "POST",
+        url: URL,
+        data: JSON.stringify(Param),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: Success_function_name,
+        error: Error_function_name
+    });
+    return false;
+}
 //// Logs list Section----------End---------------------------
-//var cowsList = GetCowsLogs_2(831);
-////    new DevExpress.data.CustomStore({
-////    loadMode: "raw",
-////    cacheRawData: true,
-////    //key: "id",
-////    load: function (loadOptions) {
-////        return $.getJSON('BolusChart.aspx?SP=GetCowsLogs_2&animal_id=' + $("Animal_id").val());
-////    }
-////});
-//function GetCowsLogs_2(aid_par) {
-//    //-------------------------------------------
-//    var url = 'BolusChart.aspx?SP=GetCowsLogs_2&Animal_id=' + aid_par;
-//    var Param = {};
-//    Param.SP = "GetCowInfoSt";
-//    Param.Animal_id = aid_par;
-//    myAjaxRequestJson(url, Param, Success_GetCowsLogs_2);
-//    //----------------------------------------------------
-//}
-//function Success_GetCowsLogs_2(result) {
-//    return result.d;
-//}
