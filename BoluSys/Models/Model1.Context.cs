@@ -137,5 +137,26 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<WaterIntakes_sig_Result>("WaterIntakes_sig", dt1Parameter, dt2Parameter, bolus_idParameter, wi_calbrParameter);
         }
+    
+        public virtual ObjectResult<ChartsXY_temp_Result> ChartsXY_temp(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> interval)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("Interval", interval) :
+                new ObjectParameter("Interval", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ChartsXY_temp_Result>("ChartsXY_temp", dt1Parameter, dt2Parameter, bolus_idParameter, intervalParameter);
+        }
     }
 }

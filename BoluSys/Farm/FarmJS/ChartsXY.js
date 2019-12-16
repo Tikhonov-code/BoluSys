@@ -134,11 +134,6 @@ function BolusList(result) {
         var i;
         var dayPar = '&DateSearch=' + $("#DateSearch").val() +'&SP=ShowChart';
         for (i = 0; i < resultJson.length; i++) {
-            //newInnerText += "<button id='" + resultJson[i].bolus_id
-            //    + "' type='button' class='btn btn - light' onclick='ShowChartByDateBolus_ID("
-            //    + resultJson[i].bolus_id + "," + resultJson[i].animal_id + ");'>"
-            //    + resultJson[i].animal_id
-            //    + "</button>";
             var urlch = 'BolusChart.aspx?Animal_id=';
             urlch += + resultJson[i].animal_id + "&Bolus_id="+ resultJson[i].bolus_id +dayPar;
             newInnerText += "<div class='w3-container'><a href=" + urlch + " class='w3-btn w3-border w3-hover-light-grey'>" + resultJson[i].animal_id + "</a></div>";

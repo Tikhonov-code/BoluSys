@@ -23,40 +23,69 @@
             </td>
         </tr>
     </table>
-    <div style="display: inline;">
+    <div style="display:none;">
         DateSearch
-    <input id="DateSearch" type="text" value="<%# DateSearch %>" />
+        <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
-        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />
-        <input id="TotalWaterIntakes" type="text" value="<%# TotalWaterIntakes %>" />
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />        
+        Total Water Intakes:<input id="TotalIntakes" style="width: 60px;" type="text" value="<%# TotalIntakes %>" />, Litres
+
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">
         <div id="chart"></div>
-        <div id="chart_intakes"></div>
+    </div>
+    <div class="demo-container">
+        <div id="chart_temp"></div>
+    </div>
+    <div class="demo-container">
+        <div id="IntakesChart"></div>
     </div>
     <!---------------------------------------------------------------->
     <div class="jumbotron">
         Cow #:<input id="Animal_id" type="text" value="<%# Animal_id %>" style="border: hidden;" aria-disabled="True" disabled="disabled" />
         Bolus:<input id="Bolus_id" type="text" value="<%# Bolus_id %>" style="border: hidden;" disabled="disabled" /><br />
         <div id="CowInfo"><%# CowInfo %></div>
+
+        <div id="CowsLogList" style="border-style: solid; border-color: #999999;"></div>
     </div>
     <!---------------------------------------------------------------->
 
     <!--Script Section-->
-    <link href="../dx/css/dx.light.css" rel="stylesheet" />
-    <link href="../dx/css/dx.common.css" rel="stylesheet" />
-    <script src="../dx/js/dx.all.js"></script>
+    <link href="../../dx/css/dx.light.css" rel="stylesheet" />
+    <link href="../../dx/css/dx.common.css" rel="stylesheet" />
+    <script src="../../dx/js/dx.all.js"></script>
     <script src="FarmJS/FarmGeneral.js"></script>
     <script src="FarmJS/BolusChart_new.js"></script>
     <style>
         #chart {
             height: 440px;
         }
+
         .auto-style1 {
             width: 840px;
             height: 222px;
         }
+        /*   Logs list css       */
+        .selected-data,
+        .options {
+            margin-top: 20px;
+            padding: 20px;
+            background: #0000cc;
+        }
+
+            .options .caption {
+                font-size: 18px;
+                font-weight: 500;
+            }
+
+        .option {
+            margin-top: 10px;
+        }
+
+            .option > span {
+                margin-right: 10px;
+            }
     </style>
 </asp:Content>
 

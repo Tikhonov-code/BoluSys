@@ -88,6 +88,17 @@
           <Parameter Name="tmin" Type="float" Mode="In" />
           <Parameter Name="tmax" Type="float" Mode="In" />
         </Function>
+        <Function Name="ChartsXY_temp" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="Interval" Type="float" Mode="In" />
+        </Function>
+        <Function Name="FCN_CalcMedianTemp_D12" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="float">
+          <Parameter Name="dt1" Type="datetime" Mode="In" />
+          <Parameter Name="dt2" Type="datetime" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+        </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
           <Parameter Name="temp_limit" Type="float" Mode="In" />
@@ -161,6 +172,12 @@
             <Parameter Name="wi_calbr" Mode="In" Type="Double" />
           </FunctionImport>
           <EntitySet Name="Cows_log" EntityType="DB_A4A060_csModel.Cows_log" />
+          <FunctionImport Name="ChartsXY_temp" ReturnType="Collection(DB_A4A060_csModel.ChartsXY_temp_Result)">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+            <Parameter Name="Interval" Mode="In" Type="Double" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -245,6 +262,10 @@
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Event_Date" Type="DateTime" Precision="3" />
         </EntityType>
+        <ComplexType Name="ChartsXY_temp_Result">
+          <Property Type="String" Name="t" Nullable="true" MaxLength="21" />
+          <Property Type="Double" Name="Temperature" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -371,6 +392,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ChartsXY_temp" FunctionName="DB_A4A060_csModel.Store.ChartsXY_temp">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.ChartsXY_temp_Result">
+                <ScalarProperty Name="t" ColumnName="t" />
+                <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
