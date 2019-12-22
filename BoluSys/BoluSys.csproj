@@ -223,11 +223,12 @@
     <Content Include="dx\css\dx.common.css" />
     <Content Include="dx\css\dx.light.css" />
     <Content Include="dx\js\dx.all.js" />
+    <Content Include="Farm\BolusChart_old.aspx" />
     <Content Include="Farm\BolusChart.aspx" />
-    <Content Include="Farm\BolusChart_new.aspx" />
     <Content Include="Farm\ChartsXY.aspx" />
+    <Content Include="Farm\Dashboard.aspx" />
+    <Content Include="Farm\FarmJS\BolusChart_old.js" />
     <Content Include="Farm\FarmJS\BolusChart.js" />
-    <Content Include="Farm\FarmJS\BolusChart_new.js" />
     <Content Include="Farm\FarmJS\ChartsXY.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
     <Content Include="Farm\FarmJS\FarmGeneral.js" />
@@ -448,6 +449,13 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Farm\BolusChart_old.aspx.cs">
+      <DependentUpon>BolusChart_old.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\BolusChart_old.aspx.designer.cs">
+      <DependentUpon>BolusChart_old.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Farm\BolusChart.aspx.cs">
       <DependentUpon>BolusChart.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -455,19 +463,19 @@
     <Compile Include="Farm\BolusChart.aspx.designer.cs">
       <DependentUpon>BolusChart.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Farm\BolusChart_new.aspx.cs">
-      <DependentUpon>BolusChart_new.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Farm\BolusChart_new.aspx.designer.cs">
-      <DependentUpon>BolusChart_new.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Farm\ChartsXY.aspx.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Farm\ChartsXY.aspx.designer.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Farm\Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Farm\json_data.aspx.cs">
       <DependentUpon>json_data.aspx</DependentUpon>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BolusChart.aspx.cs" Inherits="BoluSys.Farm.BolusChart" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BolusChart.aspx.cs" Inherits="BoluSys.Farm.BolusChart_new" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <table>
@@ -23,15 +23,23 @@
             </td>
         </tr>
     </table>
-    <div style="display: none;">
+    <div style="display:none;">
         DateSearch
-    <input id="DateSearch" type="text" value="<%# DateSearch %>" />
+        <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
-        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />        
+        Total Water Intakes:<input id="TotalIntakes" style="width: 60px;" type="text" value="<%# TotalIntakes %>" />, Litres
+
     </div>
     <!---------------------------------------------------------------->
     <div class="demo-container">
         <div id="chart"></div>
+    </div>
+    <div class="demo-container">
+        <div id="chart_temp"></div>
+    </div>
+    <div class="demo-container">
+        <div id="IntakesChart"></div>
     </div>
     <!---------------------------------------------------------------->
     <div class="jumbotron">
@@ -44,9 +52,9 @@
     <!---------------------------------------------------------------->
 
     <!--Script Section-->
-    <link href="../dx/css/dx.light.css" rel="stylesheet" />
-    <link href="../dx/css/dx.common.css" rel="stylesheet" />
-    <script src="../dx/js/dx.all.js"></script>
+    <link href="../../dx/css/dx.light.css" rel="stylesheet" />
+    <link href="../../dx/css/dx.common.css" rel="stylesheet" />
+    <script src="../../dx/js/dx.all.js"></script>
     <script src="FarmJS/FarmGeneral.js"></script>
     <script src="FarmJS/BolusChart.js"></script>
     <style>
@@ -58,13 +66,14 @@
             width: 840px;
             height: 222px;
         }
-/*   Logs list css       */
+        /*   Logs list css       */
         .selected-data,
         .options {
             margin-top: 20px;
             padding: 20px;
             background: #0000cc;
         }
+
             .options .caption {
                 font-size: 18px;
                 font-weight: 500;
@@ -79,3 +88,4 @@
             }
     </style>
 </asp:Content>
+

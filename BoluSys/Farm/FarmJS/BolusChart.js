@@ -1,47 +1,109 @@
-﻿$(function () {
-    var now = new Date();
+﻿
+//-----------------------------------------------------------
+var AnimalIDlist = [];
+var BolusIDlist = [];
+
+
+//------Page Load Section--------------------------------------------------------------------------
+
+$(document).ready(function () {
+    var d = $("#DateSearch").val();
+    //Request data for initial chart
+    var bidc = $("#Bolus_id").val();
+    if (bidc != 0 && d != null) {
+        // Gate 1 --------datesearch= today-------------------
+        dateFrom_Show(d + ' 12:00 AM');
+        dateTo_Show(d + '  11:59 PM');
+        ChartCreate("#chart", d + ' 12:00 AM', d + ' 11:59 PM', bidc, "full");
+        ChartCreate("#chart_temp", d + ' 12:00 AM', d + ' 11:59 PM', bidc, "temp");
+
+        //GetIntakesData(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
+        IntakesChart_Show0(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
+        GetTotalIntakes(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
+        GetAverTemperature(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
+
+        GetCowInfo(bidc);
+        GetCowsLogs($("#Animal_id").val());
+
+        if (BolusIDlist.length == 0) {
+            var url = 'BolusChart.aspx/GetBolusIDList?SP=GetBolusIDList';
+            var Param = {};
+            Param.SP = "GetBolusIDList";
+            myAjaxRequestJson(url, Param, Success_BolusIDList);
+        }
+        else {
+            //$("#BolusIDList").dxSelectBox("instance").option("value", bidc);
+            BolusIDList_Show(ds, bidc);
+        }
+
+        return;
+    }
+});
+
+function Success_BolusIDList(result) {
+    //var AnimalIDlist = [];
+    for (var item in result.d) {
+        AnimalIDlist.push(result.d[item].animal_id);
+        BolusIDlist.push(result.d[item]);
+    }
+    var bid = $("#Bolus_id").val();
+    if (bid == undefined) {
+        bid = BolusIDlist[0].bolus_id;
+    }
+    BolusIDList_Show(BolusIDlist, Number(bid));
+    return;
+}
+
+
+function dateFrom_Show(dtpar) {
 
     $("#dateFrom").dxDateBox({
         type: "datetime",
-        value: now,
+        value: dtpar,
         width: 200,
         onValueChanged: function (e) {
             var previousValue = e.previousValue;
-            var newValue = e.value;
-            // Event handling commands go here
-            //alert(newValue);
+            var newValue = new Date(e.value);
             var dateBox = $("#dateTo").dxDateBox("instance");
-            var dt = dateBox.option('value');
-            ChartCreate(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
+            var dt = new Date(dateBox.option('value'));
+
+            ChartCreate("#chart", ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val(), "full");
+            ChartCreate("#chart_temp", ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val(), "temp");
+            IntakesChart_Show0(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
+            GetTotalIntakes(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
+            GetAverTemperature(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
         }
     });
-});
-$(function () {
-    var now = new Date();
+};
+function dateTo_Show(dtpar) {
 
     $("#dateTo").dxDateBox({
         type: "datetime",
-        value: now,
+        value: dtpar,
         width: 200,
         onValueChanged: function (e) {
             var previousValue = e.previousValue;
-            var newValue = e.value;
-            // Event handling commands go here
-            //alert(newValue);
-            var dateBox = $("#dateFrom").dxDateBox("instance");
-            var df = dateBox.option('value');
-            ChartCreate(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            var newValue = new Date(e.value);
+            //var dateBox = $("#dateFrom").dxDateBox("instance");
+            var df = new Date($("#dateFrom").dxDateBox("instance").option('value'));
+            ChartCreate("#chart", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "full");
+            ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
+
+            IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
         }
     });
-});
-function ChartCreate(df, dt, bid) {
+};
+
+function ChartCreate(chartSelector,df, dt, bid,chart_type) {
     if (df == "" || dt == "") {
         return;
     }
     //------------------------------------------------------------------------------------
-    var ds = "BolusChart.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart";
-    //var ds = "BolusChart.aspx/GetDataForChart?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid;
-    $("#chart").dxChart({
+    var ds = "BolusChart.aspx?DateFrom=" + df + "&DateTO=" + dt + "&Bolus_id=" + bid + "&SP=GetDataForChart&chart_type=" + chart_type;
+    $(chartSelector).dxChart({
+   //$("#chart").dxChart({
         dataSource: ds,
         series: {
             color: "#79cac4",
@@ -71,6 +133,11 @@ function ChartCreate(df, dt, bid) {
         },
         valueAxis: {
             valueType: "numeric",
+            valueMarginsEnabled: true,
+            visualRange: {
+                startValue: 35,
+                endValue: 41
+            },
             grid: {
                 opacity: 0.2
             },
@@ -88,7 +155,18 @@ function ChartCreate(df, dt, bid) {
                     dashStyle: "dash",
                     width: 2,
                     label: { visible: false }
-                }]
+                },
+                {
+                    value: 37,
+                    color: "#40ff00",
+                    dashStyle: "LongDash",
+                    width: 2,
+                    label: { visible: true,
+                        text: "Average Temperature",
+                        color: "red"
+                    }
+                }
+            ]
         },
         argumentAxis: {
             type: "date",
@@ -120,96 +198,6 @@ function ChartCreate(df, dt, bid) {
     });
 }
 
-//-----------------------------------------------------------
-var AnimalIDlist = [];
-var BolusIDlist = [];
-
-
-//------Page Load Section--------------------------------------------------------------------------
-
-$(document).ready(function () {
-    var d = $("#DateSearch").val();
-    //Request data for initial chart
-    var bidc = $("#Bolus_id").val();
-    if (bidc != 0 && d != null) {
-        ChartCreate(d + ' 12:00 AM', d + '  11:59 PM', bidc);
-    }
-
-
-    //Set dates in dateboxes
-    var d_from = new Date(d + ' 12:00 AM');
-    var d_to = new Date(d + '  11:59 PM')
-    $("#dateFrom").dxDateBox("instance").option("value", d_from);
-    $("#dateTo").dxDateBox("instance").option("value", d_to);
-
-    //-------------------------------------------
-    var url = 'BolusChart.aspx/GetBolusIDList?SP=GetBolusIDList';
-    var Param = {};
-    Param.SP = "GetBolusIDList";
-    myAjaxRequestJson(url, Param, Success_BolusIDList);
-
-    //----------------------------------------------------
-    var aid0 = $("#Animal_id").val();
-
-    bidc = (bidc != 0) ? bidc : $("#Bolus_id_Ini").val();
-    aid0 = (aid0 != 0) ? aid0 : $("#Animal_id_Ini").val();
-    //choose bid and aid!!!!
-    var dto = $("#dateTo").dxDateBox("instance").option('value');
-    var dfr = $("#dateFrom").dxDateBox("instance").option('value');
-
-    //ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), $("#Bolus_id_Ini").val());
-    //$("#Bolus_id").val($("#Bolus_id_Ini").val());
-    //$("#Animal_id").val($("#Animal_id_Ini").val());
-
-    ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bidc);
-    //$("#BolusIDList").dxSelectBox("instance").option("value", bidc);
-    $("#Bolus_id").val(bidc);
-    $("#Animal_id").val(aid0);
-    GetCowInfo(bidc);
-    GetCowsLogs(aid0);
-    return;
-});
-
-function Success_BolusIDList(result) {
-    //var AnimalIDlist = [];
-    for (var item in result.d) {
-        AnimalIDlist.push(result.d[item].animal_id);
-        BolusIDlist.push(result.d[item]);
-    }
-    return;
-}
-$(function () {
-    $("#BolusIDList").dxSelectBox({
-        //items: AnimalIDlist,
-        placeholder: "Choose Animal_id",
-        showClearButton: true,
-        //value: "0",//AnimalIDlist[aid],
-        //------------------------------------------------------
-        dataSource: BolusIDlist,
-        displayExpr: "animal_id",
-        valueExpr: "bolus_id",
-        value: 12,//BolusIDlist[0].bolus_id,    //*********************Debug************************
-        //------------------------------------------------------
-
-        onValueChanged: function (e) {
-            var bid = e.value;
-            $("#Bolus_id").val(bid);
-            //----------------------------------------------------------
-            //var bl_c = BolusIDlist.filter(a => a.animal_id == e.value);
-            var aid_c = BolusIDlist.filter(a => a.bolus_id == bid);
-
-            $("#Animal_id").val(aid_c[0].animal_id);
-
-            var dto = $("#dateTo").dxDateBox("instance").option('value');
-            var dfr = $("#dateFrom").dxDateBox("instance").option('value');
-            ChartCreate(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
-
-            GetCowInfo(bid);
-            GetCowsLogs(aid_c[0].animal_id);
-        }
-    });
-});
-
 function GetCowInfo(bidpar) {
     //-------------------------------------------
     var url = 'BolusChart.aspx/GetCowInfoSt?SP=GetCowInfoSt';
@@ -223,6 +211,43 @@ function Success_GetCowInfo(result) {
     var xx = result.d;
     $("#CowInfo").html(xx);;
 }
+
+//===============================================================
+// BolusIDList Section---------Begin-------------------------------
+function BolusIDList_Show(ds, vl) {
+    $("#BolusIDList").dxSelectBox({
+        //items: AnimalIDlist,
+        placeholder: "Choose Animal_id",
+        showClearButton: true,
+        dataSource: ds,
+        displayExpr: "animal_id",
+        valueExpr: "bolus_id",
+        value: vl,//ds[0].bolus_id,   
+        //------------------------------------------------------
+
+        onValueChanged: function (e) {
+            var bid = e.value;
+            $("#Bolus_id").val(bid);
+
+            var aid_c = ds.filter(a => a.bolus_id == bid);
+            $("#Animal_id").val(aid_c[0].animal_id);
+            var dto = new Date($("#dateTo").dxDateBox("instance").option('value'));
+            var dfr = new Date($("#dateFrom").dxDateBox("instance").option('value'));
+
+            ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
+            ChartCreate("#chart_temp", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "temp");
+
+            IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            GetTotalIntakes(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            GetAverTemperature(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid); 
+
+            GetCowInfo(bid);
+            GetCowsLogs(aid_c[0].animal_id);
+
+        }
+    });
+}
+// BolusIDList Section---------End-------------------------------
 
 //===============================================================
 // Logs list Section---------Begin-------------------------------
@@ -266,3 +291,86 @@ function myAjaxRequestJsonE(URL, Param, Success_function_name, Error_function_na
     return false;
 }
 //// Logs list Section----------End---------------------------
+
+//Intakes chart Section---------------Begin--------------------
+function IntakesChart_Show0(df, dt, bid) {
+    //BolusChart_new.aspx/GetIntakesData?DateFrom=2019/11/25&DateTo=2019/11/26&Bolus_id=107&SP=GetIntakesData"
+    var WaterVol = GetTotalIntakes(df, dt, bid);
+    var ds = "BolusChart.aspx/GetIntakesData?DateFrom=" + df + "&DateTo=" + dt + "&Bolus_id=" + bid + "&SP=GetIntakesData";
+    $("#IntakesChart").dxChart({
+        dataSource: ds,
+        legend: {
+            visible: false
+        },
+        series: {
+            type: "bar"
+        },
+        commonSeriesSettings: {
+            barPadding: 0.1,
+            argumentField: "arg",
+            type: "bar"
+        },
+        argumentAxis: {
+            tickInterval: 10,
+            label: {
+                format: {
+                    type: "decimal"
+                }
+            }
+        },
+        title: "Intakes " + WaterVol+ ", Litres",
+        tooltip: {
+            enabled: true,
+            customizeTooltip: function (arg) {
+                return {
+                    text: arg.valueText + ", Litres" + "<br />" + arg.argumentText
+                };
+            }
+        }
+    });
+}
+function GetTotalIntakes(dt1, dt2, bid) {
+
+    //-------------------------------------------
+    var url = "BolusChart.aspx/GetTotalIntakes";
+    var Param = {};
+    Param.SP = "GetTotalIntakes";
+    Param.DateFrom = dt1;
+    Param.DateTo = dt2;
+    Param.bid = bid;
+    myAjaxRequestJsonE(url, Param, Success_GetTotalIntakes, Error_GetTotalIntakes);
+}
+function Success_GetTotalIntakes(result) {
+
+    $("#TotalIntakes").val(result.d);
+    $("#IntakesChart").dxChart("instance").option("title", "Intakes total=" + result.d + ", Litres");
+
+    return result.d;
+}
+function Error_GetTotalIntakes(xhr, status, error) {
+    return false;
+}
+//Intakes chart Section---------------End--------------------
+
+//Average Temperature
+function GetAverTemperature(dt1, dt2, bid) {
+
+    //-------------------------------------------
+    var url = "BolusChart.aspx/GetAverageTemperature";
+    var Param = {};
+    Param.SP = "GetAverageTemperature";
+    Param.DateFrom = dt1;
+    Param.DateTo = dt2;
+    Param.bid = bid;
+    myAjaxRequestJsonE(url, Param, Success_GetAverTemperature, Error_GetAverTemperature);
+}
+function Success_GetAverTemperature(result) {
+
+    //$("#chart").dxChart("instance").option("valueAxis").constantLines[2].value = result.d;'value: ' + Number(result.d)
+    $("#chart").dxChart("instance").option("valueAxis.constantLines[2].value", Number(result.d));
+    $("#chart_temp").dxChart("instance").option("valueAxis.constantLines[2].value", Number(result.d));
+    return result.d;
+}
+function Error_GetAverTemperature(xhr, status, error) {
+    return false;
+}
