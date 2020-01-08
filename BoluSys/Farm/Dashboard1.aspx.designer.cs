@@ -11,7 +11,7 @@ namespace BoluSys.Farm
 {
 
 
-    public partial class BolusChart
+    public partial class Dashboard1
     {
     }
 }

@@ -1,60 +1,79 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs" Inherits="BoluSys.Farm.Dashboard" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    Date:<input id="DateSearch" type="date" onchange="ChartsShowAllRequest(this.value);" />
-    &nbsp&nbsp&nbsp<a id="ProgressBar" name="ProgressBar" style="visibility: hidden;"><progress></progress>&nbsp&nbspData Loading...</a>
+    <div class="container-xl">
+        <div class="row">
+            <div class="col-lg-7" style="background-color: #ebf7f9;">
+                <%--                Date:<input id="DateSearch" type="date" onchange="ChartsShowAllRequest(this.value);" />
+                &nbsp&nbsp&nbsp<a id="ProgressBar" name="ProgressBar" style="visibility: hidden;"><progress></progress>&nbsp&nbspData Loading...</a>--%>
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <style>
-        .w3-btn {
-            width: 70px;
-            background-color: #e6ff99;
-        }
-
-        #gauge, #gauge1, #gauge2 {
-            height: 210px;
-            width: 32%;
-        }
-
-        #gauge, #gauge1, #gauge2 {
-            display: inline-block;
-            background-color: #f2f2f2;
-        }
-    </style>
-    <!--Chart Section-->
-    <table>
-        <tr>
-            <td style="vertical-align: top;">Animal_ID<br />
-                <div id="bolus_list" class="btn-group-vertical table-bordered">
-                </div>
-            </td>
-            <td>
-                <!----------------Dashboard Indicators------------------------------------------------>
-                <div class="well" style="text-align: center;">
-                    <mark style="font-size: large; font-weight: bold; background-color: #e6ff99;">Total Number of Cows: <%= TotalCowsNumberInfo %></mark>
+                <!----------------Dashboard------------------------------------------------>
+                <div class="well" style="text-align: center; background-color: aqua;">
+                    <mark style="font-size: large; font-weight: bold; background-color: aqua;">Under Monitoring : <%= TotalCowsNumberInfo %> cows</mark>
                 </div>
 
-                <div id="gauge"></div>
-                <div id="gauge1"></div>
-                <div id="gauge2"></div>
-                <div id="curve_chart" style="width: 1000px; height: 500px"></div>
-            </td>
-            <td style="vertical-align: top;">
-                <div id="Description" style="background-color: #e6e6e6;"></div>
-                <!----------------Dashboard Indicators------------------------------------------------>
-            </td>
-        </tr>
-    </table>
-    <%--<div style="display: none;">
+                <%--    Herd section--%>
+                <div class="well well-sm" style="background-color: #ffb3b3;">
+                    <mark style="font-size: large; font-weight: bold; background-color: #ffb3b3;">Sick Cows: <%= num_HerdList_Sick %> , the last 24 hours temperature > 41&#176;C was detected
+
+                    </mark>
+                </div>
+                <div id="herd_Sick">
+                    <%=HerdList_Sick %>
+                </div>
+                <div class="well well-sm" style="background-color: yellow;">
+                    <mark style="font-size: large; font-weight: bold; background-color: yellow;">Sad Cows: <%= num_HerdList_Sad %> ,  the last 3 hours average temperature > 40.5&#176;C was detected
+                    </mark>
+                </div>
+                <div id="herd_Sad">
+                    <%=HerdList_Sad %>
+                </div>
+                <div class="well well-sm" style="background-color: chartreuse;">
+                    <mark style="font-size: large; font-weight: bold; background-color: chartreuse;">Healthy Cows: <%= num_HerdList_Healthy %> , OK!</mark>
+                    <a href="#herd_Healthy" class="btn btn-success" data-toggle="collapse" title="Details">
+                        <img src="imgs/iconfinder_cow_4591898.svg" class="rounded" width="30" height="30">
+                        </a>
+                </div>
+                <div id="herd_Healthy" class="collapse">
+                    <%=HerdList_Healthy %>
+                </div>
+            </div>
+            <!--Info alerts zone-->
+            <div class="col-lg-5" style="background-color: #ebf7f9;">
+                <div class="demo-container">
+                    <div class="dx-fieldset">
+                        <div class="dx-fieldset-header" style="text-align: center;">Alerts</div>
+                        <div class="dx-field">
+                            <div id="AlertsLine"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-----Context Menu Section-------------->
+    <div class="demo-container">
+        <div id="context-menu"></div>
+    </div>
+    <!-----Context Menu Section-------------->
+    <%--    Data section--%>
+    <div style="display: none;">
         <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
-        <input id="CowsToCheck" type="number" value="<%= CowsToCheck %>" />
-        <input id="CowsAtRisk" type="number" value="<%= CowsAtRisk %>" />
-        <input id="CowsUnderMonitoring" type="number" value="<%= CowsUnderMonitoring %>" />
-    </div>--%>
+        <%--<input id="CowsToCheck" type="number" value="<%= CowsToCheck %>" />
+                    <input id="CowsAtRisk" type="number" value="<%= CowsAtRisk %>" />
+                    <input id="CowsUnderMonitoring" type="number" value="<%= CowsUnderMonitoring %>" />--%>
+    </div>
     <!--Script Section-->
-    <link href="../dx/css/dx.light.css" rel="stylesheet" />
-    <link href="../dx/css/dx.common.css" rel="stylesheet" />
-    <script src="../dx/js/dx.all.js"></script>
-    <script src="FarmJS/ChartsXY.js"></script>
+    <link href="../../dx/css/dx.light.css" rel="stylesheet" />
+    <link href="../../dx/css/dx.common.css" rel="stylesheet" />
+    <script src="../../dx/js/dx.all.js"></script>
+    <script src="FarmJS/Dashboard.js"></script>
     <!--Script Section-->
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
 </asp:Content>

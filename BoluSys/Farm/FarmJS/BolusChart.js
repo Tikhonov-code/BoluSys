@@ -136,7 +136,7 @@ function ChartCreate(chartSelector,df, dt, bid,chart_type) {
             valueMarginsEnabled: true,
             visualRange: {
                 startValue: 35,
-                endValue: 41
+                endValue: 43
             },
             grid: {
                 opacity: 0.2
