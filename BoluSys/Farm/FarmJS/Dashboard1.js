@@ -96,6 +96,7 @@ $(function () {
         columns: [
             {
                 caption: "Animal_id",
+                cssClass: 'cls',
                 dataField: "animal_id",
                 alignment: 'center',
                 width: 80,
@@ -111,16 +112,22 @@ $(function () {
                 }
             },
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Event",
                 dataField: "event",
                 width: 60
             },
             {
                 caption: "Message",
+                cssClass: 'cls',
                 dataField: "message",
+                alignment: 'center',
                 width: 550
             },
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Date",
                 dataField: "date_emailsent",
                 dataType: "date",
@@ -163,6 +170,8 @@ $(function () {
         },
         columns: [
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Animal_id",
                 dataField: "animal_id",
                 alignment: 'center',
@@ -179,16 +188,22 @@ $(function () {
                 }
             },
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Event",
                 dataField: "event",
                 width: 60
             },
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Message",
                 dataField: "message",
                 width: 550
             },
             {
+                cssClass: 'cls',
+                alignment: 'center',
                 caption: "Date",
                 dataField: "date_emailsent",
                 dataType: "date",

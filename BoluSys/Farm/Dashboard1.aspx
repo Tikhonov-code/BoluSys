@@ -48,5 +48,12 @@
     <link href="../../dx/css/dx.common.css" rel="stylesheet" />
     <script src="../../dx/js/dx.all.js"></script>
     <script src="FarmJS/Dashboard1.js"></script>
+    <style type="text/css">
+        .dx-datagrid-headers .cls {  
+    background-color:  #f2f2f2;
+    font-weight:bold;
+    color:black;
+}
+    </style>
     <!--Script Section-->
 </asp:Content>
