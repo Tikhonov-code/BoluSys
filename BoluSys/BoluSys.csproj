@@ -171,6 +171,12 @@
     <Content Include="Account\ResetPasswordConfirmation.aspx" />
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
+    <Content Include="Admin\Admin.aspx" />
+    <Content Include="Admin\AdminJS\Adminjs.js" />
+    <Content Include="Admin\AdminJS\DataGaps.js" />
+    <Content Include="Admin\AdminJS\IntakesData.js" />
+    <Content Include="Admin\DataGaps.aspx" />
+    <Content Include="Admin\IntakesData.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -429,6 +435,27 @@
     <Compile Include="Account\VerifyPhoneNumber.aspx.designer.cs">
       <DependentUpon>VerifyPhoneNumber.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\Admin.aspx.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Admin.aspx.designer.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\DataGaps.aspx.cs">
+      <DependentUpon>DataGaps.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\DataGaps.aspx.designer.cs">
+      <DependentUpon>DataGaps.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\IntakesData.aspx.cs">
+      <DependentUpon>IntakesData.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\IntakesData.aspx.designer.cs">
+      <DependentUpon>IntakesData.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
@@ -523,6 +550,7 @@
     <Compile Include="Models\Cows_log.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataGaps.cs" />
     <Compile Include="Models\FarmCow.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

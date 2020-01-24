@@ -14,7 +14,7 @@ $(document).ready(function () {
         // Gate 1 --------datesearch= today-------------------
         dateFrom_Show(d + ' 12:00 AM');
         dateTo_Show(d + '  11:59 PM');
-        ChartCreate("#chart", d + ' 12:00 AM', d + ' 11:59 PM', bidc, "full");
+        //ChartCreate("#chart", d + ' 12:00 AM', d + ' 11:59 PM', bidc, "full");
         ChartCreate("#chart_temp", d + ' 12:00 AM', d + ' 11:59 PM', bidc, "temp");
 
         //GetIntakesData(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
@@ -67,7 +67,7 @@ function dateFrom_Show(dtpar) {
             var dateBox = $("#dateTo").dxDateBox("instance");
             var dt = new Date(dateBox.option('value'));
 
-            ChartCreate("#chart", ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val(), "full");
+            //ChartCreate("#chart", ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val(), "full");
             ChartCreate("#chart_temp", ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val(), "temp");
             IntakesChart_Show0(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
             GetTotalIntakes(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
@@ -86,7 +86,7 @@ function dateTo_Show(dtpar) {
             var newValue = new Date(e.value);
             //var dateBox = $("#dateFrom").dxDateBox("instance");
             var df = new Date($("#dateFrom").dxDateBox("instance").option('value'));
-            ChartCreate("#chart", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "full");
+            //ChartCreate("#chart", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "full");
             ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
 
             IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
@@ -234,7 +234,7 @@ function BolusIDList_Show(ds, vl) {
             var dto = new Date($("#dateTo").dxDateBox("instance").option('value'));
             var dfr = new Date($("#dateFrom").dxDateBox("instance").option('value'));
 
-            ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
+            //ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
             ChartCreate("#chart_temp", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "temp");
 
             IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
@@ -367,7 +367,7 @@ function GetAverTemperature(dt1, dt2, bid) {
 function Success_GetAverTemperature(result) {
 
     //$("#chart").dxChart("instance").option("valueAxis").constantLines[2].value = result.d;'value: ' + Number(result.d)
-    $("#chart").dxChart("instance").option("valueAxis.constantLines[2].value", Number(result.d));
+    //$("#chart").dxChart("instance").option("valueAxis.constantLines[2].value", Number(result.d));
     $("#chart_temp").dxChart("instance").option("valueAxis.constantLines[2].value", Number(result.d));
     return result.d;
 }

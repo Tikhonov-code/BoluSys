@@ -32,9 +32,9 @@
 
     </div>
     <!---------------------------------------------------------------->
-    <div class="demo-container">
+    <%--<div class="demo-container">
         <div id="chart"></div>
-    </div>
+    </div>--%>
     <div class="demo-container">
         <div id="chart_temp"></div>
     </div>
