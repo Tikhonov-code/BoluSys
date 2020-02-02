@@ -76,7 +76,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="bolus_id" Type="int" Nullable="false" />
           <Property Name="event" Type="varchar" MaxLength="10" />
-          <Property Name="message" Type="varchar" MaxLength="250" />
+          <Property Name="message" Type="varchar" MaxLength="500" />
           <Property Name="date_emailsent" Type="datetime2" Precision="7" />
           <Property Name="email" Type="varchar" MaxLength="100" />
         </EntityType>
@@ -171,6 +171,12 @@
               </RowType>
             </CollectionType>
           </ReturnType>
+        </Function>
+        <Function Name="FCN_WaterIntakes_Sum" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="float">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="wi_calbr" Type="float" Mode="In" />
         </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
@@ -379,7 +385,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="bolus_id" Type="Int32" Nullable="false" />
           <Property Name="event" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="message" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="date_emailsent" Type="DateTime" Precision="7" />
           <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>

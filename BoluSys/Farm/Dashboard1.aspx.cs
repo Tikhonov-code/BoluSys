@@ -78,25 +78,32 @@ namespace BoluSys.Farm
         }
         public DateTime GetTorontoLocalDateTime()
         {
-            string html = string.Empty;
-            string url = "https://www.timeanddate.com/worldclock/fullscreen.html?n=250";
+            var timeUtc = DateTime.UtcNow;
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTime easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
+            //----------------------------------------------------------------------------
+            //return tdTor;
+            return easternTime;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = "C# console client";
+            //string html = string.Empty;
+            //string url = "https://www.timeanddate.com/worldclock/fullscreen.html?n=250";
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                html = reader.ReadToEnd();
-            }
-            // Read local Toronto time and calculate hour difference
-            int indx_TimeTor = html.IndexOf("i_time");
-            int len_TimeTor = html.IndexOf('<', indx_TimeTor) - indx_TimeTor - 7;
-            int TimeToronto = Convert.ToInt16(html.Substring(indx_TimeTor + 7, len_TimeTor - 3).Split(':')[0]);
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //request.UserAgent = "C# console client";
 
-            DateTime tdToroto = DateTime.Now.AddHours(TimeToronto - DateTime.Now.Hour);
-            return tdToroto;
+            //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            //using (Stream stream = response.GetResponseStream())
+            //using (StreamReader reader = new StreamReader(stream))
+            //{
+            //    html = reader.ReadToEnd();
+            //}
+            //// Read local Toronto time and calculate hour difference
+            //int indx_TimeTor = html.IndexOf("i_time");
+            //int len_TimeTor = html.IndexOf('<', indx_TimeTor) - indx_TimeTor - 7;
+            //int TimeToronto = Convert.ToInt16(html.Substring(indx_TimeTor + 7, len_TimeTor - 3).Split(':')[0]);
+
+            //DateTime tdToroto = DateTime.Now.AddHours(TimeToronto - DateTime.Now.Hour);
+            //return tdToroto;
         }
 
         public void GetRiskData()
