@@ -105,6 +105,11 @@
           <Parameter Name="bolus_id" Type="int" Mode="In" />
           <Parameter Name="Interval" Type="float" Mode="In" />
         </Function>
+        <Function Name="DataGapsFarm" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt" Type="datetime2" Mode="In" />
+          <Parameter Name="interval" Type="int" Mode="In" />
+          <Parameter Name="user_id" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="FCN_CalcMedianTemp_D12" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="float">
           <Parameter Name="dt1" Type="datetime" Mode="In" />
           <Parameter Name="dt2" Type="datetime" Mode="In" />
@@ -282,6 +287,16 @@
             <Parameter Name="user_id" Mode="In" Type="String" />
             <Parameter Name="interval" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="SP_GET_DataGaps">
+            <Parameter Name="dt" Mode="In" Type="DateTime" />
+            <Parameter Name="interval" Mode="In" Type="Int32" />
+            <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DataGapsFarm" ReturnType="Collection(DB_A4A060_csModel.DataGapsFarm_Result)">
+            <Parameter Name="dt" Mode="In" Type="DateTime" />
+            <Parameter Name="interval" Mode="In" Type="Int32" />
+            <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -395,6 +410,11 @@
           <Property Type="String" Name="event" Nullable="true" MaxLength="10" />
           <Property Type="String" Name="message" Nullable="true" MaxLength="250" />
           <Property Type="DateTime" Name="date_emailsent" Nullable="true" Precision="27" />
+        </ComplexType>
+        <ComplexType Name="DataGapsFarm_Result">
+          <Property Type="String" Name="r" Nullable="false" MaxLength="7" />
+          <Property Type="String" Name="Gaps" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="DateCtrl" Nullable="true" MaxLength="10" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -570,6 +590,15 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="FCN_Farm_CowsUnderMonitoring" FunctionName="DB_A4A060_csModel.Store.FCN_Farm_CowsUnderMonitoring" />
+          <FunctionImportMapping FunctionImportName="DataGapsFarm" FunctionName="DB_A4A060_csModel.Store.DataGapsFarm">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.DataGapsFarm_Result">
+                <ScalarProperty Name="r" ColumnName="r" />
+                <ScalarProperty Name="Gaps" ColumnName="Gaps" />
+                <ScalarProperty Name="DateCtrl" ColumnName="DateCtrl" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

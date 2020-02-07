@@ -36,12 +36,23 @@
                 <div id="gridCheck"></div>
             </div>
         </div>
-    </div>
-    <%--    Data section--%>
-    <div style="display: none;">
-        <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
-        <input id="CowsToCheckNumber" type="number" value="<%= CowsToCheckNumber %>" />
-        <input id="CowsAtRiskNumber" type="number" value="<%= CowsAtRiskNumber %>" />
+        <div class="row">
+            <!--------------The DataGrid Section Data Integrity------------------------------------------------------------>
+            <%--        Pivot grid--%>
+            <div class="well well-sm" style="text-align: center;">
+                <h4>Data Integrity</h4>
+            </div>
+            <div class="demo-container">
+                <div id="gdi" style="align-content: center;"></div>
+            </div>
+        </div>
+
+        <%--    Data section--%>
+        <div style="display: none;">
+            <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
+            <input id="CowsToCheckNumber" type="number" value="<%= CowsToCheckNumber %>" />
+            <input id="CowsAtRiskNumber" type="number" value="<%= CowsAtRiskNumber %>" />
+        </div>
     </div>
     <!--Script Section-->
     <link href="../../dx/css/dx.light.css" rel="stylesheet" />
@@ -49,11 +60,11 @@
     <script src="../../dx/js/dx.all.js"></script>
     <script src="FarmJS/Dashboard1.js"></script>
     <style type="text/css">
-        .dx-datagrid-headers .cls {  
-    background-color:  #f2f2f2;
-    font-weight:bold;
-    color:black;
-}
+        .dx-datagrid-headers .cls {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: black;
+        }
     </style>
     <!--Script Section-->
 </asp:Content>

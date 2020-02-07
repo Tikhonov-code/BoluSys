@@ -551,6 +551,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DataGaps.cs" />
+    <Compile Include="Models\DataGapsFarm_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\FarmCow.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

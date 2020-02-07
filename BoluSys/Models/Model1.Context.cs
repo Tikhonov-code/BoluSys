@@ -243,5 +243,39 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Nullable<int>>("[DB_A4A060_csEntities].[FCN_Farm_CowsUnderMonitoring](@dt, @user_id, @interval)", dtParameter, user_idParameter, intervalParameter);
         }
+    
+        public virtual int SP_GET_DataGaps(Nullable<System.DateTime> dt, Nullable<int> interval, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_DataGaps", dtParameter, intervalParameter, user_idParameter);
+        }
+    
+        public virtual ObjectResult<DataGapsFarm_Result> DataGapsFarm(Nullable<System.DateTime> dt, Nullable<int> interval, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DataGapsFarm_Result>("DataGapsFarm", dtParameter, intervalParameter, user_idParameter);
+        }
     }
 }

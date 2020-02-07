@@ -38,10 +38,31 @@ namespace BoluSys.Farm
                 case "GetCheckData":
                     GetCheckData();
                     break;
+                case "GetDataIntegrity":
+                    GetDataIntegrity(user_id);
+                    break;
                 default:
                     break;
             }
         }
+
+        private void GetDataIntegrity(string user_id)
+        {
+            DateTime dt = GetTorontoLocalDateTime().Date.AddDays(-1);
+            dt = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
+            List<DataGapsFarm_Result> result ;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                result = context.DataGapsFarm(dt, 7, user_id).ToList();
+            }
+
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
         private void GetTotalCountsForDashboard(string user_id)
         {
             TotalCowsNumberInfo = 0;
@@ -71,11 +92,66 @@ namespace BoluSys.Farm
                 CowsToCheckNumber = q405.Count();
 
                 //2. Сows Under Monitoring Last 24 hours---------------------------------------
-                HealthyCowsNumber = context.FCN_Farm_CowsUnderMonitoring(dt,user_id,24).Count();
+                HealthyCowsNumber = context.FCN_Farm_CowsUnderMonitoring(dt, user_id, 24).Count();
             }
             Page.DataBind();
             return "";
         }
+
+        private void GetGapsData()
+        {
+            //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
+            DateTime dt_to = DateTime.Now.Date.AddDays(-1);
+            DateTime dt_from = dt_to.AddDays(-8);
+            string user_id = User.Identity.GetUserId();
+
+            List<Data_Gaps> result = new List<Data_Gaps>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var res = (from m in context.MeasDatas
+                           join b in context.Bolus on m.bolus_id equals b.bolus_id
+                           join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to
+                           select new
+                           {
+                               bolus_id = m.bolus_id,
+                               animal_id = m.animal_id,
+                               bolus_full_date = m.bolus_full_date,
+                           }).ToList();
+                //--------------------------------------------------------------------
+                var bid = res.Select(x => new { bid = x.bolus_id }).Distinct().OrderBy(x => x.bid).ToArray();
+                int num_bid = bid.Length;
+                double diffinterval = 0;
+                foreach (var item in bid)
+                {
+                    var m = res.Where(x => x.bolus_id == item.bid).OrderBy(x => x.bolus_full_date).ToList();
+                    int num_m = m.Count;
+                    for (int i = 1; i < num_m; i++)
+                    {
+                        Data_Gaps dg = new Data_Gaps();
+                        dg.bolus_id = m[i].bolus_id;
+                        dg.animal_id = m[i].animal_id;
+                        dg.dt_to = m[i].bolus_full_date.Value;
+                        dg.dt_from = m[i - 1].bolus_full_date.Value;
+                        diffinterval = (m[i].bolus_full_date.Value - m[i - 1].bolus_full_date.Value).TotalMinutes;
+
+                        if (diffinterval > 15.5)
+                        {
+                            dg.interval = String.Format("{0:0.00}", diffinterval);
+                            result.Add(dg);
+                        }
+                        dg = null;
+                    }
+                }
+                //--------------------------------------------------------------------
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
         public DateTime GetTorontoLocalDateTime()
         {
             var timeUtc = DateTime.UtcNow;
@@ -84,26 +160,6 @@ namespace BoluSys.Farm
             //----------------------------------------------------------------------------
             //return tdTor;
             return easternTime;
-
-            //string html = string.Empty;
-            //string url = "https://www.timeanddate.com/worldclock/fullscreen.html?n=250";
-
-            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //request.UserAgent = "C# console client";
-
-            //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            //using (Stream stream = response.GetResponseStream())
-            //using (StreamReader reader = new StreamReader(stream))
-            //{
-            //    html = reader.ReadToEnd();
-            //}
-            //// Read local Toronto time and calculate hour difference
-            //int indx_TimeTor = html.IndexOf("i_time");
-            //int len_TimeTor = html.IndexOf('<', indx_TimeTor) - indx_TimeTor - 7;
-            //int TimeToronto = Convert.ToInt16(html.Substring(indx_TimeTor + 7, len_TimeTor - 3).Split(':')[0]);
-
-            //DateTime tdToroto = DateTime.Now.AddHours(TimeToronto - DateTime.Now.Hour);
-            //return tdToroto;
         }
 
         public void GetRiskData()
@@ -137,7 +193,7 @@ namespace BoluSys.Farm
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
                 //1. Cows At Risk Number ------------------------------------------------------------------------
-                q405 = context.FCN_Farm_TodayEventsList(dt, user_id, User.Identity.Name, "Q40.5").OrderByDescending(x=>x.date_emailsent).ToList();
+                q405 = context.FCN_Farm_TodayEventsList(dt, user_id, User.Identity.Name, "Q40.5").OrderByDescending(x => x.date_emailsent).ToList();
             }
             var res_json = JsonConvert.SerializeObject(q405);
             Response.Clear();

@@ -236,3 +236,62 @@ $(function () {
 //    });
 //});
 
+//grid Data Integrity
+var dataIntegrity = new DevExpress.data.CustomStore({
+    loadMode: "raw",
+    cacheRawData: true,
+    key: "r",
+    load: function (loadOptions) {
+        return $.getJSON('Dashboard1.aspx?SP=GetDataIntegrity');
+    }
+});
+
+///Pivot grid Section
+$(function () {
+    var salesPivotGrid = $("#gdi").dxPivotGrid({
+        fieldChooser: false,
+        showBorders: true,
+        showRowGrandTotals: false,
+        showRowTotals: false,
+
+        onCellPrepared: function (e) {
+            if (e.area == "data") {
+                e.cellElement.css("text-align", "center");
+                e.cellElement.css("font-weight","bold");
+
+                if (Number(e.cell.value) <= 5.0) {
+                    e.cellElement.css("color", "green");
+                    e.cellElement.attr("title", "Acceptable Data Loss");
+                }
+                else {
+                    e.cellElement.css("color", "red");
+                }
+            }
+        },
+
+        dataSource: {
+            fields: [
+                {
+                    dataField: "DateCtrl",
+                    dataType: "string",
+                    area: "column"
+                }, {
+
+                    caption: "Gaps",
+                    dataField: "Gaps",
+                    dataType: "number",
+                   summaryType: "sum",
+                    format: "decimal",
+                    area: "data"
+                },
+                {
+                    caption: "Gaps, %",
+                    dataField: 'r',
+                    area: "row"
+                }
+            ],
+            store: dataIntegrity
+        }
+    }).dxPivotGrid("instance");
+
+});
