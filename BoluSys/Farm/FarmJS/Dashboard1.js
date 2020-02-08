@@ -252,6 +252,7 @@ $(function () {
         fieldChooser: false,
         showBorders: true,
         showRowGrandTotals: false,
+        showColumnGrandTotals: false,
         showRowTotals: false,
 
         onCellPrepared: function (e) {

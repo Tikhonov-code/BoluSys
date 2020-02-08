@@ -40,7 +40,7 @@
             <!--------------The DataGrid Section Data Integrity------------------------------------------------------------>
             <%--        Pivot grid--%>
             <div class="well well-sm" style="text-align: center;">
-                <h4>Data Integrity</h4>
+                <h4>Procent of missing data (When the Present of missing data is greater than 5%, the water intake is not representative)</h4>
             </div>
             <div class="demo-container">
                 <div id="gdi" style="align-content: center;"></div>
@@ -64,6 +64,9 @@
             background-color: #f2f2f2;
             font-weight: bold;
             color: black;
+        }
+        .dx-row-total .dx-grandtotal .cls {
+            visibility:hidden
         }
     </style>
     <!--Script Section-->

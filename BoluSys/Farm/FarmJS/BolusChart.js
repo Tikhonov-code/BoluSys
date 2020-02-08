@@ -180,8 +180,7 @@ function ChartCreate(chartSelector,df, dt, bid,chart_type) {
         },
         legend: {
             visible: false
-        }
-        ,
+        },
         loadingIndicator: {
             backgroundColor: "#ffffff",
             enabled: true,
