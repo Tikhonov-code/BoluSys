@@ -7,6 +7,7 @@
         <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>
         <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Data Gaps</button>
         <button type="button" class="btn btn-primary" onclick="CowsLogShow();">Cows Log</button>
+        <button type="button" class="btn btn-primary" onclick="WIReportShow();">Water Intakes Report</button>
         <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>

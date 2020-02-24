@@ -96,7 +96,8 @@ function dateTo_Show(dtpar) {
     });
 };
 
-function ChartCreate(chartSelector,df, dt, bid,chart_type) {
+function ChartCreate(chartSelector, df, dt, bid, chart_type) {
+    
     if (df == "" || dt == "") {
         return;
     }
@@ -120,6 +121,14 @@ function ChartCreate(chartSelector,df, dt, bid,chart_type) {
                 width: 2,
                 top: false,
                 right: false
+            }
+        },
+        customizePoint: function () {
+            if (this.value >= 41.0 ) {
+                return { image: { url: "imgs/cyclered.jpg", width: 20, height: 20 }, visible: true };
+            }
+            if (this.value >= 40.5 && this.value < 41.0) {
+                return { image: { url: "imgs/cycleyellow.jpg", width: 20, height: 20 }, visible: true };
             }
         },
         title: "Temperature " + "&#176C",
@@ -195,6 +204,9 @@ function ChartCreate(chartSelector,df, dt, bid,chart_type) {
             text: "Loading..."
         }
     });
+
+    // Show Data Gaps Table-------------------------------------------
+    DataGapsShow();
 }
 
 function GetCowInfo(bidpar) {
@@ -373,3 +385,72 @@ function Success_GetAverTemperature(result) {
 function Error_GetAverTemperature(xhr, status, error) {
     return false;
 }
+
+//Data Gaps Grid---------------------------------------------
+function DataGapsShow() {
+
+    var data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                key: "bolus_id",
+                load: function (loadOptions) {
+                    //var dt0 = ConvertDateToMyF($("#dateFrom").dxDateBox("instance").option("value"));
+                    //var dt1 = ConvertDateToMyF($("#dateTo").dxDateBox("instance").option("value"));
+
+                    var dt0 = $("#dateFrom").dxDateBox("instance").option("value");
+                    var dt1 = $("#dateTo").dxDateBox("instance").option("value");
+                    var bid = $("#Bolus_id").val();
+
+                    return $.getJSON('BolusChart.aspx?SP=GetGapsData&DateFrom=' + dt0 + '&DateTo=' + dt1+'&bolus_id='+bid);
+                }
+            });
+
+            FillDataGaps(data_db);
+};
+
+function FillDataGaps(data_db) {
+    $("#DataGapsIndividual").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        columns: [
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Bolus_id",
+                dataField: "bolus_id"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Animal_id",
+                dataField: "animal_id"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Date From",
+                dataField: "dt_from"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Date To",
+                dataField: "dt_to"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Interval, min",
+                dataField: "interval"
+            }]
+    });
+
+};

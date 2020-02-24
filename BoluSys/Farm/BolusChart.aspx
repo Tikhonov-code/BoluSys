@@ -41,6 +41,16 @@
     <div class="demo-container">
         <div id="IntakesChart"></div>
     </div>
+    <div class="row">
+        <!--------------The DataGrid Section Data Integrity------------------------------------------------------------>
+        <%--        Pivot grid--%>
+        <div class="well well-sm" style="text-align: center;">
+            <h4>Percent of missing data (When the Present of missing data is greater than 5%, the water intake is not representative)</h4>
+        </div>
+        <div class="demo-container">
+            <div id="DataGapsIndividual" style="align-content: center;"></div>
+        </div>
+    </div>
     <!---------------------------------------------------------------->
     <div class="jumbotron">
         Cow #:<input id="Animal_id" type="text" value="<%# Animal_id %>" style="border: hidden;" aria-disabled="True" disabled="disabled" />

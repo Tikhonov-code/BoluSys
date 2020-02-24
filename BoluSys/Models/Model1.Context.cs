@@ -277,5 +277,23 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DataGapsFarm_Result>("DataGapsFarm", dtParameter, intervalParameter, user_idParameter);
         }
+    
+        public virtual ObjectResult<SP_Admin_WaterIntakesReport_Result> SP_Admin_WaterIntakesReport(Nullable<System.DateTime> dt, Nullable<int> interval)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_WaterIntakesReport_Result>("SP_Admin_WaterIntakesReport", dtParameter, intervalParameter);
+        }
+    
+        public virtual ObjectResult<SP_Admin_Z_AlertLogs_Result> SP_Admin_Z_AlertLogs()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_Z_AlertLogs_Result>("SP_Admin_Z_AlertLogs");
+        }
     }
 }

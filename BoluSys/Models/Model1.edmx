@@ -110,11 +110,6 @@
           <Parameter Name="interval" Type="int" Mode="In" />
           <Parameter Name="user_id" Type="varchar" Mode="In" />
         </Function>
-        <Function Name="FCN_CalcMedianTemp_D12" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="float">
-          <Parameter Name="dt1" Type="datetime" Mode="In" />
-          <Parameter Name="dt2" Type="datetime" Mode="In" />
-          <Parameter Name="bolus_id" Type="int" Mode="In" />
-        </Function>
         <Function Name="FCN_CowsIsSad" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt" Type="datetime" Mode="In" />
           <Parameter Name="hoursinterval" Type="int" Mode="In" />
@@ -142,11 +137,6 @@
               </RowType>
             </CollectionType>
           </ReturnType>
-        </Function>
-        <Function Name="FCN_Farm_CowsNumOutOfRange" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int">
-          <Parameter Name="user_id" Type="varchar" Mode="In" />
-          <Parameter Name="dt" Type="datetime" Mode="In" />
-          <Parameter Name="hours" Type="int" Mode="In" />
         </Function>
         <Function Name="FCN_Farm_CowsUnderMonitoring" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt" Type="datetime" Mode="In" />
@@ -177,12 +167,11 @@
             </CollectionType>
           </ReturnType>
         </Function>
-        <Function Name="FCN_WaterIntakes_Sum" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="float">
-          <Parameter Name="dt1" Type="datetime2" Mode="In" />
-          <Parameter Name="dt2" Type="datetime2" Mode="In" />
-          <Parameter Name="bolus_id" Type="int" Mode="In" />
-          <Parameter Name="wi_calbr" Type="float" Mode="In" />
+        <Function Name="SP_Admin_WaterIntakesReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt" Type="datetime" Mode="In" />
+          <Parameter Name="interval" Type="int" Mode="In" />
         </Function>
+        <Function Name="SP_Admin_Z_AlertLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
           <Parameter Name="temp_limit" Type="float" Mode="In" />
@@ -297,6 +286,11 @@
             <Parameter Name="interval" Mode="In" Type="Int32" />
             <Parameter Name="user_id" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="SP_Admin_WaterIntakesReport" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_WaterIntakesReport_Result)">
+            <Parameter Name="dt" Mode="In" Type="DateTime" />
+            <Parameter Name="interval" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Admin_Z_AlertLogs" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result)" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -415,6 +409,23 @@
           <Property Type="String" Name="r" Nullable="false" MaxLength="7" />
           <Property Type="String" Name="Gaps" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="DateCtrl" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="SP_Admin_WaterIntakesReport_Result">
+          <Property Type="Int32" Name="bolus_id" Nullable="true" />
+          <Property Type="String" Name="animal_id" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="20" />
+          <Property Type="Double" Name="wi" Nullable="true" />
+          <Property Type="Double" Name="avr_wi" Nullable="true" />
+          <Property Type="Double" Name="gaps" Nullable="true" />
+          <Property Type="Double" Name="WI20" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_Admin_Z_AlertLogs_Result">
+          <Property Type="Int32" Name="bolus_id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="350" />
+          <Property Type="String" Name="event" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="message" Nullable="true" MaxLength="500" />
+          <Property Type="DateTime" Name="date_emailsent" Nullable="true" />
+          <Property Type="String" Name="email" Nullable="true" MaxLength="100" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -596,6 +607,31 @@
                 <ScalarProperty Name="r" ColumnName="r" />
                 <ScalarProperty Name="Gaps" ColumnName="Gaps" />
                 <ScalarProperty Name="DateCtrl" ColumnName="DateCtrl" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Admin_WaterIntakesReport" FunctionName="DB_A4A060_csModel.Store.SP_Admin_WaterIntakesReport" >
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Admin_WaterIntakesReport_Result">
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="wi" ColumnName="wi" />
+                <ScalarProperty Name="avr_wi" ColumnName="avr_wi" />
+                <ScalarProperty Name="gaps" ColumnName="gaps" />
+                <ScalarProperty Name="WI20" ColumnName="WI20" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Admin_Z_AlertLogs" FunctionName="DB_A4A060_csModel.Store.SP_Admin_Z_AlertLogs">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result">
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="event" ColumnName="event" />
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="date_emailsent" ColumnName="date_emailsent" />
+                <ScalarProperty Name="email" ColumnName="email" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

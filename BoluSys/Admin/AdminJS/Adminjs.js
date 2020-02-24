@@ -7,7 +7,13 @@ var datagaps = "<div id='DataGapsDiv' " + tableborders +"><div class='row' style
             "<h3>Data Gaps</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>"+
             "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>"+
             "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='SearchGaps'></div></div></div><div class='container'>"+
-            "<div id='GridGaps'></div></div></div></div>";
+    "<div id='GridGaps'></div></div></div></div>";
+
+var wiReport = "<div id='WiReportDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Water Intakes Report</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Report Date:</div>" +
+    "<div class='col-md-3'><div id='DateWiReport'></div></div>" +
+    "<div class='col-md-3'></div><div class='col-md-4'><div id='WiReportGo'></div></div></div><div class='container'>" +
+    "<div id='GridWiReport'></div></div></div></div>";
 
 var admincowslogs = "<div id='admincowslogs' " + tableborders +"> <div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor +";'>"+
             "<h3>Cows Log</h3></div><div class='demo-container'><div id ='grid'></div ><div id='action-add'></div><div id='action-remove'></div><div id='action-edit'></div></div>";
@@ -47,9 +53,12 @@ function AlertsListShow() {
             allowSearch: true
         },
         columns: [
+            
             {
-                dataField: "id",
-                allowFiltering: false
+                capture: "Farm",
+                dataField: "Name",
+                width: 150,
+                allowFiltering: true
             },
             "bolus_id", "event",
             {
@@ -66,23 +75,26 @@ function AlertsListShow() {
 
 };
 
+//-------Data Gaps Section----------------------------------------
 function DataGapsShow() {
     $("#PanelSWhow").html(datagaps);
 
 //----------------------------------------------------
     var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
 
     $("#DateFrom").dxDateBox({
         type: "datetime",
         name: "Date From:",
-        value: now
+        value: now_begin
     });
 
 
 
     $("#DateTo").dxDateBox({
         type: "datetime",
-        value: now
+        value: now_end
     });
 
     var data_db;
@@ -123,6 +135,10 @@ function FillData(data_db) {
             allowedPageSizes: [5, 10, 20],
             showInfo: true
         },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
         columns: [
             {
                 cssClass: 'cls',
@@ -157,6 +173,122 @@ function FillData(data_db) {
     });
 
 };
+
+//--------Water Intakes Report Section----------------------------------------
+function WIReportShow() {
+    $("#PanelSWhow").html(wiReport);
+
+    //----------------------------------------------------
+    var now = new Date();
+
+    $("#DateWiReport").dxDateBox({
+        type: "datetime",
+        name: "Do Report:",
+        value: now
+    });
+
+    var widata_db;
+
+    $("#WiReportGo").dxButton({
+        //stylingMode: "outlined",
+        text: "Do Report",
+        elementAttr: {
+            title: "Refresh Report",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 150,
+        onClick: function () {
+            widata_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateWiReport").dxDateBox("instance").option("value"));
+                    return $.getJSON('Admin.aspx?SP=GetWiReportData&dt0=' + dt0);
+                }
+            });
+
+            FillDataWIReport(widata_db);
+        }
+    });
+};
+function FillDataWIReport(data_db) {
+    $("#GridWiReport").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
+        columns: [
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Farm",
+                dataField: "Name"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Bolus_id",
+                dataField: "bolus_id"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Animal_id",
+                dataField: "animal_id"
+            },
+            
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "wi",
+                dataField: "wi",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                }
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "avr_wi",
+                dataField: "avr_wi",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                }
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "gaps",
+                dataField: "gaps"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "WI20",
+                dataField: "WI20",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                }
+            }]
+    });
+
+};
+
+//----------------------------------------------------------------------------
 
 function CowsLogShow() {
     $("#PanelSWhow").html(admincowslogs);

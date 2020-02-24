@@ -42,31 +42,58 @@ namespace BoluSys.Admin
                 case "UpdateCowsLogs":
                     UpdateCowsLogs();
                     break;
+                case "GetWiReportData":
+                    GetWiReportData(Request.QueryString["dt0"]);
+                    break;
                 case "TTNRawConvertData":
                     string tz = Request.QueryString["TimeZ"];
                     string rv = Request.QueryString["RawValue"];
-                    TTNRawConvertData(tz,rv );
+                    TTNRawConvertData(tz, rv);
                     break;
                 default:
                     break;
             }
         }
+
+        private void GetWiReportData(string dt)
+        {
+            DateTime dt0 = DateTime.Parse(dt);
+            string res_json = "";
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                context.Database.CommandTimeout = 60;
+                var r = context.SP_Admin_WaterIntakesReport(dt0, 7);
+                res_json = JsonConvert.SerializeObject(r);
+            }
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
         [WebMethod]
         public void Get10()
         {
-            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            string res_json = string.Empty;
+            try
             {
-                //var res = context.Z_AlertLogs.Where(x => x.date_emailsent >= dt && x.date_emailsent <= dt1).ToList();
-                var res = context.Z_AlertLogs.OrderByDescending(x => x.date_emailsent).ToList();
-
-                string res_json = JsonConvert.SerializeObject(res);
-                //return res_json;
-                Response.Clear();
-                Response.ContentType = "application/json;charset=UTF-8";
-                Response.Write(res_json);
-                Response.End();
-
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    // var res = context.Z_AlertLogs.OrderByDescending(x => x.date_emailsent).ToList();
+                    var res = context.SP_Admin_Z_AlertLogs().ToList();
+                    res_json = JsonConvert.SerializeObject(res);
+                }
             }
+            catch (Exception ex)
+            {
+                res_json = ex.Message;
+            }
+
+            //return res_json;
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void GetGapsData(string dt0, string dt1)
