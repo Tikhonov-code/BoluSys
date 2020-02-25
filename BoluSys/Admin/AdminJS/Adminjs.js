@@ -2,11 +2,11 @@
 var tableborders = '';//"style='border-color: #b3d1ff; border-style:solid;'";
 
 var alertlist = "<div id='AlertsList' " + tableborders + "><div class='row' style = 'text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
-                "<h3>Alerts List</h3></div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
-var datagaps = "<div id='DataGapsDiv' " + tableborders +"><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor +";'>"+
-            "<h3>Data Gaps</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>"+
-            "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>"+
-            "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='SearchGaps'></div></div></div><div class='container'>"+
+    "<h3>Alerts List</h3></div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
+var datagaps = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Data Gaps</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='SearchGaps'></div></div></div><div class='container'>" +
     "<div id='GridGaps'></div></div></div></div>";
 
 var wiReport = "<div id='WiReportDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
@@ -15,20 +15,20 @@ var wiReport = "<div id='WiReportDiv' " + tableborders + "><div class='row' styl
     "<div class='col-md-3'></div><div class='col-md-4'><div id='WiReportGo'></div></div></div><div class='container'>" +
     "<div id='GridWiReport'></div></div></div></div>";
 
-var admincowslogs = "<div id='admincowslogs' " + tableborders +"> <div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor +";'>"+
-            "<h3>Cows Log</h3></div><div class='demo-container'><div id ='grid'></div ><div id='action-add'></div><div id='action-remove'></div><div id='action-edit'></div></div>";
+var admincowslogs = "<div id='admincowslogs' " + tableborders + "> <div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Cows Log</h3></div><div class='demo-container'><div id ='grid'></div ><div id='action-add'></div><div id='action-remove'></div><div id='action-edit'></div></div>";
 
-var TNNRConvert = "<div id='TTNRawConverter' " + tableborders +"><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color:  "+ titlecolor +";' >"+
-                  "<h3>TTN Raw Converter</h3></div></div><div style='border-color: #b3d1ff; border-style: solid;'><div class='form'><div class='dx-fieldset'><div class='dx-field'>"+
-                  "<div class='dx-field-label'>Input Raw Value:</div><div class='dx-field-value'><div id='RawValue'></div></div></div><div class='dx-field'>"+
-                  "<div class='dx-field-label'>Input Raw Value:</div><div class='dx-field-value'><div id='TimeZ'></div></div></div><div style='text-align: center;'>"+
-                  "<div id='RunConverter'></div></div></div></div><div><div class='dx-fieldset'><div class='dx-fieldset-header'>Results:</div><div class='dx-field'>"+
-                  "<div id='ResultsBox'></div></div></div></div></div>";
+var TNNRConvert = "<div id='TTNRawConverter' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color:  " + titlecolor + ";' >" +
+    "<h3>TTN Raw Converter</h3></div></div><div style='border-color: #b3d1ff; border-style: solid;'><div class='form'><div class='dx-fieldset'><div class='dx-field'>" +
+    "<div class='dx-field-label'>Input Raw Value:</div><div class='dx-field-value'><div id='RawValue'></div></div></div><div class='dx-field'>" +
+    "<div class='dx-field-label'>Input Raw Value:</div><div class='dx-field-value'><div id='TimeZ'></div></div></div><div style='text-align: center;'>" +
+    "<div id='RunConverter'></div></div></div></div><div><div class='dx-fieldset'><div class='dx-fieldset-header'>Results:</div><div class='dx-field'>" +
+    "<div id='ResultsBox'></div></div></div></div></div>";
 //---------------------------------------------------------------------------
 function AlertsListShow() {
 
     $("#PanelSWhow").html(alertlist);
-    
+
     var ds = new DevExpress.data.CustomStore({
         loadMode: "raw",
         load: function () {
@@ -53,7 +53,7 @@ function AlertsListShow() {
             allowSearch: true
         },
         columns: [
-            
+
             {
                 capture: "Farm",
                 dataField: "Name",
@@ -79,7 +79,7 @@ function AlertsListShow() {
 function DataGapsShow() {
     $("#PanelSWhow").html(datagaps);
 
-//----------------------------------------------------
+    //----------------------------------------------------
     var now = new Date();
     var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
@@ -228,6 +228,18 @@ function FillDataWIReport(data_db) {
             visible: true,
             allowSearch: true
         },
+        onCellPrepared: function (e) {
+            if (e.rowType == "data") {
+
+                if (e.data.WI20 <= -20.0) {
+                    e.cellElement.css("text-align", "center");
+                    e.cellElement.css("font-weight", "bold");
+
+                    e.cellElement.css("color", "red");
+                    e.cellElement.attr("title", "WI down > 20%");
+                }
+            }
+        },
         columns: [
             {
                 cssClass: 'cls',
@@ -247,7 +259,7 @@ function FillDataWIReport(data_db) {
                 caption: "Animal_id",
                 dataField: "animal_id"
             },
-            
+
             {
                 cssClass: 'cls',
                 alignment: 'center',
@@ -465,8 +477,8 @@ function TTNRawConverter() {
             var Param = {};
             Param.SP = "TTNRawConvertData";
             myAjaxRequestJsonE(url, Param, Success_LongText, Error_LongText);
-            
-        } 
+
+        }
     });
 }
 
