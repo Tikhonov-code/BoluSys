@@ -111,7 +111,7 @@ namespace BoluSys.Farm
                 var res = (from m in context.MeasDatas
                            join b in context.Bolus on m.bolus_id equals b.bolus_id
                            join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
-                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to &&b.status == true
                            select new
                            {
                                bolus_id = m.bolus_id,

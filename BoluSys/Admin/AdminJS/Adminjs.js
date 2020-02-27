@@ -302,6 +302,97 @@ function FillDataWIReport(data_db) {
 
 //----------------------------------------------------------------------------
 
+//-----------Settings section-------------------------------------------------
+var BolusesSet = "<div id='adminBolusesSet' " + tableborders + "> <div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Boluses Status Settings</h3></div><div class='demo-container'><div id ='gridBolusesSet'></div ><div id='action-add'></div><div id='action-remove'></div><div id='action-edit'></div></div>";
+
+function BolusesSetShow() {
+    $("#PanelSWhow").html(BolusesSet);
+    BolusesSetView();
+};
+function BolusesSetView() {
+    $("#gridBolusesSet").dxDataGrid({
+        dataSource: new DevExpress.data.CustomStore({
+            loadMode: "raw",
+            cacheRawData: true,
+            key: "bolus_id",
+            load: function (loadOptions) {
+                return $.getJSON('Admin.aspx?SP=GetBolusesSet');
+            },
+            update: function (key, values) {
+                var deferred = $.Deferred();
+                $.post("Admin.aspx?SP=UpdateBolusStatus&bolus_id=" + encodeURIComponent(key)+"&status="+values.status, values).done(function (data) {
+                    deferred.resolve(data.key);
+                    //alert('Status was updated for bolus_id=' + encodeURIComponent(key));
+                });
+                return deferred.promise();
+            }
+        }),
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
+        editing: {
+            mode: "batch",
+            allowUpdating: true,
+            //allowAdding: true
+        },
+        columns: [
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Farm",
+                dataField: "Name",
+                allowEditing: false
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Bolus_id",
+                dataField: "bolus_id",
+                allowEditing: false
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Animal_id",
+                dataField: "animal_id",
+                allowEditing: false
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Status",
+                dataField: "status"
+            }]
+
+        ,
+        //onRowUpdating: function (e) {
+        //    //var d = $.Deferred();
+        //    $.getJSON("Admin.aspx?SP=UpdateBolusStatus&bolus_id=" + e.oldData.bolus_id + "&status=" + e.newData.status);//, JSON.stringify(e.data))
+        //    //    .then(function (result) {
+        //    //        return result=='OK' ? d.resolve() : d.reject(result.errorText);
+        //    //    })
+        //    //    .fail(function () {
+        //    //        return d.reject();
+        //    //    })
+        //    //e.cancel = d.promise();
+        //    alert('Status was updated for bolus_id=' + e.oldData.bolus_id);
+        //}
+    });
+}
+
+//----------------------------------------------------------------------------
+
 function CowsLogShow() {
     $("#PanelSWhow").html(admincowslogs);
     CowsLogFun()

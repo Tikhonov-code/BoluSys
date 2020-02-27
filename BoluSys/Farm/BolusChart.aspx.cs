@@ -340,7 +340,7 @@ namespace BoluSys.Farm
                     //----------------------------------------------------
                     var result = (from bl in context.Bolus
                                   join fc in context.FarmCows on bl.bolus_id equals fc.Bolus_ID
-                                  where fc.AspNetUser_ID == user_id
+                                  where fc.AspNetUser_ID == user_id && bl.status == true
                                   select new
                                   {
                                       bolus_id = bl.bolus_id,

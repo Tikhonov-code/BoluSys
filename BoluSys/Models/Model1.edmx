@@ -21,6 +21,7 @@
           <Property Name="Date_of_Birth" Type="datetime" />
           <Property Name="Calving_Due_Date" Type="datetime" />
           <Property Name="Actual_Calving_Date" Type="datetime" />
+          <Property Name="status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Cows_log">
           <Key>
@@ -39,6 +40,16 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AspNetUser_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Bolus_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Farms">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="350" />
+          <Property Name="Owner" Type="nvarchar" MaxLength="350" />
+          <Property Name="GeoPosition" Type="geography" />
+          <Property Name="AspNetUser_Id" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -187,6 +198,7 @@
           <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cows_log" EntityType="Self.Cows_log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Farms" EntityType="Self.Farms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCabinet" EntityType="Self.UserCabinet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Z_AlertLogs" EntityType="Self.Z_AlertLogs" Schema="dbo" store:Type="Tables" />
@@ -291,6 +303,7 @@
             <Parameter Name="interval" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="SP_Admin_Z_AlertLogs" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result)" />
+          <EntitySet Name="Farms" EntityType="DB_A4A060_csModel.Farm" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -349,6 +362,7 @@
           <Property Name="Date_of_Birth" Type="DateTime" Precision="3" />
           <Property Name="Calving_Due_Date" Type="DateTime" Precision="3" />
           <Property Name="Actual_Calving_Date" Type="DateTime" Precision="3" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
         </EntityType>
         <ComplexType Name="ChartsXY_sig_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -427,6 +441,16 @@
           <Property Type="DateTime" Name="date_emailsent" Nullable="true" />
           <Property Type="String" Name="email" Nullable="true" MaxLength="100" />
         </ComplexType>
+        <EntityType Name="Farm">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Owner" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="GeoPosition" Type="Geography" />
+          <Property Name="AspNetUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -504,6 +528,7 @@
           <EntitySetMapping Name="Bolus">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
               <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="Actual_Calving_Date" ColumnName="Actual_Calving_Date" />
                 <ScalarProperty Name="Calving_Due_Date" ColumnName="Calving_Due_Date" />
                 <ScalarProperty Name="Date_of_Birth" ColumnName="Date_of_Birth" />
@@ -635,6 +660,17 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="Farms">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.Farm">
+              <MappingFragment StoreEntitySet="Farms">
+                <ScalarProperty Name="AspNetUser_Id" ColumnName="AspNetUser_Id" />
+                <ScalarProperty Name="GeoPosition" ColumnName="GeoPosition" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -8,14 +8,14 @@
         <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Data Gaps</button>
         <button type="button" class="btn btn-primary" onclick="CowsLogShow();">Cows Log</button>
         <button type="button" class="btn btn-primary" onclick="WIReportShow();">Water Intakes Report</button>
+        <button type="button" class="btn btn-primary" onclick="BolusesSetShow();">Settings</button>
         <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>
-<%--        swagger   https://pilot001.data.thethingsnetwork.org/
+        <%--        swagger   https://pilot001.data.thethingsnetwork.org/
     https://www.thethingsindustries.com/
-    --%>
+        --%>
     </div>
-
     <!------------------------------------------------------------->
     <div id="PanelSWhow"></div>
     <!------------------------------------------------------------->
@@ -32,13 +32,17 @@
             margin-top: 30px;
         }
 
-            .full-width-content > .dx-widget {
-                margin-bottom: 20px;
-            }
+        .full-width-content > .dx-widget {
+            margin-bottom: 20px;
+        }
 
-            .full-width-content .dx-field {
-                max-width: 385px;
-            }
+        .full-width-content .dx-field {
+            max-width: 385px;
+        }
+
+        .dx-menu-base .dx-menu-items-container {
+            width: "120px"
+        }
     </style>
 
     <!--Script Section-->

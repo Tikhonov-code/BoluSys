@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
@@ -50,9 +51,77 @@ namespace BoluSys.Admin
                     string rv = Request.QueryString["RawValue"];
                     TTNRawConvertData(tz, rv);
                     break;
+                case "GetBolusesSet":
+                    GetBolusesSet();
+                    break;
+                case "UpdateBolusStatus":
+                    UpdateBolusStatus();
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void UpdateBolusStatus()
+        {
+            //using (var reader = new StreamReader(Request.InputStream))
+            //{
+            //    var content = reader.ReadToEnd();
+            //}
+
+            int bid = Convert.ToInt16(Request.QueryString["bolus_id"]);
+            bool status = Convert.ToBoolean(Request.QueryString["status"]);
+            try
+            {
+                Bolu xel = new Bolu();
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    xel = context.Bolus.Where(x => x.bolus_id == bid).FirstOrDefault();
+                    xel.status = status;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(JsonConvert.SerializeObject("OK"));
+            Response.End();
+        }
+
+        private void GetBolusesSet()
+        {
+            string res_json = "";
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var r = (from b in context.Bolus
+                             join fc in context.FarmCows on b.bolus_id equals fc.Bolus_ID
+                             join f in context.Farms on fc.AspNetUser_ID equals f.AspNetUser_Id
+                             select new
+                             {
+                                 Name = f.Name,
+                                 bolus_id = b.bolus_id,
+                                 animal_id = b.animal_id,
+                                 status = b.status
+                             }).ToList();
+
+                    res_json = JsonConvert.SerializeObject(r);
+                }
+            }
+            catch (Exception ex)
+            {
+                res_json = ex.Message;
+            }
+
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void GetWiReportData(string dt)
@@ -108,7 +177,7 @@ namespace BoluSys.Admin
                 var res = (from m in context.MeasDatas
                            join b in context.Bolus on m.bolus_id equals b.bolus_id
                            join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
-                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to && b.status==true
                            select new
                            {
                                bolus_id = m.bolus_id,
