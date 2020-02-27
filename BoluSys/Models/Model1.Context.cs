@@ -32,6 +32,8 @@ namespace BoluSys.Models
         public virtual DbSet<UserCabinet> UserCabinets { get; set; }
         public virtual DbSet<Bolu> Bolus { get; set; }
         public virtual DbSet<Cows_log> Cows_log { get; set; }
+        public virtual DbSet<Z_AlertLogs> Z_AlertLogs { get; set; }
+        public virtual DbSet<Farm> Farms { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
@@ -136,6 +138,163 @@ namespace BoluSys.Models
                 new ObjectParameter("wi_calbr", typeof(double));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<WaterIntakes_sig_Result>("WaterIntakes_sig", dt1Parameter, dt2Parameter, bolus_idParameter, wi_calbrParameter);
+        }
+    
+        public virtual ObjectResult<ChartsXY_temp_Result> ChartsXY_temp(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> interval)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("Interval", interval) :
+                new ObjectParameter("Interval", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ChartsXY_temp_Result>("ChartsXY_temp", dt1Parameter, dt2Parameter, bolus_idParameter, intervalParameter);
+        }
+    
+        [DbFunction("DB_A4A060_csEntities", "FCN_CowsIsSick")]
+        public virtual IQueryable<FCN_CowsIsSick_Result> FCN_CowsIsSick(Nullable<System.DateTime> dt, Nullable<int> hoursinterval, Nullable<double> temp_limit, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var hoursintervalParameter = hoursinterval.HasValue ?
+                new ObjectParameter("hoursinterval", hoursinterval) :
+                new ObjectParameter("hoursinterval", typeof(int));
+    
+            var temp_limitParameter = temp_limit.HasValue ?
+                new ObjectParameter("temp_limit", temp_limit) :
+                new ObjectParameter("temp_limit", typeof(double));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<FCN_CowsIsSick_Result>("[DB_A4A060_csEntities].[FCN_CowsIsSick](@dt, @hoursinterval, @temp_limit, @user_id)", dtParameter, hoursintervalParameter, temp_limitParameter, user_idParameter);
+        }
+    
+        [DbFunction("DB_A4A060_csEntities", "FCN_CowsIsSad")]
+        public virtual IQueryable<FCN_CowsIsSad_Result> FCN_CowsIsSad(Nullable<System.DateTime> dt, Nullable<int> hoursinterval, Nullable<double> temp_limit, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var hoursintervalParameter = hoursinterval.HasValue ?
+                new ObjectParameter("hoursinterval", hoursinterval) :
+                new ObjectParameter("hoursinterval", typeof(int));
+    
+            var temp_limitParameter = temp_limit.HasValue ?
+                new ObjectParameter("temp_limit", temp_limit) :
+                new ObjectParameter("temp_limit", typeof(double));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<FCN_CowsIsSad_Result>("[DB_A4A060_csEntities].[FCN_CowsIsSad](@dt, @hoursinterval, @temp_limit, @user_id)", dtParameter, hoursintervalParameter, temp_limitParameter, user_idParameter);
+        }
+    
+        [DbFunction("DB_A4A060_csEntities", "FCN_Farm_TodayEventsList")]
+        public virtual IQueryable<FCN_Farm_TodayEventsList_Result> FCN_Farm_TodayEventsList(Nullable<System.DateTime> dt, string user_id, string email, string @event)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("Email", email) :
+                new ObjectParameter("Email", typeof(string));
+    
+            var eventParameter = @event != null ?
+                new ObjectParameter("event", @event) :
+                new ObjectParameter("event", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<FCN_Farm_TodayEventsList_Result>("[DB_A4A060_csEntities].[FCN_Farm_TodayEventsList](@dt, @user_id, @Email, @event)", dtParameter, user_idParameter, emailParameter, eventParameter);
+        }
+    
+        [DbFunction("DB_A4A060_csEntities", "FCN_Farm_CowsUnderMonitoring")]
+        public virtual IQueryable<Nullable<int>> FCN_Farm_CowsUnderMonitoring(Nullable<System.DateTime> dt, string user_id, Nullable<int> interval)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Nullable<int>>("[DB_A4A060_csEntities].[FCN_Farm_CowsUnderMonitoring](@dt, @user_id, @interval)", dtParameter, user_idParameter, intervalParameter);
+        }
+    
+        public virtual int SP_GET_DataGaps(Nullable<System.DateTime> dt, Nullable<int> interval, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_DataGaps", dtParameter, intervalParameter, user_idParameter);
+        }
+    
+        public virtual ObjectResult<DataGapsFarm_Result> DataGapsFarm(Nullable<System.DateTime> dt, Nullable<int> interval, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<DataGapsFarm_Result>("DataGapsFarm", dtParameter, intervalParameter, user_idParameter);
+        }
+    
+        public virtual ObjectResult<SP_Admin_WaterIntakesReport_Result> SP_Admin_WaterIntakesReport(Nullable<System.DateTime> dt, Nullable<int> interval)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_WaterIntakesReport_Result>("SP_Admin_WaterIntakesReport", dtParameter, intervalParameter);
+        }
+    
+        public virtual ObjectResult<SP_Admin_Z_AlertLogs_Result> SP_Admin_Z_AlertLogs()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_Z_AlertLogs_Result>("SP_Admin_Z_AlertLogs");
         }
     }
 }

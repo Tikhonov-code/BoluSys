@@ -171,6 +171,12 @@
     <Content Include="Account\ResetPasswordConfirmation.aspx" />
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
     <Content Include="Account\VerifyPhoneNumber.aspx" />
+    <Content Include="Admin\Admin.aspx" />
+    <Content Include="Admin\AdminJS\Adminjs.js" />
+    <Content Include="Admin\AdminJS\DataGaps.js" />
+    <Content Include="Admin\AdminJS\IntakesData.js" />
+    <Content Include="Admin\DataGaps.aspx" />
+    <Content Include="Admin\IntakesData.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -224,17 +230,24 @@
     <Content Include="dx\css\dx.light.css" />
     <Content Include="dx\js\dx.all.js" />
     <Content Include="Farm\BolusChart.aspx" />
-    <Content Include="Farm\BolusChart_new.aspx" />
     <Content Include="Farm\ChartsXY.aspx" />
+    <Content Include="Farm\Dashboard.aspx" />
+    <Content Include="Farm\Dashboard1.aspx" />
     <Content Include="Farm\FarmJS\BolusChart.js" />
-    <Content Include="Farm\FarmJS\BolusChart_new.js" />
     <Content Include="Farm\FarmJS\ChartsXY.js" />
+    <Content Include="Farm\FarmJS\Dashboard.js" />
+    <Content Include="Farm\FarmJS\Dashboard1.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
     <Content Include="Farm\FarmJS\FarmGeneral.js" />
     <Content Include="Farm\FarmJS\UserCabinet.js" />
+    <Content Include="Farm\imgs\cowHealthy.jpg" />
+    <Content Include="Farm\imgs\cowSad.jpg" />
+    <Content Include="Farm\imgs\cowsick.JPG" />
+    <Content Include="Farm\imgs\CycleRed.jpg" />
     <Content Include="Farm\imgs\DayReportChart.jpg" />
     <Content Include="Farm\imgs\DayReportFull.jpg" />
     <Content Include="Farm\imgs\DayReportStat.jpg" />
+    <Content Include="Farm\imgs\iconfinder_cow_4591898.svg" />
     <Content Include="Farm\json_data.aspx" />
     <Content Include="Farm\Stat.aspx" />
     <Content Include="Farm\UserCabinet.aspx" />
@@ -258,7 +271,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="Farm\Web.config" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\DeployCattleman.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -423,6 +436,27 @@
     <Compile Include="Account\VerifyPhoneNumber.aspx.designer.cs">
       <DependentUpon>VerifyPhoneNumber.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\Admin.aspx.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Admin.aspx.designer.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\DataGaps.aspx.cs">
+      <DependentUpon>DataGaps.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\DataGaps.aspx.designer.cs">
+      <DependentUpon>DataGaps.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\IntakesData.aspx.cs">
+      <DependentUpon>IntakesData.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\IntakesData.aspx.designer.cs">
+      <DependentUpon>IntakesData.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
@@ -455,19 +489,26 @@
     <Compile Include="Farm\BolusChart.aspx.designer.cs">
       <DependentUpon>BolusChart.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Farm\BolusChart_new.aspx.cs">
-      <DependentUpon>BolusChart_new.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Farm\BolusChart_new.aspx.designer.cs">
-      <DependentUpon>BolusChart_new.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Farm\ChartsXY.aspx.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Farm\ChartsXY.aspx.designer.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Farm\Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Farm\Dashboard1.aspx.cs">
+      <DependentUpon>Dashboard1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\Dashboard1.aspx.designer.cs">
+      <DependentUpon>Dashboard1.aspx</DependentUpon>
     </Compile>
     <Compile Include="Farm\json_data.aspx.cs">
       <DependentUpon>json_data.aspx</DependentUpon>
@@ -504,13 +545,33 @@
     <Compile Include="Models\ChartsXY_sig_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChartsXY_temp_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Cows_log.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataGaps.cs" />
+    <Compile Include="Models\DataGapsFarm_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Farm.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FarmCow.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FCN_CowsIsSad_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FCN_CowsIsSick_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FCN_Farm_TodayEventsList_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Intakes.cs" />
     <Compile Include="Models\MeasData.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -529,6 +590,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\SP_Admin_WaterIntakesReport_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_Admin_Z_AlertLogs_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SP_GET_FARM_STAT_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -536,6 +603,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\WaterIntakes_sig_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Z_AlertLogs.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

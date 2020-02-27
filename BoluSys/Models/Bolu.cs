@@ -26,5 +26,6 @@ namespace BoluSys.Models
         public Nullable<System.DateTime> Date_of_Birth { get; set; }
         public Nullable<System.DateTime> Calving_Due_Date { get; set; }
         public Nullable<System.DateTime> Actual_Calving_Date { get; set; }
+        public bool status { get; set; }
     }
 }

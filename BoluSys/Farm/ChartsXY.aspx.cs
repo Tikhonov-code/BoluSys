@@ -147,7 +147,7 @@ namespace BoluSys.Farm
                     x.bolus_id,
                     x.animal_id
                     //}).Distinct().OrderBy(d => d.bolus_id).ToList();
-                }).Distinct().Where(bl => bolusIdList.Contains(bl.bolus_id)).OrderBy(d => d.bolus_id).ToList();
+                    }).Distinct().Where(bl => bolusIdList.Contains(bl.bolus_id)).OrderBy(d => d.bolus_id).ToList();
 
                 if (b.Count == 0)
                 {

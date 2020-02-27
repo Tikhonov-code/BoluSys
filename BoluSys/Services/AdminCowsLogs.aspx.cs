@@ -44,7 +44,7 @@ namespace BoluSys.Services
             int id_Update = Convert.ToInt32(Request.QueryString["id"]);
             string Evnt = Request.Form["Event"];
             string Descr = Request.Form["Description"];
-            string Evnt_Date = Request.Form["Event_Date"];
+            string Event_Date = Request.Form["Event_Date"];
 
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
@@ -52,7 +52,7 @@ namespace BoluSys.Services
 
                 if (!string.IsNullOrEmpty(Evnt)) cl.Event = Evnt;
                 if (!string.IsNullOrEmpty(Descr)) cl.Description = Descr;
-                if (!string.IsNullOrEmpty(Evnt_Date)) cl.Event_Date = DateTime.Parse(Evnt_Date);
+                if (!string.IsNullOrEmpty(Event_Date)) cl.Event_Date = Parse_StringToDateTime(Event_Date);
 
                 context.SaveChanges();
 
@@ -107,18 +107,18 @@ namespace BoluSys.Services
             string Evnt = Request.Form["Event"];
             string Descr = Request.Form["Description"];
 
-            DateTime Evnt_Date = new DateTime();
-            string dt = Request.Form["Event_Date"];
+            DateTime Evnt_Date = Parse_StringToDateTime(Request.Form["Event_Date"]); 
+            //string dt = Request.Form["Event_Date"];
 
             //dt = "Sun Nov 24 2019 00:00:00 GMT + 0200(Eastern European Standard Time)";
 
-            bool dtct = DateTime.TryParse(dt, out Evnt_Date);
-            if (!dtct)
-            {
-                string date = dt.Substring(4, 11);
-                string s = DateTime.ParseExact(date, "MMM dd yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-                Evnt_Date = (DateTime.TryParse(s, out Evnt_Date)) ? Evnt_Date :  DateTime.Now ;
-            }
+            //bool dtct = DateTime.TryParse(dt, out Evnt_Date);
+            //if (!dtct)
+            //{
+            //    string date = dt.Substring(4, 11);
+            //    string s = DateTime.ParseExact(date, "MMM dd yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+            //    Evnt_Date = (DateTime.TryParse(s, out Evnt_Date)) ? Evnt_Date :  DateTime.Now ;
+            //}
 
 
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
@@ -155,6 +155,21 @@ namespace BoluSys.Services
             Response.ContentType = "application/json;charset=UTF-8";
             Response.Write(res_json);
             Response.End();
+        }
+        public DateTime Parse_StringToDateTime(string dt)
+        {
+            DateTime Evnt_Date = new DateTime();
+
+            //dt = "Sun Nov 24 2019 00:00:00 GMT + 0200(Eastern European Standard Time)";
+
+            bool dtct = DateTime.TryParse(dt, out Evnt_Date);
+            if (!dtct)
+            {
+                string date = dt.Substring(4, 11);
+                string s = DateTime.ParseExact(date, "MMM dd yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                Evnt_Date = (DateTime.TryParse(s, out Evnt_Date)) ? Evnt_Date : DateTime.Now;
+            }
+            return Evnt_Date;
         }
     }
 }

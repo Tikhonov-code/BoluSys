@@ -10,6 +10,6 @@
 namespace BoluSys.Farm {
     
     
-    public partial class BolusChart_new {
+    public partial class Dashboard {
     }
 }
