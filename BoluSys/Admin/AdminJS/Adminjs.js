@@ -66,7 +66,11 @@ function AlertsListShow() {
                 width: 500,
                 height: 50
             },
-            "date_emailsent",
+            {
+                dataField: "date_emailsent",
+                width: 150,
+                dataType: "datetime"
+            },
             {
                 dataField: "email",
                 width: 200
@@ -156,13 +160,15 @@ function FillData(data_db) {
                 cssClass: 'cls',
                 alignment: 'center',
                 caption: "Date From",
-                dataField: "dt_from"
+                dataField: "dt_from",
+                dataType: "datetime"
             },
             {
                 cssClass: 'cls',
                 alignment: 'center',
                 caption: "Date To",
-                dataField: "dt_to"
+                dataField: "dt_to",
+                dataType: "datetime"
             },
             {
                 cssClass: 'cls',
@@ -321,7 +327,7 @@ function BolusesSetView() {
             },
             update: function (key, values) {
                 var deferred = $.Deferred();
-                $.post("Admin.aspx?SP=UpdateBolusStatus&bolus_id=" + encodeURIComponent(key)+"&status="+values.status, values).done(function (data) {
+                $.post("Admin.aspx?SP=UpdateBolusStatus&bolus_id=" + encodeURIComponent(key) + "&status=" + values.status, values).done(function (data) {
                     deferred.resolve(data.key);
                     //alert('Status was updated for bolus_id=' + encodeURIComponent(key));
                 });

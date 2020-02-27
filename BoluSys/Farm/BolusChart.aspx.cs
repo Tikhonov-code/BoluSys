@@ -373,67 +373,6 @@ namespace BoluSys.Farm
             }
             return Evnt_Date;
         }
-        //[WebMethod]
-        //public void GetIntakesData(string dtfrom, string dtto, string bid)
-        //{
-        //    DateTime dt1 = DateTime.Parse(dtfrom);
-        //    DateTime dt2 = DateTime.Parse(dtto);
-        //    int bid_int = Convert.ToInt32(bid);
-        //    string res_json;
-        //    try
-        //    {
-        //        using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
-        //        {
-        //            var res = context.WaterIntakes_sig(dt1, dt2, bid_int, 1).Select(x => new
-        //            {
-        //                arg = x.bolus_full_date,
-        //                val = x.intakes
-        //            }).ToList();
-        //            TotalIntakes = res.Sum(x => x.val).ToString();
-
-        //            //Check if intakes info exits
-        //            if (res.Count == 0)
-        //            {
-        //                res_json = null;
-        //            }
-        //            else
-        //            {
-        //                // Intakes data exits!
-        //                var arr_date = context.MeasDatas.Where(x => x.bolus_id == bid_int &&
-        //                        (x.bolus_full_date >= dt1 && x.bolus_full_date <= dt1)).Select(
-        //                    y => new
-        //                    {
-        //                        t = y.bolus_full_date.Value
-        //                    }).OrderBy(y => y.t).ToList();
-
-        //                DateTime[] arr_dt = new DateTime[arr_date.Count + res.Count];
-        //                arr_dt[0] = dt1;
-        //                Intakes p = new Intakes();
-        //                p.val = 0.0;
-        //                foreach (var item in arr_date)
-        //                {
-        //                    p.arg = item.t;
-        //                    res.Add(new { p.arg, p.val });
-        //                }
-
-        //                var resOrdered = res.OrderBy(x => x.arg);
-
-        //                res_json = JsonConvert.SerializeObject(resOrdered);
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(ex.Message);
-        //        res_json = null;
-        //    }
-        //    //return res_json;
-        //    Response.Clear();
-        //    Response.ContentType = "application/json;charset=UTF-8";
-        //    Response.Write(res_json);
-        //    Response.End();
-        //}
-
 
         [WebMethod]
         public void GetIntakesData(string dtfrom, string dtto, string bid)
