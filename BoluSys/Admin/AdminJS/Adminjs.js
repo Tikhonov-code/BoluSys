@@ -174,7 +174,8 @@ function FillData(data_db) {
                 cssClass: 'cls',
                 alignment: 'center',
                 caption: "Interval, min",
-                dataField: "interval"
+                dataField: "interval",
+                dataType: "number"
             }]
     });
 
