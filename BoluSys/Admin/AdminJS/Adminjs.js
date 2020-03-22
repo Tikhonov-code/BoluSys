@@ -2,11 +2,22 @@
 var tableborders = '';//"style='border-color: #b3d1ff; border-style:solid;'";
 
 var alertlist = "<div id='AlertsList' " + tableborders + "><div class='row' style = 'text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
-    "<h3>Alerts List</h3></div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
+    "<h3>Alerts List</h3>300 latest records</div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
+
 var datagaps = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
     "<h3>Data Gaps</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
     "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
     "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='SearchGaps'></div></div></div><div class='container'>" +
+    "<div id='GridGaps'></div></div></div></div>";
+var datagapsPercent = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Data Gaps In % For Herd</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
+    "<div class='col-sm-1'  id='farm_user'></div>"+
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
+    "<div class='col-sm-2' style='text-align: left;'><div id='SearchGaps'></div></div></div><div class='container'>" +
     "<div id='GridGaps'></div></div></div></div>";
 
 var wiReport = "<div id='WiReportDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
@@ -80,6 +91,7 @@ function AlertsListShow() {
 };
 
 //-------Data Gaps Section----------------------------------------
+//-------Intervals in mins----------------------------------------
 function DataGapsShow() {
     $("#PanelSWhow").html(datagaps);
 
@@ -180,6 +192,103 @@ function FillData(data_db) {
     });
 
 };
+//-------Gaps in % for Herd----------------------------------------
+
+function GapsByFarmHerdShow() {
+    $("#PanelSWhow").html(datagapsPercent);
+
+    $.getJSON('admin.aspx?SP=GetFarmNameList',
+        function (result) {
+            $("#farm_user").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                valueExpr: "AspNetUser_Id",
+                //value: result[0].ID,
+                width: "200"
+            });
+        });
+
+    //----------------------------------------------------
+    var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+    $("#DateFrom").dxDateBox({
+        type: "datetime",
+        name: "Date From:",
+        value: now_begin,
+        width: "200"
+    });
+
+    $("#DateTo").dxDateBox({
+        type: "datetime",
+        value: now_end,
+        width: "200"
+    });
+
+    var data_db;
+
+    $("#SearchGaps").dxButton({
+        //stylingMode: "outlined",
+        text: "Report",
+        elementAttr: {
+            title: "Click To Find",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 80,
+        onClick: function () {
+            data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
+                    var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
+                    var userid = $("#farm_user").dxSelectBox("instance").option("value");
+                    return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1+"&userid="+userid);
+                }
+            });
+
+            FillDataGapsPercent(data_db);
+        }
+    });
+};
+function FillDataGapsPercent(data_db) {
+    $("#GridGaps").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
+        //columns: [
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Bolus_id",
+        //        dataField: "bolus_id",
+        //        width:100
+        //    },
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Animal_id",
+        //        dataField: "animal_id",
+        //        width: 100
+        //    }]
+    });
+
+};
+
+//END-------Data Gaps Section----------------------------------------
 
 //--------Water Intakes Report Section----------------------------------------
 function WIReportShow() {

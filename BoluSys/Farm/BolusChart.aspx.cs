@@ -63,9 +63,43 @@ namespace BoluSys.Farm
                 case "GetGapsData":
                     GetGapsData(Request.QueryString["DateFrom"], Request.QueryString["DateTo"], Request.QueryString["Bolus_id"]);
                     break;
+                case "GetGapsDataValue":
+                    GetGapsDataValue(Request.QueryString["DateFrom"], Request.QueryString["DateTo"], Request.QueryString["Bolus_id"]);
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void GetGapsDataValue(string dtfrom, string dtto, string bid)
+        {
+            DateTime dt1 = DateTime.Parse(dtfrom);
+            DateTime dt2 = DateTime.Parse(dtto);
+            int bid_int = Convert.ToInt32(bid);
+            //DateTime dt1 = DateTime.Parse("2020-03-15");
+            //DateTime dt2 = DateTime.Parse("2020-03-15 11:59 PM");
+            //int bid_int = Convert.ToInt32(bid);
+            string res_json;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var res = context.SP_GET_BolusDataGaps(dt1, dt2, bid_int).ToList();
+                    double gaps = Convert.ToDouble(res[0].Gaps);
+                    gaps = (gaps <=0 ) ? 0:gaps;
+                    res_json = JsonConvert.SerializeObject( res[0].Points+gaps.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                res_json = null;
+            }
+            //return res_json;
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void Gate_1()
@@ -277,10 +311,10 @@ namespace BoluSys.Farm
                             //Full-------------------------------------------------------------
                             var result1 = context.MeasDatas.Where(x => x.bolus_id == Bolus_id &&
                             (x.bolus_full_date >= dt_from && x.bolus_full_date <= dt_to)).Select(y => new
-                                    {
-                                        t = y.bolus_full_date.Value,
-                                        Temperature = y.temperature
-                                    }).OrderBy(y => y.t).ToList();
+                            {
+                                t = y.bolus_full_date.Value,
+                                Temperature = y.temperature
+                            }).OrderBy(y => y.t).ToList();
                             foreach (var item in result1)
                             {
                                 var it = new BolusIDChart
@@ -501,12 +535,23 @@ namespace BoluSys.Farm
             return result;
         }
 
-        private void GetGapsData(string dt0, string dt1, string bi_d )
+        private void GetGapsData(string dt0, string dt1, string bi_d)
         {
             int bolus_id = Convert.ToInt16(bi_d);
             //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
             DateTime dt_from = DateTime.Parse(dt0);
             DateTime dt_to = DateTime.Parse(dt1);
+
+            //Day Begin---------------------------------------
+            Data_Gaps dg_begin = new Data_Gaps();
+            dg_begin.bolus_id = bolus_id;
+            dg_begin.dt_from = dt_from;
+            //------------------------------------------------
+            //Day End---------------------------------------
+            Data_Gaps dg_end = new Data_Gaps();
+            dg_end.bolus_id = bolus_id;
+            dg_end.dt_to = dt_to;
+            //------------------------------------------------
 
             List<Data_Gaps> result = new List<Data_Gaps>();
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
@@ -522,33 +567,68 @@ namespace BoluSys.Farm
                                animal_id = m.animal_id,
                                bolus_full_date = m.bolus_full_date,
                            }).ToList();
-                //--------------------------------------------------------------------
-                var bid = res.Select(x => new { bid = x.bolus_id }).Distinct().OrderBy(x => x.bid).ToArray();
-                int num_bid = bid.Length;
-                double diffinterval = 0;
-                foreach (var item in bid)
+                if (res.Count > 0)
                 {
-                    var m = res.Where(x => x.bolus_id == item.bid).OrderBy(x => x.bolus_full_date).ToList();
-                    int num_m = m.Count;
-                    for (int i = 1; i < num_m; i++)
-                    {
-                        Data_Gaps dg = new Data_Gaps();
-                        dg.bolus_id = m[i].bolus_id;
-                        dg.animal_id = m[i].animal_id;
-                        dg.dt_to = m[i].bolus_full_date.Value;
-                        dg.dt_from = m[i - 1].bolus_full_date.Value;
-                        diffinterval = (m[i].bolus_full_date.Value - m[i - 1].bolus_full_date.Value).TotalMinutes;
 
-                        if (diffinterval > 15.5)
-                        {
-                            dg.interval = String.Format("{0:0.00}", diffinterval);
-                            result.Add(dg);
-                        }
-                        dg = null;
+
+                    double diffinterval = 0;
+                    //Day Begin--------------------------------------------------------------------
+                    dg_begin.animal_id = res[0].animal_id;
+                    dg_begin.dt_to = res[0].bolus_full_date;
+                    diffinterval = (dg_begin.dt_to.Value - dg_begin.dt_from.Value).TotalMinutes;
+
+                    dg_begin.interval = String.Format("{0:0.00}", diffinterval);
+                    if (diffinterval > 15.5)
+                    {
+                        result.Add(dg_begin);
                     }
+                    //--------------------------------------------------------------------
+
+
+                    var bid = res.Select(x => new { bid = x.bolus_id }).Distinct().OrderBy(x => x.bid).ToArray();
+                    int num_bid = bid.Length;
+
+                    foreach (var item in bid)
+                    {
+                        var m = res.Where(x => x.bolus_id == item.bid).OrderBy(x => x.bolus_full_date).ToList();
+                        int num_m = m.Count;
+                        for (int i = 1; i < num_m; i++)
+                        {
+                            Data_Gaps dg = new Data_Gaps();
+                            dg.bolus_id = m[i].bolus_id;
+                            dg.animal_id = m[i].animal_id;
+                            dg.dt_to = m[i].bolus_full_date.Value;
+                            dg.dt_from = m[i - 1].bolus_full_date.Value;
+                            diffinterval = (m[i].bolus_full_date.Value - m[i - 1].bolus_full_date.Value).TotalMinutes;
+
+                            if (diffinterval > 15.5)
+                            {
+                                dg.interval = String.Format("{0:0.00}", diffinterval);
+                                result.Add(dg);
+                            }
+                            dg = null;
+                        }
+                    }
+                    //--------------------------------------------------------------------
+                    //Day End---------------------------------------------------------------------
+                    dg_end.animal_id = res[0].animal_id;
+                    dg_end.dt_from = res[res.Count - 1].bolus_full_date;
+                    //dg_end.dt_to = dt_to;
+                    diffinterval = (dg_end.dt_to.Value - dg_end.dt_from.Value).TotalMinutes;
+
+                    dg_end.interval = String.Format("{0:0.00}", diffinterval);
+                    if (diffinterval > 15.5)
+                    {
+                        result.Add(dg_end);
+                    }
+                    //Day End---------------------------------------------------------------------
                 }
-                //--------------------------------------------------------------------
+                else
+                {
+                    //result = "";
+                }
             }
+            //---------------------------------------
             var res_json = JsonConvert.SerializeObject(result);
             Response.Clear();
             Response.ContentType = "application/json;charset=UTF-8";

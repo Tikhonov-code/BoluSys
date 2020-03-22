@@ -296,5 +296,77 @@ namespace BoluSys.Models
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_Z_AlertLogs_Result>("SP_Admin_Z_AlertLogs");
         }
+    
+        public virtual ObjectResult<Nullable<double>> SP_GET_WaterIntakesSum(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> wi_calbr)
+        {
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var dt2Parameter = dt2.HasValue ?
+                new ObjectParameter("dt2", dt2) :
+                new ObjectParameter("dt2", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            var wi_calbrParameter = wi_calbr.HasValue ?
+                new ObjectParameter("wi_calbr", wi_calbr) :
+                new ObjectParameter("wi_calbr", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<double>>("SP_GET_WaterIntakesSum", dt1Parameter, dt2Parameter, bolus_idParameter, wi_calbrParameter);
+        }
+    
+        public virtual ObjectResult<SP_GET_BolusDataGaps_Result> SP_GET_BolusDataGaps(Nullable<System.DateTime> dt0, Nullable<System.DateTime> dt1, Nullable<int> bid)
+        {
+            var dt0Parameter = dt0.HasValue ?
+                new ObjectParameter("dt0", dt0) :
+                new ObjectParameter("dt0", typeof(System.DateTime));
+    
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var bidParameter = bid.HasValue ?
+                new ObjectParameter("bid", bid) :
+                new ObjectParameter("bid", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_BolusDataGaps_Result>("SP_GET_BolusDataGaps", dt0Parameter, dt1Parameter, bidParameter);
+        }
+    
+        public virtual int SP_GET_DataGapsFarm(Nullable<System.DateTime> dt, Nullable<int> interval, string user_id)
+        {
+            var dtParameter = dt.HasValue ?
+                new ObjectParameter("dt", dt) :
+                new ObjectParameter("dt", typeof(System.DateTime));
+    
+            var intervalParameter = interval.HasValue ?
+                new ObjectParameter("interval", interval) :
+                new ObjectParameter("interval", typeof(int));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_DataGapsFarm", dtParameter, intervalParameter, user_idParameter);
+        }
+    
+        public virtual int SP_Admin_GapsByFarmHerd(Nullable<System.DateTime> dt0, Nullable<System.DateTime> dt1, string user)
+        {
+            var dt0Parameter = dt0.HasValue ?
+                new ObjectParameter("dt0", dt0) :
+                new ObjectParameter("dt0", typeof(System.DateTime));
+    
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var userParameter = user != null ?
+                new ObjectParameter("user", user) :
+                new ObjectParameter("user", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_Admin_GapsByFarmHerd", dt0Parameter, dt1Parameter, userParameter);
+        }
     }
 }

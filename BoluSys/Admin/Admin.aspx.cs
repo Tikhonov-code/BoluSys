@@ -2,6 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -57,9 +60,38 @@ namespace BoluSys.Admin
                 case "UpdateBolusStatus":
                     UpdateBolusStatus();
                     break;
+                case "GetDataGapsPercent":
+                    GetDataGapsPercent(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
+                    break;
+                case "GetFarmNameList":
+                    GetFarmNameList();
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void GetFarmNameList()
+        {
+            object farmlist;
+            try
+            {
+
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    farmlist = context.Farms.ToList();
+                }
+            }
+            catch (Exception)
+            {
+                farmlist = "No data";
+            }
+
+            var res_json = JsonConvert.SerializeObject(farmlist);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void UpdateBolusStatus()
@@ -177,7 +209,7 @@ namespace BoluSys.Admin
                 var res = (from m in context.MeasDatas
                            join b in context.Bolus on m.bolus_id equals b.bolus_id
                            join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
-                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to && b.status==true
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to && b.status == true
                            select new
                            {
                                bolus_id = m.bolus_id,
@@ -217,6 +249,49 @@ namespace BoluSys.Admin
             Response.Write(res_json);
             Response.End();
         }
+
+        private void GetDataGapsPercent(string dt0, string dt1, string userid)
+        {
+            //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
+            DateTime dt_from = DateTime.Parse(dt0).Date;
+            DateTime dt_to = DateTime.Parse(dt1).Date;
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+
+            string connstr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            SqlConnection con = new SqlConnection(connstr);
+            SqlCommand cmd = new SqlCommand("SP_Admin_GapsByFarmHerd", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add( new SqlParameter("@dt0", dt_from.ToShortDateString()));
+            cmd.Parameters.Add( new SqlParameter("@dt1", dt_to.ToShortDateString()));
+            cmd.Parameters.Add( new SqlParameter("@user", userid));
+            SqlDataReader rdr = null;
+            try
+            { 
+                con.Open();
+                rdr = cmd.ExecuteReader();
+                dt.Load(rdr);
+            }
+            catch (Exception ex)
+            {
+                var x = ex.Message;
+            }
+            finally
+            {
+                con.Close();
+                rdr.Close();
+            }
+
+
+            var res_json = JsonConvert.SerializeObject(dt);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+
+        }
+
 
         // Administrator Cows Logs
         [WebMethod]
