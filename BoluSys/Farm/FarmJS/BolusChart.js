@@ -21,6 +21,7 @@ $(document).ready(function () {
         IntakesChart_Show0(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
         GetTotalIntakes(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
         GetAverTemperature(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
+        GetGapsDataValue(d + ' 12:00 AM', d + ' 11:59 PM', bidc);
 
         GetCowInfo(bidc);
         GetCowsLogs($("#Animal_id").val());
@@ -72,6 +73,7 @@ function dateFrom_Show(dtpar) {
             IntakesChart_Show0(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
             GetTotalIntakes(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
             GetAverTemperature(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
+            GetGapsDataValue(ConvertDateToMyF(newValue), ConvertDateToMyF(dt), $("#Bolus_id").val());
         }
     });
 };
@@ -88,10 +90,10 @@ function dateTo_Show(dtpar) {
             var df = new Date($("#dateFrom").dxDateBox("instance").option('value'));
             //ChartCreate("#chart", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "full");
             ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
-
             IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
             GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
             GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
         }
     });
 };
@@ -251,7 +253,7 @@ function BolusIDList_Show(ds, vl) {
             IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
             GetTotalIntakes(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
             GetAverTemperature(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid); 
-
+            GetGapsDataValue(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
             GetCowInfo(bid);
             GetCowsLogs(aid_c[0].animal_id);
 
@@ -405,7 +407,7 @@ function DataGapsShow() {
                 }
             });
 
-            FillDataGaps(data_db);
+    FillDataGaps(data_db);
 };
 
 function FillDataGaps(data_db) {
@@ -454,3 +456,20 @@ function FillDataGaps(data_db) {
     });
 
 };
+
+function GetGapsDataValue(dt0, dt1, bid) {
+    if (dt0 == undefined || dt1 == undefined || bid == undefined) {
+        $("#DataGapsValue").html("No Data");
+    }
+    else {
+        var url = 'BolusChart.aspx?SP=GetGapsDataValue&DateFrom=' + dt0 + '&DateTo=' + dt1 + '&bolus_id=' + bid;
+        $.getJSON(url, function (result) {
+            var ind1 = result.lastIndexOf(":")+1;
+            var ind2 = result.length;
+            var gap = result.slice(ind1 - ind2);
+            var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+            $("#DataGapsValue").html(result + "% "+mark);
+        });        
+    }
+
+}

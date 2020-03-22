@@ -45,7 +45,8 @@
         <!--------------The DataGrid Section Data Integrity------------------------------------------------------------>
         <%--        Pivot grid--%>
         <div class="well well-sm" style="text-align: center;">
-            <h4>Percent of missing data (When the Present of missing data is greater than 5%, the water intake is not representative)</h4>
+            <h4>Percent of missing data (When the Percent of missing data is greater than 5%, the water intake is not representative)</h4>
+            <h4 id="DataGapsValue" style="align-content: center;"></h4>
         </div>
         <div class="demo-container">
             <div id="DataGapsIndividual" style="align-content: center;"></div>
@@ -67,6 +68,7 @@
     <script src="../../dx/js/dx.all.js"></script>
     <script src="FarmJS/FarmGeneral.js"></script>
     <script src="FarmJS/BolusChart.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <style>
         #chart {
             height: 440px;

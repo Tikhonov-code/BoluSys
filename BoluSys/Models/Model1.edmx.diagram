@@ -7,11 +7,11 @@
       <Diagram DiagramId="64ed9c821a6f458092f89992a44ac0bd" Name="Diagram1">
         <EntityTypeShape EntityType="DB_A4A060_csModel.MeasData" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.FarmCow" Width="1.5" PointX="9.625" PointY="1.125" />
-        <EntityTypeShape EntityType="DB_A4A060_csModel.UserCabinet" Width="1.5" PointX="0.5" PointY="4" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.UserCabinet" Width="1.5" PointX="0.5" PointY="0.875" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Bolu" Width="1.5" PointX="5.375" PointY="0.75" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Cows_log" Width="1.5" PointX="11.375" PointY="1.25" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Z_AlertLogs" Width="1.5" PointX="7.375" PointY="0.75" />
-        <EntityTypeShape EntityType="DB_A4A060_csModel.Farm" Width="1.5" PointX="3.375" PointY="5.75" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.Farm" Width="1.5" PointX="0.625" PointY="4" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

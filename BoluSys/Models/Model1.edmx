@@ -172,21 +172,42 @@
                 <Property Name="bolus_id" Type="int" Nullable="false" />
                 <Property Name="animal_id" Type="int" />
                 <Property Name="event" Type="varchar" MaxLength="10" />
-                <Property Name="message" Type="varchar" MaxLength="250" />
+                <Property Name="message" Type="varchar" MaxLength="500" />
                 <Property Name="date_emailsent" Type="datetime2" Precision="7" />
               </RowType>
             </CollectionType>
           </ReturnType>
+        </Function>
+        <Function Name="SP_Admin_GapsByFarmHerd" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt0" Type="datetime" Mode="In" />
+          <Parameter Name="dt1" Type="datetime" Mode="In" />
+          <Parameter Name="user" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="SP_Admin_WaterIntakesReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt" Type="datetime" Mode="In" />
           <Parameter Name="interval" Type="int" Mode="In" />
         </Function>
         <Function Name="SP_Admin_Z_AlertLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_GET_BolusDataGaps" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt0" Type="datetime2" Mode="In" />
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="bid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_GET_DataGapsFarm" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt" Type="datetime" Mode="In" />
+          <Parameter Name="interval" Type="int" Mode="In" />
+          <Parameter Name="user_id" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
           <Parameter Name="temp_limit" Type="float" Mode="In" />
           <Parameter Name="measurements" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_GET_WaterIntakesSum" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt1" Type="datetime2" Mode="In" />
+          <Parameter Name="dt2" Type="datetime2" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+          <Parameter Name="wi_calbr" Type="float" Mode="In" />
         </Function>
         <Function Name="WaterIntakes_sig" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt1" Type="datetime2" Mode="In" />
@@ -304,6 +325,27 @@
           </FunctionImport>
           <FunctionImport Name="SP_Admin_Z_AlertLogs" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result)" />
           <EntitySet Name="Farms" EntityType="DB_A4A060_csModel.Farm" />
+          <FunctionImport Name="SP_GET_WaterIntakesSum" ReturnType="Collection(Double)">
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="dt2" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+            <Parameter Name="wi_calbr" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_BolusDataGaps" ReturnType="Collection(DB_A4A060_csModel.SP_GET_BolusDataGaps_Result)">
+            <Parameter Name="dt0" Mode="In" Type="DateTime" />
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="bid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_DataGapsFarm">
+            <Parameter Name="dt" Mode="In" Type="DateTime" />
+            <Parameter Name="interval" Mode="In" Type="Int32" />
+            <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Admin_GapsByFarmHerd">
+            <Parameter Name="dt0" Mode="In" Type="DateTime" />
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="user" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -451,6 +493,10 @@
           <Property Name="GeoPosition" Type="Geography" />
           <Property Name="AspNetUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="SP_GET_BolusDataGaps_Result">
+          <Property Type="String" Name="Points" Nullable="true" MaxLength="72" />
+          <Property Type="String" Name="Gaps" Nullable="true" MaxLength="16" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -671,6 +717,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_WaterIntakesSum" FunctionName="DB_A4A060_csModel.Store.SP_GET_WaterIntakesSum" />
+          <FunctionImportMapping FunctionImportName="SP_GET_BolusDataGaps" FunctionName="DB_A4A060_csModel.Store.SP_GET_BolusDataGaps">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_GET_BolusDataGaps_Result">
+                <ScalarProperty Name="Points" ColumnName="Points" />
+                <ScalarProperty Name="Gaps" ColumnName="Gaps" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_DataGapsFarm" FunctionName="DB_A4A060_csModel.Store.SP_GET_DataGapsFarm" />
+          <FunctionImportMapping FunctionImportName="SP_Admin_GapsByFarmHerd" FunctionName="DB_A4A060_csModel.Store.SP_Admin_GapsByFarmHerd" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
