@@ -5,7 +5,7 @@
     <div class="row" style="text-align: center; padding: 10px 0; border-width: thin; background-color: #b3d1ff;">
         <h3>Administrator Panel</h3>
         <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>
-<%--        <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Data Gaps</button>--%>
+        <%--        <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Data Gaps</button>--%>
         <div class="dropdown">
             <button class="auto-style1">Data Gaps Analysis</button>
             <div class="dropdown-content">
@@ -21,7 +21,7 @@
         <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>
-        
+
         <%--        swagger   https://pilot001.data.thethingsnetwork.org/
     https://www.thethingsindustries.com/
         --%>
@@ -71,60 +71,71 @@
     </style>
     <!------------------------------------------------------>
     <style>
-.dropbtn {
-  background-color: #337ab7;
-  color: white;
-  padding:  6px 12px;;
-  font-size: 14px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #b3d1ff;/*#337ab7;*/
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  border-radius: 4px;
-}
-
-.dropdown-content button {
-   color: white;
-  padding: 6px 12px;
-  text-decoration: none;
-  display: block;
-  border-radius: 4px;
-}
-
-.dropdown-content button:hover {background-color: #2d6a9f}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown:hover .dropbtn {
-  background-color: #2d6a9f;
-}
-        .auto-style1 {
-            border-style: none;
-            border-color: inherit;
-            border-width: medium;
+        .dropbtn {
             background-color: #337ab7;
             color: white;
             padding: 6px 12px;
-;font-size: 14px;
+            ;
+            font-size: 14px;
+            border: none;
             cursor: pointer;
             border-radius: 4px;
-            height: 27px;
         }
-    </style>    <!--Script Section-->
-    
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #b3d1ff; /*#337ab7;*/
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+
+            .dropdown-content button {
+                color: white;
+                padding: 6px 12px;
+                text-decoration: none;
+                display: block;
+                border-radius: 4px;
+            }
+
+                .dropdown-content button:hover {
+                    background-color: #2d6a9f
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #2d6a9f;
+        }
+
+        .auto-style1 {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            color:white;
+            background-color: #337ab7;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+    </style>
+    <!--Script Section-->
+
 </asp:Content>

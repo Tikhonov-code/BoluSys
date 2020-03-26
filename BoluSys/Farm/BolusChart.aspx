@@ -2,6 +2,16 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <table>
+        <%--<tr>
+            <td colspan="3" >
+                <div class="dx-field">
+                    <div class="dx-field-label" style="color: black; font-weight: bold;">Switch To:</div>
+                    <div class="dx-field-value">
+                        <div id="dateSet"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>--%>
         <tr>
             <td style="color: black; font-weight: bold;">Date From:</td>
             <td>
@@ -23,11 +33,11 @@
             </td>
         </tr>
     </table>
-    <div style="display:none;">
+    <div style="display: none;">
         DateSearch
         <input id="DateSearch" type="text" value="<%# DateSearch %>" />
         <input id="Bolus_id_Ini" type="text" value="<%# Bolus_id_Ini %>" />
-        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />        
+        <input id="Animal_id_Ini" type="text" value="<%# Animal_id_Ini %>" />
         Total Water Intakes:<input id="TotalIntakes" style="width: 60px;" type="text" value="<%# TotalIntakes %>" />, Litres
 
     </div>

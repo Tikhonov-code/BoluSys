@@ -368,5 +368,22 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_Admin_GapsByFarmHerd", dt0Parameter, dt1Parameter, userParameter);
         }
+    
+        public virtual int SP_GET_DataTempWIntakes(Nullable<System.DateTime> dt0, Nullable<System.DateTime> dt1, Nullable<int> bolus_id)
+        {
+            var dt0Parameter = dt0.HasValue ?
+                new ObjectParameter("dt0", dt0) :
+                new ObjectParameter("dt0", typeof(System.DateTime));
+    
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_DataTempWIntakes", dt0Parameter, dt1Parameter, bolus_idParameter);
+        }
     }
 }
