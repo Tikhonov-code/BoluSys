@@ -229,10 +229,12 @@
     <Content Include="dx\css\dx.common.css" />
     <Content Include="dx\css\dx.light.css" />
     <Content Include="dx\js\dx.all.js" />
+    <Content Include="Farm\AnimalView.aspx" />
     <Content Include="Farm\BolusChart.aspx" />
     <Content Include="Farm\ChartsXY.aspx" />
     <Content Include="Farm\Dashboard.aspx" />
     <Content Include="Farm\Dashboard1.aspx" />
+    <Content Include="Farm\FarmJS\AnimalView.js" />
     <Content Include="Farm\FarmJS\BolusChart.js" />
     <Content Include="Farm\FarmJS\ChartsXY.js" />
     <Content Include="Farm\FarmJS\Dashboard.js" />
@@ -481,6 +483,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Farm\AnimalView.aspx.cs">
+      <DependentUpon>AnimalView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\AnimalView.aspx.designer.cs">
+      <DependentUpon>AnimalView.aspx</DependentUpon>
     </Compile>
     <Compile Include="Farm\BolusChart.aspx.cs">
       <DependentUpon>BolusChart.aspx</DependentUpon>

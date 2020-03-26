@@ -447,7 +447,7 @@ namespace BoluSys.Farm
                         p.val = 0.0;
                         foreach (var item in arr_date)
                         {
-                            p.arg = item.t;
+                            p.arg = item.t; 
                             res.Add(new { p.arg, p.val });
 
                         }
@@ -458,11 +458,17 @@ namespace BoluSys.Farm
                             intakesList.Add(new Intakes { arg = item.arg, val = item.val });
                         }
 
-                        //Intakes_Data IData = new Intakes_Data();
-                        //IData.li = intakesList;
-                        //var tiw = IData.Sum();
+                        List<IntakesStr> ilist = new List<IntakesStr>();
+                        foreach (var item in intakesList)
+                        {
+                            ilist.Add(new IntakesStr {
+                                arg = item.arg.Value.ToShortDateString() + " " + item.arg.Value.ToShortTimeString(),
+                                val = item.val
+                            });
+                        }
 
-                        res_json = JsonConvert.SerializeObject(intakesList);
+                        //res_json = JsonConvert.SerializeObject(intakesList);
+                        res_json = JsonConvert.SerializeObject(ilist);
                     }
                 }
             }

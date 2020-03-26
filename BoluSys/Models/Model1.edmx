@@ -198,6 +198,11 @@
           <Parameter Name="interval" Type="int" Mode="In" />
           <Parameter Name="user_id" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="SP_GET_DataTempWIntakes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt0" Type="datetime" Mode="In" />
+          <Parameter Name="dt1" Type="datetime" Mode="In" />
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+        </Function>
         <Function Name="SP_GET_FARM_STAT" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="date" Type="datetime" Mode="In" />
           <Parameter Name="temp_limit" Type="float" Mode="In" />
@@ -345,6 +350,11 @@
             <Parameter Name="dt0" Mode="In" Type="DateTime" />
             <Parameter Name="dt1" Mode="In" Type="DateTime" />
             <Parameter Name="user" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_DataTempWIntakes">
+            <Parameter Name="dt0" Mode="In" Type="DateTime" />
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
@@ -728,6 +738,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_GET_DataGapsFarm" FunctionName="DB_A4A060_csModel.Store.SP_GET_DataGapsFarm" />
           <FunctionImportMapping FunctionImportName="SP_Admin_GapsByFarmHerd" FunctionName="DB_A4A060_csModel.Store.SP_Admin_GapsByFarmHerd" />
+          <FunctionImportMapping FunctionImportName="SP_GET_DataTempWIntakes" FunctionName="DB_A4A060_csModel.Store.SP_GET_DataTempWIntakes" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

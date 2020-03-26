@@ -324,19 +324,15 @@ function IntakesChart_Show0(df, dt, bid) {
             type: "bar"
         },
         argumentAxis: {
-            tickInterval: 10,
-            label: {
-                format: {
-                    type: "decimal"
-                }
-            }
+            //argumentType: 'datetime',
+            tickInterval: 10
         },
         title: "Intakes " + WaterVol+ ", Litres",
         tooltip: {
             enabled: true,
             customizeTooltip: function (arg) {
                 return {
-                    text: arg.valueText + ", Litres" + "<br />" + arg.argumentText
+                    text: arg.valueText + ", Litres" + "<br />" + DateTimeFormat(arg.argumentText)
                 };
             }
         }
@@ -439,13 +435,15 @@ function FillDataGaps(data_db) {
                 cssClass: 'cls',
                 alignment: 'center',
                 caption: "Date From",
-                dataField: "dt_from"
+                dataField: "dt_from",
+                dataType: "datetime"
             },
             {
                 cssClass: 'cls',
                 alignment: 'center',
                 caption: "Date To",
-                dataField: "dt_to"
+                dataField: "dt_to",
+                dataType: "datetime"
             },
             {
                 cssClass: 'cls',
@@ -473,3 +471,31 @@ function GetGapsDataValue(dt0, dt1, bid) {
     }
 
 }
+
+function DateTimeFormat(dtpar) {
+    var dt = new Date(dtpar);
+    var result = dt.getFullYear() + '-' + dt.getMonth() + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes();
+    return result;
+}
+
+//-------Date Set section----------------------------------------
+//$(function () {
+//    var now = new Date();
+
+//    $("#dateSet").dxDateBox({
+//        type: "date",
+//        value: now,
+//        onValueChanged: function (data) {
+//            //DevExpress.ui.notify(data.value, "warning", 500);
+//            $("#dateFrom").dxDateBox("instance").option('value', data.value);
+//            //dateFrom_Show(data.value);
+//            //dateTo_Show(data.value);
+
+//            //ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
+//            //IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//        }
+//    });
+//});
