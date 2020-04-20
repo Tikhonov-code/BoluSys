@@ -34,6 +34,7 @@ namespace BoluSys.Models
         public virtual DbSet<Cows_log> Cows_log { get; set; }
         public virtual DbSet<Z_AlertLogs> Z_AlertLogs { get; set; }
         public virtual DbSet<Farm> Farms { get; set; }
+        public virtual DbSet<SmsLog> SmsLogs { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
@@ -292,9 +293,21 @@ namespace BoluSys.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_WaterIntakesReport_Result>("SP_Admin_WaterIntakesReport", dtParameter, intervalParameter);
         }
     
-        public virtual ObjectResult<SP_Admin_Z_AlertLogs_Result> SP_Admin_Z_AlertLogs()
+        public virtual ObjectResult<SP_Admin_Z_AlertLogs_Result> SP_Admin_Z_AlertLogs(Nullable<System.DateTime> dt0, Nullable<System.DateTime> dt1, string user_id)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_Z_AlertLogs_Result>("SP_Admin_Z_AlertLogs");
+            var dt0Parameter = dt0.HasValue ?
+                new ObjectParameter("dt0", dt0) :
+                new ObjectParameter("dt0", typeof(System.DateTime));
+    
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_Z_AlertLogs_Result>("SP_Admin_Z_AlertLogs", dt0Parameter, dt1Parameter, user_idParameter);
         }
     
         public virtual ObjectResult<Nullable<double>> SP_GET_WaterIntakesSum(Nullable<System.DateTime> dt1, Nullable<System.DateTime> dt2, Nullable<int> bolus_id, Nullable<double> wi_calbr)
@@ -384,6 +397,53 @@ namespace BoluSys.Models
                 new ObjectParameter("bolus_id", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_DataTempWIntakes", dt0Parameter, dt1Parameter, bolus_idParameter);
+        }
+    
+        public virtual ObjectResult<SP_GET_AnimalIdList_Result> SP_GET_AnimalIdList(string user_id)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_AnimalIdList_Result>("SP_GET_AnimalIdList", user_idParameter);
+        }
+    
+        public virtual ObjectResult<SP_Admin_TempIntakesChart_Result> SP_Admin_TempIntakesChart(Nullable<System.DateTime> dtfrom, Nullable<System.DateTime> dtto, Nullable<int> bid, Nullable<double> wi_calbrx)
+        {
+            var dtfromParameter = dtfrom.HasValue ?
+                new ObjectParameter("dtfrom", dtfrom) :
+                new ObjectParameter("dtfrom", typeof(System.DateTime));
+    
+            var dttoParameter = dtto.HasValue ?
+                new ObjectParameter("dtto", dtto) :
+                new ObjectParameter("dtto", typeof(System.DateTime));
+    
+            var bidParameter = bid.HasValue ?
+                new ObjectParameter("bid", bid) :
+                new ObjectParameter("bid", typeof(int));
+    
+            var wi_calbrxParameter = wi_calbrx.HasValue ?
+                new ObjectParameter("wi_calbrx", wi_calbrx) :
+                new ObjectParameter("wi_calbrx", typeof(double));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_TempIntakesChart_Result>("SP_Admin_TempIntakesChart", dtfromParameter, dttoParameter, bidParameter, wi_calbrxParameter);
+        }
+    
+        public virtual ObjectResult<SP_Admin_SMSserviceList_Result> SP_Admin_SMSserviceList(Nullable<System.DateTime> dt0, Nullable<System.DateTime> dt1, string farm_userID)
+        {
+            var dt0Parameter = dt0.HasValue ?
+                new ObjectParameter("dt0", dt0) :
+                new ObjectParameter("dt0", typeof(System.DateTime));
+    
+            var dt1Parameter = dt1.HasValue ?
+                new ObjectParameter("dt1", dt1) :
+                new ObjectParameter("dt1", typeof(System.DateTime));
+    
+            var farm_userIDParameter = farm_userID != null ?
+                new ObjectParameter("farm_userID", farm_userID) :
+                new ObjectParameter("farm_userID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_SMSserviceList_Result>("SP_Admin_SMSserviceList", dt0Parameter, dt1Parameter, farm_userIDParameter);
         }
     }
 }

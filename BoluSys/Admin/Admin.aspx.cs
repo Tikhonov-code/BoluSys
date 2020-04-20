@@ -25,8 +25,8 @@ namespace BoluSys.Admin
                 case "GetAlertsData":
                     //GetAlertsData();
                     break;
-                case "Get10":
-                    Get10();
+                case "GetAlertEmailList":
+                    GetAlertEmailList(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
                     break;
                 case "GetGapsData":
                     GetGapsData(Request.QueryString["dt0"], Request.QueryString["dt1"]);
@@ -65,10 +65,89 @@ namespace BoluSys.Admin
                     break;
                 case "GetFarmNameList":
                     GetFarmNameList();
+                    break; 
+                case "GetTempIntakesData":
+                    GetTempIntakesData(Request.QueryString["dt0"], Request.QueryString["dt1"],Convert.ToInt16( Request.QueryString["bid"]));
+                    break;
+                case "GetBolusList":
+                    GetBolusList();
+                    break;
+                case "GetSmsLogs":
+                    GetSmsLogs(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
                     break;
                 default:
                     break;
             }
+        }
+
+        private void GetSmsLogs(string dt0, string dt1, string userid)
+        {
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
+            object result = new List<SmsLog>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                result = context.SP_Admin_SMSserviceList(dtfrom, dtto, userid).ToList();
+
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetBolusList()
+        {
+            string res_json;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var bid_list = context.Bolus.Where(s=> s.status == true).Select(x => new {
+                        bolus_id = x.bolus_id,
+                        animal_id = x.animal_id
+                    }).OrderBy(b=>b.animal_id).ToList();
+                    res_json = JsonConvert.SerializeObject(bid_list);
+                }
+            }
+            catch (Exception ex)
+            {
+                res_json = ex.Message;
+                res_json = "";
+            }
+
+            //var res_json = JsonConvert.SerializeObject(bolus_id_list);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetTempIntakesData(string dt0, string dt1, int bid)
+        {
+            object farmlist;
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
+
+            try
+            {
+
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    farmlist = context.SP_Admin_TempIntakesChart(dtfrom, dtto,bid,2).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                farmlist = ex.Message;
+            }
+
+            var res_json = JsonConvert.SerializeObject(farmlist);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void GetFarmNameList()
@@ -173,15 +252,17 @@ namespace BoluSys.Admin
         }
 
         [WebMethod]
-        public void Get10()
+        public void GetAlertEmailList(string dt0, string dt1,string userid)
         {
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
             string res_json = string.Empty;
             try
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     // var res = context.Z_AlertLogs.OrderByDescending(x => x.date_emailsent).ToList();
-                    var res = context.SP_Admin_Z_AlertLogs().ToList();
+                    var res = context.SP_Admin_Z_AlertLogs(dtfrom, dtto, userid).ToList();
                     res_json = JsonConvert.SerializeObject(res);
                 }
             }
@@ -263,12 +344,12 @@ namespace BoluSys.Admin
             SqlConnection con = new SqlConnection(connstr);
             SqlCommand cmd = new SqlCommand("SP_Admin_GapsByFarmHerd", con);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add( new SqlParameter("@dt0", dt_from.ToShortDateString()));
-            cmd.Parameters.Add( new SqlParameter("@dt1", dt_to.ToShortDateString()));
-            cmd.Parameters.Add( new SqlParameter("@user", userid));
+            cmd.Parameters.Add(new SqlParameter("@dt0", dt_from.ToShortDateString()));
+            cmd.Parameters.Add(new SqlParameter("@dt1", dt_to.ToShortDateString()));
+            cmd.Parameters.Add(new SqlParameter("@user", userid));
             SqlDataReader rdr = null;
             try
-            { 
+            {
                 con.Open();
                 rdr = cmd.ExecuteReader();
                 dt.Load(rdr);

@@ -11,14 +11,12 @@ namespace BoluSys.Models
 {
     using System;
     
-    public partial class SP_Admin_Z_AlertLogs_Result
+    public partial class SP_Admin_SMSserviceList_Result
     {
-        public int bolus_id { get; set; }
-        public Nullable<int> animal_id { get; set; }
-        public string Name { get; set; }
-        public string @event { get; set; }
-        public string message { get; set; }
-        public Nullable<System.DateTime> date_emailsent { get; set; }
-        public string email { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public string Event { get; set; }
+        public string Message { get; set; }
+        public string Phone { get; set; }
+        public string Status { get; set; }
     }
 }

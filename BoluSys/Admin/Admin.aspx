@@ -4,7 +4,16 @@
     <!--Menu section------------------------------------------------------------------->
     <div class="row" style="text-align: center; padding: 10px 0; border-width: thin; background-color: #b3d1ff;">
         <h3>Administrator Panel</h3>
-        <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>
+<%--        <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>--%>
+        <div class="dropdown">
+            <button class="auto-style1">Alert Service</button>
+            <div class="dropdown-content">
+                <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Emails List</button>
+                <button type="button" class="btn btn-primary" onclick="SMSListShow();">SMS List</button>
+                <%--<a href="#">Intervals in min</a>
+                <a href="#">Gaps % for Herd</a>--%>
+            </div>
+        </div>
         <%--        <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Data Gaps</button>--%>
         <div class="dropdown">
             <button class="auto-style1">Data Gaps Analysis</button>
@@ -20,8 +29,14 @@
         <button type="button" class="btn btn-primary" onclick="BolusesSetShow();">Settings</button>
         <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
         <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
-        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>
-
+<%--        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>--%>
+        <div class="dropdown">
+            <button class="auto-style1">Download Data</button>
+            <div class="dropdown-content">
+                <button type="button" class="btn btn-primary" onclick="TempIntakesData();">Temperature + Intakes</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>
+            </div>
+        </div>
         <%--        swagger   https://pilot001.data.thethingsnetwork.org/
     https://www.thethingsindustries.com/
         --%>
@@ -33,6 +48,7 @@
     <div id="PanelSWhow"></div>
     <!------------------------------------------------------------->
     <!--Script Section-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <link href="../../dx/css/dx.light.css" rel="stylesheet" />
     <link href="../../dx/css/dx.common.css" rel="stylesheet" />
     <script src="../../dx/js/dx.all.js"></script>

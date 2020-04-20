@@ -12,6 +12,7 @@
         <EntityTypeShape EntityType="DB_A4A060_csModel.Cows_log" Width="1.5" PointX="11.375" PointY="1.25" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Z_AlertLogs" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Farm" Width="1.5" PointX="0.625" PointY="4" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.SmsLog" Width="1.5" PointX="3.375" PointY="5.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
