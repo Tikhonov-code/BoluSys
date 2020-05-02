@@ -232,11 +232,13 @@
     <Content Include="Farm\AnimalView.aspx" />
     <Content Include="Farm\BolusChart.aspx" />
     <Content Include="Farm\ChartsXY.aspx" />
+    <Content Include="Farm\CowPage.aspx" />
     <Content Include="Farm\Dashboard.aspx" />
     <Content Include="Farm\Dashboard1.aspx" />
     <Content Include="Farm\FarmJS\AnimalView.js" />
     <Content Include="Farm\FarmJS\BolusChart.js" />
     <Content Include="Farm\FarmJS\ChartsXY.js" />
+    <Content Include="Farm\FarmJS\CowPage.js" />
     <Content Include="Farm\FarmJS\Dashboard.js" />
     <Content Include="Farm\FarmJS\Dashboard1.js" />
     <Content Include="Farm\FarmJS\Farm.js" />
@@ -273,6 +275,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="Farm\Web.config" />
+    <Content Include="Admin\Web.config" />
     <None Include="Properties\PublishProfiles\DeployCattleman.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -505,6 +508,13 @@
     <Compile Include="Farm\ChartsXY.aspx.designer.cs">
       <DependentUpon>ChartsXY.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Farm\CowPage.aspx.cs">
+      <DependentUpon>CowPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Farm\CowPage.aspx.designer.cs">
+      <DependentUpon>CowPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Farm\Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -543,6 +553,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AspNetUser.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Bolu.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -568,6 +581,10 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FarmCow.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FarmRules.cs" />
+    <Compile Include="Models\Farm_Alert_Rules.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FCN_CowsIsSad_Result.cs">
@@ -599,10 +616,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\SmsLog.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_Admin_SMSserviceList_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_Admin_TempIntakesChart_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SP_Admin_WaterIntakesReport_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_Admin_Z_AlertLogs_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_GET_AnimalIdList_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SP_GET_BolusDataGaps_Result.cs">

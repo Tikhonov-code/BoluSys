@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -25,8 +26,8 @@ namespace BoluSys.Admin
                 case "GetAlertsData":
                     //GetAlertsData();
                     break;
-                case "Get10":
-                    Get10();
+                case "GetAlertEmailList":
+                    GetAlertEmailList(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
                     break;
                 case "GetGapsData":
                     GetGapsData(Request.QueryString["dt0"], Request.QueryString["dt1"]);
@@ -66,9 +67,309 @@ namespace BoluSys.Admin
                 case "GetFarmNameList":
                     GetFarmNameList();
                     break;
+                case "GetTempIntakesData":
+                    GetTempIntakesData(Request.QueryString["dt0"], Request.QueryString["dt1"], Convert.ToInt16(Request.QueryString["bid"]));
+                    break;
+                case "GetBolusList":
+                    GetBolusList();
+                    break;
+                case "GetSmsLogs":
+                    GetSmsLogs(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
+                    break;
+                case "GetFarmInfo":
+                    GetFarmInfo();
+                    break;
+                case "SaveFarmInfo":
+
+                    SaveFarmInfo(Request.QueryString["data"]);
+                    break;
                 default:
                     break;
             }
+        }
+
+        [WebMethod]
+        private void SaveFarmInfo(string data)
+        {
+            string res_json = string.Empty;
+            List<FarmRules> farminfo = ConvertDataToFarmRules(data);
+
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    string farmname = farminfo[0].Name;
+                    var user_id = context.Farms.Where(x => x.Name == farmname).SingleOrDefault().AspNetUser_Id.ToString();
+                    var frec = context.Farm_Alert_Rules.Where(x => x.AspNetUser_Id == user_id).ToList();
+                    foreach (var item in frec)
+                    {
+                        var smsemailbits = farminfo.Where(x => x.Alert_Name == item.Alert_Name).SingleOrDefault();
+                        if (smsemailbits != null)
+                        {
+                            item.sms = smsemailbits.sms_s;
+                            item.email = smsemailbits.email_s;
+                        }
+                        ;
+                    }
+
+                    context.SaveChanges();
+                    res_json = JsonConvert.SerializeObject("OK");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res_json = JsonConvert.SerializeObject(ex.Message);
+            }
+
+            res_json = JsonConvert.SerializeObject("OK");
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private List<FarmRules> ConvertDataToFarmRules(string xd)
+        {
+            List<FarmRules> result = new List<FarmRules>();
+            string[] xdd = xd.Split(',');
+            string xdd_Name = GetValueOfField(xdd[0]);
+            string xdd_Owner = GetValueOfField(xdd[1]);
+            string xdd_geoPosition = GetValueOfField(xdd[2]);
+            string xdd_Phone = GetValueOfField(xdd[3]);
+            string xdd_Email = GetValueOfField(xdd[4]);
+
+
+            Boolean Q405_SMS = GetValueOfFieldBool(xdd[5]);
+            Boolean Q405_email = GetValueOfFieldBool(xdd[6]);
+            Boolean Q41_SMS = GetValueOfFieldBool(xdd[7]);
+            Boolean Q41_email = GetValueOfFieldBool(xdd[8]);
+            Boolean WI20_SMS = GetValueOfFieldBool(xdd[9]);
+            Boolean WI20_email = GetValueOfFieldBool(xdd[10]);
+
+            FarmRules r_Q405 = new FarmRules();
+            r_Q405.Alert_Name = "Q40.5";
+            r_Q405.Name = xdd_Name;
+            r_Q405.Owner = xdd_Owner;
+            //-----------------------------------
+            //string xy = "-80.4156195 43.5243177";
+            //System.Data.Entity.Spatial.DbGeography geox = System.Data.Entity.Spatial.DbGeography.FromText(xy);
+            //r_Q405.SetGeoPosition(geox);
+            //-----------------------------------
+            r_Q405.Phone = xdd_Phone;
+            r_Q405.Email = xdd_Email;
+            //---------------------------------------
+            FarmRules r_Q41 = new FarmRules();
+            r_Q41.Alert_Name = "Q41";
+            r_Q41.Name = xdd_Name;
+            r_Q41.Owner = xdd_Owner;
+            r_Q41.Phone = xdd_Phone;
+            r_Q41.Email = xdd_Email;
+            //---------------------------------------
+            FarmRules r_WI20 = new FarmRules();
+            r_WI20.Alert_Name = "WI20";
+            r_WI20.Name = xdd_Name;
+            r_WI20.Owner = xdd_Owner;
+            r_WI20.Phone = xdd_Phone;
+            r_WI20.Email = xdd_Email;
+
+
+            //----------------Q405 settings--------------------------
+            r_Q405.sms_s = Q405_SMS;
+            r_Q405.email_s = Q405_email;
+            //----------------Q41 settings---------------------------
+            r_Q41.sms_s = Q41_SMS;
+            r_Q41.email_s = Q41_email;
+            //----------------WI20 settings--------------------------
+            r_WI20.sms_s = WI20_SMS;
+            r_WI20.email_s = WI20_email;
+            //--------------------------------------------------------
+
+            result.Add(r_Q405);
+            result.Add(r_Q41);
+            result.Add(r_WI20);
+            return result;
+        }
+
+        private string GetValueOfField(string str)
+        {
+            string[] str0 = str.Split(':');
+            string result = str0[1].Replace("\"", "").Replace("}", "").Trim();
+            return result;
+        }
+        private bool GetValueOfFieldBool(string str)
+        {
+            bool b_result = false;
+            string[] str0 = str.Split(':');
+            string result = str0[1].Replace("\"", "").Replace("}", "").Trim();
+            if (result == "0"|| result =="false")
+            {
+                b_result = false;
+            }
+            if (result == "1" || result == "true")
+            {
+                b_result = true;
+            }
+
+            return b_result;
+        }
+
+        private void GetFarmInfo()
+        {
+            string result = string.Empty;
+            List<FarmRules> qfr = new List<FarmRules>();
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var q = (from f in context.Farms
+                         join a in context.Farm_Alert_Rules on f.AspNetUser_Id equals a.AspNetUser_Id
+                         join u in context.AspNetUsers on f.AspNetUser_Id equals u.Id
+                         select new
+                         {
+                             Name = f.Name,
+                             Owner = f.Owner,
+                             geoPosition = f.GeoPosition,
+                             Phone = u.PhoneNumber,
+                             Email = u.Email,
+                             Alert_Name = a.Alert_Name,
+                             sms_s = a.sms,
+                             email_s = a.email
+                         }).ToList();
+
+                foreach (var item in q)
+                {
+                    FarmRules fr = new FarmRules();
+                    fr.Name = item.Name;
+                    fr.Owner = item.Owner;
+                    fr.geoPosition = item.geoPosition;
+                    fr.Phone = item.Phone;
+                    fr.Email = item.Email;
+                    fr.Alert_Name = item.Alert_Name;
+                    fr.sms_s = item.sms_s;
+                    fr.email_s = item.email_s;
+                    qfr.Add(fr);
+                }
+            }
+            result = ConvertToFAlist(qfr);
+            //var res_json = JsonConvert.SerializeObject(q);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            //Response.Write(res_json);
+            Response.Write(result);
+            Response.End();
+        }
+
+        private string ConvertToFAlist(List<FarmRules> qfr)
+        {
+            string result = "[";
+            var farms = qfr.Select(x => x.Name).Distinct().ToList();
+
+            foreach (var item in farms)
+            {
+                var xf = qfr.Where(t => t.Name == item).Distinct().ToList();
+                //1.-------------------------------------
+                result += "{"
+                                + "\"Name\": \"" + xf[0].Name + "\","
+                                + "\"Owner\": \"" + xf[0].Owner + "\","
+                                + "\"GeoPosition\": \"" + xf[0].geoPosition + "\","
+                                + "\"Phone\": \"" + xf[0].Phone + "\","
+                                + "\"Email\": \"" + xf[0].Email + "\",";
+                //2. Get rules list-----------------------------------------
+                var rules = qfr.Where(t => t.Name == item).Select(x => new
+                {
+                    Alert_Name = x.Alert_Name,
+                    sms_s = x.sms_s,
+                    email_s = x.email_s
+                }).ToList();
+                //3. Add rules----------------------------------------------
+
+                //PropertyInfo[] props = fieldsType.GetProperties(BindingFlags.Public
+                //    | BindingFlags.Instance);
+                foreach (var itemR in rules)
+                {
+                    string an = itemR.Alert_Name.Replace(".", "");
+                    result += "\"" + an + "_SMS\":" + Convert.ToInt16(itemR.sms_s).ToString() + ","
+                            + "\"" + an + "_email\":" + Convert.ToInt16(itemR.email_s).ToString() + ",";
+                }
+                result = result.Substring(0, result.Length - 1);
+                result += "},";
+                ;
+            }
+            //----------------------------------------------
+            result = result.Substring(0, result.Length - 1);
+            result += "]";
+            return result;
+        }
+
+        private void GetSmsLogs(string dt0, string dt1, string userid)
+        {
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
+            object result = new List<SmsLog>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                result = context.SP_Admin_SMSserviceList(dtfrom, dtto, userid).ToList();
+
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetBolusList()
+        {
+            string res_json;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var bid_list = context.Bolus.Where(s => s.status == true).Select(x => new
+                    {
+                        bolus_id = x.bolus_id,
+                        animal_id = x.animal_id
+                    }).OrderBy(b => b.animal_id).ToList();
+                    res_json = JsonConvert.SerializeObject(bid_list);
+                }
+            }
+            catch (Exception ex)
+            {
+                res_json = ex.Message;
+                res_json = "";
+            }
+
+            //var res_json = JsonConvert.SerializeObject(bolus_id_list);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetTempIntakesData(string dt0, string dt1, int bid)
+        {
+            object farmlist;
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
+
+            try
+            {
+
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    farmlist = context.SP_Admin_TempIntakesChart(dtfrom, dtto, bid, 2).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                farmlist = ex.Message;
+            }
+
+            var res_json = JsonConvert.SerializeObject(farmlist);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void GetFarmNameList()
@@ -173,15 +474,17 @@ namespace BoluSys.Admin
         }
 
         [WebMethod]
-        public void Get10()
+        public void GetAlertEmailList(string dt0, string dt1, string userid)
         {
+            DateTime? dtfrom = DateTime.Parse(dt0);
+            DateTime? dtto = DateTime.Parse(dt1);
             string res_json = string.Empty;
             try
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
                     // var res = context.Z_AlertLogs.OrderByDescending(x => x.date_emailsent).ToList();
-                    var res = context.SP_Admin_Z_AlertLogs().ToList();
+                    var res = context.SP_Admin_Z_AlertLogs(dtfrom, dtto, userid).ToList();
                     res_json = JsonConvert.SerializeObject(res);
                 }
             }
@@ -263,12 +566,12 @@ namespace BoluSys.Admin
             SqlConnection con = new SqlConnection(connstr);
             SqlCommand cmd = new SqlCommand("SP_Admin_GapsByFarmHerd", con);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add( new SqlParameter("@dt0", dt_from.ToShortDateString()));
-            cmd.Parameters.Add( new SqlParameter("@dt1", dt_to.ToShortDateString()));
-            cmd.Parameters.Add( new SqlParameter("@user", userid));
+            cmd.Parameters.Add(new SqlParameter("@dt0", dt_from.ToShortDateString()));
+            cmd.Parameters.Add(new SqlParameter("@dt1", dt_to.ToShortDateString()));
+            cmd.Parameters.Add(new SqlParameter("@user", userid));
             SqlDataReader rdr = null;
             try
-            { 
+            {
                 con.Open();
                 rdr = cmd.ExecuteReader();
                 dt.Load(rdr);

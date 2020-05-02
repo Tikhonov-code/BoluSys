@@ -1,8 +1,8 @@
 ﻿var titlecolor = "#e6f0ff";
 var tableborders = '';//"style='border-color: #b3d1ff; border-style:solid;'";
 
-var alertlist = "<div id='AlertsList' " + tableborders + "><div class='row' style = 'text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
-    "<h3>Alerts List</h3>300 latest records</div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
+//var alertlist = "<div id='AlertsList' " + tableborders + "><div class='row' style = 'text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+//    "<h3>Alerts List</h3>300 latest records</div ><div class='demo-container'><div id='gridContainer'></div></div></div >";
 
 var datagaps = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
     "<h3>Data Gaps</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
@@ -12,7 +12,7 @@ var datagaps = "<div id='DataGapsDiv' " + tableborders + "><div class='row' styl
 var datagapsPercent = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
     "<h3>Data Gaps In % For Herd</h3></div><div class='row'>" +
     "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
-    "<div class='col-sm-1'  id='farm_user'></div>"+
+    "<div class='col-sm-1'  id='farm_user'></div>" +
     "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
     "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
     "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
@@ -35,22 +35,221 @@ var TNNRConvert = "<div id='TTNRawConverter' " + tableborders + "><div class='ro
     "<div class='dx-field-label'>Input Raw Value:</div><div class='dx-field-value'><div id='TimeZ'></div></div></div><div style='text-align: center;'>" +
     "<div id='RunConverter'></div></div></div></div><div><div class='dx-fieldset'><div class='dx-fieldset-header'>Results:</div><div class='dx-field'>" +
     "<div id='ResultsBox'></div></div></div></div></div>";
-//---------------------------------------------------------------------------
+//Alerts Service Section---------------------------------------------------------------------------
+var alertlist = "<div id='AlertsList' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Alerts List</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
+    "<div class='col-sm-1'  id='farm_user'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
+    "<div class='col-sm-2' style='text-align: left;'><div id='SearchEmail'></div></div></div><div class='container'>" +
+    "<div id='GridEmail_List'></div></div></div></div>";
+
 function AlertsListShow() {
 
     $("#PanelSWhow").html(alertlist);
 
-    var ds = new DevExpress.data.CustomStore({
-        loadMode: "raw",
-        load: function () {
-            return $.getJSON("admin.aspx?SP=Get10");
+    //var ds = new DevExpress.data.CustomStore({
+    //    loadMode: "raw",
+    //    load: function () {
+    //        return $.getJSON("admin.aspx?SP=Get10");
+    //    }
+    //});
+    $.getJSON('admin.aspx?SP=GetFarmNameList',
+        function (result) {
+            $("#farm_user").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                valueExpr: "AspNetUser_Id",
+                //value: result[0].ID,
+                width: "200"
+            });
+        });
+    //----------------------------------------------------
+    var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+    $("#DateFrom").dxDateBox({
+        type: "datetime",
+        name: "Date From:",
+        value: now_begin,
+        width: "200"
+    });
+
+    $("#DateTo").dxDateBox({
+        type: "datetime",
+        value: now_end,
+        width: "200"
+    });
+
+    var data_db;
+
+    $("#SearchEmail").dxButton({
+        //stylingMode: "outlined",
+        text: "Report",
+        elementAttr: {
+            title: "Get Report",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 80,
+        onClick: function () {
+            data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                //key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
+                    var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
+                    var farm_user = $("#farm_user").dxSelectBox("instance").option("value");
+                    return $.getJSON('Admin.aspx?SP=GetAlertEmailList&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + farm_user);
+                }
+            });
+
+            FillDataEmailList(data_db);
         }
     });
-    $("#gridContainer").dxDataGrid({
-        dataSource: ds,
+}
+
+function FillDataEmailList(data_db) {
+    $("#GridEmail_List").dxDataGrid({
+        dataSource: data_db,
         showBorders: true,
         noDataText: "No Data",
         columnAutoWidth: true,
+        export: {
+            enabled: true,
+            fileName: "Email_List",
+            allowExportSelectedData: true
+        },
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true,
+            allowFiltering: true
+        },
+        columns: [
+
+            {
+                capture: "Farm",
+                dataField: "Name",
+                width: 150,
+                allowFiltering: true
+            },
+            //"bolus_id",
+            "animal_id",
+            "event",
+            {
+                dataField: "message",
+                width: 500,
+                height: 50
+            },
+            {
+                dataField: "date_emailsent",
+                width: 150,
+                dataType: "datetime"
+            },
+            {
+                dataField: "email",
+                width: 150
+            }]
+    });
+
+}
+// SMS service-------------------------------------------------------------------------------------
+var sms_list = "<div id='SMSListDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>SMS Service Logs</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
+    "<div class='col-sm-1'  id='farm_user'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
+    "<div class='col-sm-2' style='text-align: left;'><div id='SearchSMS'></div></div></div><div class='container'>" +
+    "<div id='GridSMS_List'></div></div></div></div>";
+function SMSListShow() {
+    $("#PanelSWhow").html(sms_list);
+
+    $.getJSON('admin.aspx?SP=GetFarmNameList',
+        function (result) {
+            $("#farm_user").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                valueExpr: "AspNetUser_Id",
+                //value: result[0].ID,
+                width: "200"
+            });
+        });
+
+    //----------------------------------------------------
+    var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+    $("#DateFrom").dxDateBox({
+        type: "datetime",
+        name: "Date From:",
+        value: now_begin,
+        width: "200"
+    });
+
+    $("#DateTo").dxDateBox({
+        type: "datetime",
+        value: now_end,
+        width: "200"
+    });
+
+    var data_db;
+
+    $("#SearchSMS").dxButton({
+        //stylingMode: "outlined",
+        text: "Report",
+        elementAttr: {
+            title: "Click To Find",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 80,
+        onClick: function () {
+            data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                //key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
+                    var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
+                    var farm_user = $("#farm_user").dxSelectBox("instance").option("value");
+                    return $.getJSON('Admin.aspx?SP=GetSmsLogs&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + farm_user);
+                }
+            });
+
+            FillDataSMSList(data_db);
+        }
+    });
+};
+function FillDataSMSList(data_db) {
+    $("#GridSMS_List").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        //selection: {
+        //    mode: "multiple"
+        //},
+        export: {
+            enabled: true,
+            fileName: "Sms",
+            //allowExportSelectedData: true
+        },
+        groupPanel: {
+            visible: true
+        },
         paging: {
             pageSize: 10
         },
@@ -64,32 +263,48 @@ function AlertsListShow() {
             allowSearch: true
         },
         columns: [
-
             {
-                capture: "Farm",
-                dataField: "Name",
-                width: 150,
-                allowFiltering: true
-            },
-            "bolus_id", "event",
-            {
-                dataField: "message",
-                width: 500,
-                height: 50
-            },
-            {
-                dataField: "date_emailsent",
-                width: 150,
-                dataType: "datetime"
-            },
-            {
-                dataField: "email",
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Date",
+                dataField: "Date",
+                dataType: "datetime",
                 width: 200
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Event",
+                dataField: "Event",
+                width: 90
+            },
+            {
+                cssClass: 'cls',
+                //alignment: 'center',
+                caption: "Message",
+                dataField: "Message",
+                width: 650
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Phone",
+                dataField: "Phone",
+                width: 100
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Status",
+                dataField: "Status",
+                width: 100
             }]
     });
 
 };
 
+
+//--------------------------------------------------------------------------------------------------
 //-------Data Gaps Section----------------------------------------
 //-------Intervals in mins----------------------------------------
 function DataGapsShow() {
@@ -154,6 +369,11 @@ function FillData(data_db) {
         headerFilter: {
             visible: true,
             allowSearch: true
+        },
+        export: {
+            enabled: true,
+            fileName: "Gaps",
+            allowExportSelectedData: true
         },
         columns: [
             {
@@ -245,7 +465,7 @@ function GapsByFarmHerdShow() {
                     var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
                     var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
                     var userid = $("#farm_user").dxSelectBox("instance").option("value");
-                    return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1+"&userid="+userid);
+                    return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid);
                 }
             });
 
@@ -268,6 +488,10 @@ function FillDataGapsPercent(data_db) {
         headerFilter: {
             visible: true,
             allowSearch: true
+        }, export: {
+            enabled: true,
+            fileName: "GapsPercents",
+            allowExportSelectedData: true
         },
         //columns: [
         //    {
@@ -725,3 +949,314 @@ function myAjaxRequestJsonE(URL, Param, Success_function_name, Error_function_na
     });
     return false;
 }
+
+// DownLoad Data section---------------------------------------------------------------
+var tempIntakes = "<div id='TempIntDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Temperature And Intakes Data</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Animal ID:</div>" +
+    "<div class='col-sm-1'  id='animal_id'></div>" +
+    "<div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='tempIntakesReport'></div></div></div><div class='container'>" +
+    "<div id='GridTempInt'></div></div></div>";
+function TempIntakesData() {
+    $("#PanelSWhow").html(tempIntakes);
+    $.getJSON('admin.aspx?SP=GetBolusList',
+        function (result) {
+            $("#animal_id").dxSelectBox({
+                dataSource: result,
+                searchEnabled: true,
+                key: "bolus_id",
+                displayExpr: "animal_id",
+                valueExpr: "bolus_id",
+                value: result[0].bolus_id,
+                width: "200"
+            });
+        });
+    //----------------------------------------------------
+    var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+    $("#DateFrom").dxDateBox({
+        type: "datetime",
+        name: "Date From:",
+        value: now_begin
+    });
+
+    $("#DateTo").dxDateBox({
+        type: "datetime",
+        value: now_end
+    });
+
+    var data_db;
+
+    $("#tempIntakesReport").dxButton({
+        //stylingMode: "outlined",
+        text: "Report",
+        elementAttr: {
+            title: "Click To Refresh",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 150,
+        onClick: function () {
+            data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                //key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
+                    var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
+                    var bid = $("#animal_id").dxSelectBox("instance").option("value");
+
+                    return $.getJSON('Admin.aspx?SP=GetTempIntakesData&dt0=' + dt0 + '&dt1=' + dt1 + '&bid=' + bid);
+                }
+            });
+
+            FillDataTempIntakes(data_db);
+        }
+    });
+};
+//------------------------------------------
+function FillDataTempIntakes(data_db) {
+    $("#GridTempInt").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        selection: {
+            mode: "multiple"
+        },
+        export: {
+            enabled: true,
+            fileName: "TempIntakes",
+            allowExportSelectedData: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        },
+        columns: [
+
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Date",
+                dataField: "Date",
+                dataType: "date",
+                width: "150"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Time",
+                dataField: "Time",
+                dataType: "time",
+                width: "150"
+            }, {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Temperature",
+                dataField: "temperature",
+                //dataType: "number"
+                width: "150"
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "intakes",
+                dataField: "intakes",
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: "150"
+            }]
+    });
+
+};
+
+// END Of DownLoad Data section---------------------------------------------------------------
+
+//Users Form Section--------------------------------------------------------------------------
+var farmformtempl = "<div class='demo-container'><div id='form-demo'><div class='widget-container'>"+
+                    "<div id='select_farm'></div><div id='form'></div></div></div></div>";
+
+function UserForm() {
+    $("#PanelSWhow").html(farmformtempl);
+
+    $.getJSON('admin.aspx?SP=GetFarmInfo',
+        function (result) {
+           
+            ShowUserForm(result);
+            //----------------------------------------------
+            $("#select_farm").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                //valueExpr: "AspNetUser_Id",
+                value: result[0],
+                width: "200",
+                onSelectionChanged: function (data) {
+                    //DevExpress.ui.notify({ message: "Hello" + data.value, width: 300, shading: true }, "success", 1500);
+                    $("#form").dxForm("instance").option("formData", data.selectedItem);
+                    //form.option("formData", data);
+                }
+            });
+            //----------------------------------------------
+        });
+
+    //---------------------------------------------------------------
+}
+function ShowUserForm(farminfo) {
+
+    var form = $("#form").dxForm({
+        formData: farminfo[0],
+        readOnly: false,
+        showColonAfterLabel: true,
+        labelLocation: "left",
+        minColWidth: 300,
+        colCount: 3,
+
+        items: [
+            {
+                dataField: "Owner",
+                editorOptions: {
+                    value: farminfo[0].Owner
+                }
+            }//,
+            //{
+            //    dataField: "GeoPosition",
+            //    editorOptions: {
+            //        value: farminfo[0].GeoPosition,
+            //        width: 650
+            //    }
+            //}
+            , {
+                dataField: "Phone",
+                editorOptions: {
+                    mask: "+ (X00) 000-0000",
+                    maskRules: { "X": /[02-9]/ },
+                    value: farminfo[0].Phone
+                }
+            },
+            {
+                dataField: "Email",
+                editorOptions: {
+                    value: farminfo[0].email
+                }
+            },
+            {
+                itemType: "group",
+                caption: "Alerts Dashboard",
+                colCount: 3,
+                items: [
+                    {
+                        dataField: "Q405_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false,
+                        }
+
+                    },
+                    {
+                        dataField: "Q41_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    },
+                    {
+                        dataField: "WI20_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    },
+                    {
+                        dataField: "Q405_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: true
+                        }
+                    },
+                    {
+                        dataField: "Q41_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: true
+                        }
+                    },
+                    {
+                        dataField: "WI20_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    }
+                ]
+            },
+            {
+                itemType: "button",
+                horizontalAlignment: "left",
+                buttonOptions: {
+                    text: "Save",
+                    type: "default",
+                    useSubmitBehavior: false,
+                    onClick: function () {
+                        //DevExpress.ui.notify({ message: "Hello", width: 300, shading: true }, "error", 500);
+                        var tt = $("#form").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
+                        SaveFarmInfo(tt);
+                    }
+                },
+            }
+        ]
+    }).dxForm("instance");
+
+
+    //var form =$("#form").dxForm("instance");
+    //form.option("colCount", data.value);
+    //--------------------------------------------
+}
+function SaveFarmInfo(Pars) {
+    //DevExpress.ui.notify({ message: "Data was saved! ", width: 300, shading: true }, "success", 500);
+
+    var pr = {};
+    pr.par1 = "xxxxxxxxxxxxxx";
+
+    var URL = 'admin.aspx?SP=SaveFarmInfo&data=' + JSON.stringify(Pars);
+    myAjaxRequestJsonE(URL, pr, Success_SaveFarmInfo, Error_SaveFarmInfo);
+
+    //$.ajax({
+    //    method: "POST",
+    //    url: 'admin.aspx?SP=SaveFarmInfo',
+    //    data: JSON.stringify(pr),
+    //    contentType: "application/json; charset=utf-8",
+    //    dataType: "json",
+    //    success: function (result) {
+    //        DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "error", 500);
+    //        //----------------------------------------------
+    //    },
+    //    error: function (result) {
+    //        var x = result.responseText;
+    //        x = x;
+    //    }
+    //});
+}
+function Success_SaveFarmInfo(result) {
+    DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "success", 1500);
+}
+function Error_SaveFarmInfo(result) {
+    DevExpress.ui.notify({ message: "Error " + result, width: 300, shading: true }, "error", 1500);
+}
+//End ----------Users Form Section------------------------------------------------------------
+//------------------------------------------------------

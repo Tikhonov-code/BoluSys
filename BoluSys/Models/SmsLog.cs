@@ -10,15 +10,17 @@
 namespace BoluSys.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class SP_Admin_Z_AlertLogs_Result
+    public partial class SmsLog
     {
-        public int bolus_id { get; set; }
-        public Nullable<int> animal_id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
         public string @event { get; set; }
         public string message { get; set; }
-        public Nullable<System.DateTime> date_emailsent { get; set; }
-        public string email { get; set; }
+        public string phonenumber { get; set; }
+        public string status { get; set; }
+        public Nullable<System.DateTime> datemark { get; set; }
+        public string smscId { get; set; }
+        public string AspNetUser_Id { get; set; }
     }
 }

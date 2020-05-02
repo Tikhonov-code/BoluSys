@@ -41,6 +41,26 @@
         Total Water Intakes:<input id="TotalIntakes" style="width: 60px;" type="text" value="<%# TotalIntakes %>" />, Litres
 
     </div>
+    <!---Options Panel------------------------------------------------------------->
+    <%--<div class="options">
+        <div class="caption center">Options</div>
+        <div class="option">
+            <span>Show Day:</span>
+            <div id="DaySet"></div>
+        </div>
+        <div class="option left">
+            <span>Date From:</span>
+            <div id="dateFrom1"></div>
+        </div>
+        <div class="option">
+            <span>Date To:</span>
+            <div id="dateTo1"></div>
+        </div>
+        <div class="option">
+            <span>Animal :</span>
+            <div id="animal_id"></div>
+        </div>
+    </div>--%>
     <!---------------------------------------------------------------->
     <%--<div class="demo-container">
         <div id="chart"></div>
@@ -108,6 +128,36 @@
             .option > span {
                 margin-right: 10px;
             }
+/*                      */
+.options {
+    padding: 20px;
+    background-color: rgba(191, 191, 191, 0.15);
+    margin-top: 20px;
+}
+
+.caption {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.option {
+    display: inline-block;
+    margin-right: 70px;
+    margin-top: 5px;
+}
+
+.option > span {
+   margin: 0 10px 0 0;
+}
+
+.checkbox{
+    margin-top: -4px;
+}
+
+.option > .dx-widget {
+    display: inline-block;
+    vertical-align: middle;
+}
     </style>
 </asp:Content>
 

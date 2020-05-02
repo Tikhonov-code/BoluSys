@@ -332,7 +332,7 @@ function IntakesChart_Show0(df, dt, bid) {
             enabled: true,
             customizeTooltip: function (arg) {
                 return {
-                    text: arg.valueText + ", Litres" + "<br />" + DateTimeFormat(arg.argumentText)
+                    text: arg.valueText + ", Litres"// + "<br />" + DateTimeFormat(arg.argumentText)
                 };
             }
         }
@@ -478,24 +478,80 @@ function DateTimeFormat(dtpar) {
     return result;
 }
 
-//-------Date Set section----------------------------------------
-//$(function () {
-//    var now = new Date();
+//------Options Section--------------------------------------------
+$(function () {
+    var now = new Date();
 
-//    $("#dateSet").dxDateBox({
-//        type: "date",
-//        value: now,
-//        onValueChanged: function (data) {
-//            //DevExpress.ui.notify(data.value, "warning", 500);
-//            $("#dateFrom").dxDateBox("instance").option('value', data.value);
-//            //dateFrom_Show(data.value);
-//            //dateTo_Show(data.value);
+    $("#DaySet").dxDateBox({
+        type: "date",
+        value: now,
+        onValueChanged: function (data) {
+            //DevExpress.ui.notify(data.value, "warning", 500);
+            //$("#dateFrom").dxDateBox("instance").option('value', data.value);
+            //dateFrom_Show(data.value);
+            //dateTo_Show(data.value);
 
-//            //ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
-//            //IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-//            //GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-//            //GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-//            //GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-//        }
-//    });
-//});
+            //ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
+            //IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            //GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            //GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+            //GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+        }
+    });
+    $("#dateFrom1").dxDateBox({
+        type: "date",
+        value: now,
+        onValueChanged: function (data) {
+        }
+    });
+    $("#dateTo1").dxDateBox({
+        type: "date",
+        value: now,
+        onValueChanged: function (data) {
+        }
+    });
+    var ds = [
+        {
+            bolus_id: "1",
+            animal_id:"7070"
+        },
+        {
+            bolus_id: "2",
+            animal_id: "7071"
+        }
+
+    ];
+    $("#animal_id").dxSelectBox({
+        //items: AnimalIDlist,
+        placeholder: "Choose Animal_id",
+        showClearButton: true,
+        dataSource: ds,
+        displayExpr: "animal_id",
+        valueExpr: "bolus_id",
+        width:"200px",
+        //value: vl,//ds[0].bolus_id,   
+        //------------------------------------------------------
+
+        onValueChanged: function (e) {
+            var bid = e.value;
+            $("#Bolus_id").val(bid);
+
+            var aid_c = ds.filter(a => a.bolus_id == bid);
+            $("#Animal_id").val(aid_c[0].animal_id);
+            var dto = new Date($("#dateTo").dxDateBox("instance").option('value'));
+            var dfr = new Date($("#dateFrom").dxDateBox("instance").option('value'));
+
+            ////ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
+            //ChartCreate("#chart_temp", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "temp");
+
+            //IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            //GetTotalIntakes(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            //GetAverTemperature(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            //GetGapsDataValue(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+            //GetCowInfo(bid);
+            //GetCowsLogs(aid_c[0].animal_id);
+
+        }
+    });
+});
+//------Options Section--------------------------------------------

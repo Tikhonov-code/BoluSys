@@ -5,6 +5,23 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DB_A4A060_csModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
         <EntityType Name="Bolus">
           <Key>
             <PropertyRef Name="id" />
@@ -32,6 +49,16 @@
           <Property Name="Event" Type="nvarchar" MaxLength="200" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
           <Property Name="Event_Date" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Farm_Alert_Rules">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AspNetUser_Id" Type="nvarchar" MaxLength="128" />
+          <Property Name="Alert_Name" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="sms" Type="bit" Nullable="false" />
+          <Property Name="email" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="FarmCows">
           <Key>
@@ -65,6 +92,19 @@
           <Property Name="base_station_id" Type="int" Nullable="false" />
           <Property Name="is_average" Type="bit" Nullable="false" />
           <Property Name="raw" Type="varchar" MaxLength="64" />
+        </EntityType>
+        <EntityType Name="SmsLogs">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="event" Type="varchar" MaxLength="10" />
+          <Property Name="message" Type="varchar" MaxLength="500" />
+          <Property Name="phonenumber" Type="varchar" MaxLength="15" />
+          <Property Name="status" Type="nchar" MaxLength="50" />
+          <Property Name="datemark" Type="datetime" />
+          <Property Name="smscId" Type="nchar" MaxLength="72" Nullable="false" />
+          <Property Name="AspNetUser_Id" Type="nchar" MaxLength="128" Nullable="false" />
         </EntityType>
         <EntityType Name="UserCabinet">
           <Key>
@@ -183,11 +223,29 @@
           <Parameter Name="dt1" Type="datetime" Mode="In" />
           <Parameter Name="user" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="SP_Admin_SMSserviceList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt0" Type="datetime" Mode="In" />
+          <Parameter Name="dt1" Type="datetime" Mode="In" />
+          <Parameter Name="farm_userID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SP_Admin_TempIntakesChart" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dtfrom" Type="datetime" Mode="In" />
+          <Parameter Name="dtto" Type="datetime" Mode="In" />
+          <Parameter Name="bid" Type="int" Mode="In" />
+          <Parameter Name="wi_calbrx" Type="float" Mode="In" />
+        </Function>
         <Function Name="SP_Admin_WaterIntakesReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt" Type="datetime" Mode="In" />
           <Parameter Name="interval" Type="int" Mode="In" />
         </Function>
-        <Function Name="SP_Admin_Z_AlertLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_Admin_Z_AlertLogs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dt0" Type="datetime" Mode="In" />
+          <Parameter Name="dt1" Type="datetime" Mode="In" />
+          <Parameter Name="user_id" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SP_GET_AnimalIdList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="user_id" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="SP_GET_BolusDataGaps" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt0" Type="datetime2" Mode="In" />
           <Parameter Name="dt1" Type="datetime2" Mode="In" />
@@ -221,11 +279,14 @@
           <Parameter Name="wi_calbr" Type="float" Mode="In" />
         </Function>
         <EntityContainer Name="DB_A4A060_csModelStoreContainer">
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Bolus" EntityType="Self.Bolus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cows_log" EntityType="Self.Cows_log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Farm_Alert_Rules" EntityType="Self.Farm_Alert_Rules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Farms" EntityType="Self.Farms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SmsLogs" EntityType="Self.SmsLogs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserCabinet" EntityType="Self.UserCabinet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Z_AlertLogs" EntityType="Self.Z_AlertLogs" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -328,7 +389,11 @@
             <Parameter Name="dt" Mode="In" Type="DateTime" />
             <Parameter Name="interval" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="SP_Admin_Z_AlertLogs" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result)" />
+          <FunctionImport Name="SP_Admin_Z_AlertLogs" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result)" >
+            <Parameter Name="dt0" Mode="In" Type="DateTime" />
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
           <EntitySet Name="Farms" EntityType="DB_A4A060_csModel.Farm" />
           <FunctionImport Name="SP_GET_WaterIntakesSum" ReturnType="Collection(Double)">
             <Parameter Name="dt1" Mode="In" Type="DateTime" />
@@ -356,6 +421,23 @@
             <Parameter Name="dt1" Mode="In" Type="DateTime" />
             <Parameter Name="bolus_id" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="SP_GET_AnimalIdList" ReturnType="Collection(DB_A4A060_csModel.SP_GET_AnimalIdList_Result)">
+          <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Admin_TempIntakesChart" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_TempIntakesChart_Result)">
+            <Parameter Name="dtfrom" Mode="In" Type="DateTime" />
+            <Parameter Name="dtto" Mode="In" Type="DateTime" />
+            <Parameter Name="bid" Mode="In" Type="Int32" />
+            <Parameter Name="wi_calbrx" Mode="In" Type="Double" />
+          </FunctionImport>
+          <EntitySet Name="SmsLogs" EntityType="DB_A4A060_csModel.SmsLog" />
+          <FunctionImport Name="SP_Admin_SMSserviceList" ReturnType="Collection(DB_A4A060_csModel.SP_Admin_SMSserviceList_Result)">
+            <Parameter Name="dt0" Mode="In" Type="DateTime" />
+            <Parameter Name="dt1" Mode="In" Type="DateTime" />
+            <Parameter Name="farm_userID" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Farm_Alert_Rules" EntityType="DB_A4A060_csModel.Farm_Alert_Rules" />
+          <EntitySet Name="AspNetUsers" EntityType="DB_A4A060_csModel.AspNetUser" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -485,14 +567,6 @@
           <Property Type="Double" Name="gaps" Nullable="true" />
           <Property Type="Double" Name="WI20" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="SP_Admin_Z_AlertLogs_Result">
-          <Property Type="Int32" Name="bolus_id" Nullable="false" />
-          <Property Type="String" Name="Name" Nullable="true" MaxLength="350" />
-          <Property Type="String" Name="event" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="message" Nullable="true" MaxLength="500" />
-          <Property Type="DateTime" Name="date_emailsent" Nullable="true" />
-          <Property Type="String" Name="email" Nullable="true" MaxLength="100" />
-        </ComplexType>
         <EntityType Name="Farm">
           <Key>
             <PropertyRef Name="id" />
@@ -507,6 +581,72 @@
           <Property Type="String" Name="Points" Nullable="true" MaxLength="72" />
           <Property Type="String" Name="Gaps" Nullable="true" MaxLength="16" />
         </ComplexType>
+        <ComplexType Name="SP_GET_AnimalIdList_Result">
+          <Property Type="Int32" Name="bolus_id" Nullable="false" />
+          <Property Type="Int32" Name="animal_id" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="SP_Admin_TempIntakesChart_Result">
+          <Property Type="Double" Name="temperature" Nullable="false" />
+          <Property Type="String" Name="Date" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="Time" Nullable="true" MaxLength="4000" />
+          <Property Type="Double" Name="intakes" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="SmsLog">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="event" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="phonenumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="datemark" Type="DateTime" Precision="3" />
+          <Property Name="smscId" Type="String" Nullable="false" MaxLength="72" FixedLength="true" Unicode="true" />
+          <Property Name="AspNetUser_Id" Type="String" Nullable="false" MaxLength="128" FixedLength="true" Unicode="true" />
+        </EntityType>
+        <ComplexType Name="SP_Admin_SMSserviceList_Result">
+          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Event" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Message" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Phone" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="SP_Admin_Z_AlertLogs_Result">
+          <Property Type="Int32" Name="bolus_id" Nullable="false" />
+          <Property Type="Int32" Name="animal_id" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="350" />
+          <Property Type="String" Name="event" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="message" Nullable="true" MaxLength="500" />
+          <Property Type="DateTime" Name="date_emailsent" Nullable="true" />
+          <Property Type="String" Name="email" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <EntityType Name="Farm_Alert_Rules">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Alert_Name" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="sms" Type="Boolean" Nullable="false" />
+          <Property Name="email" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -708,6 +848,7 @@
             <ResultMapping>
               <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Admin_Z_AlertLogs_Result">
                 <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="event" ColumnName="event" />
                 <ScalarProperty Name="message" ColumnName="message" />
@@ -739,6 +880,78 @@
           <FunctionImportMapping FunctionImportName="SP_GET_DataGapsFarm" FunctionName="DB_A4A060_csModel.Store.SP_GET_DataGapsFarm" />
           <FunctionImportMapping FunctionImportName="SP_Admin_GapsByFarmHerd" FunctionName="DB_A4A060_csModel.Store.SP_Admin_GapsByFarmHerd" />
           <FunctionImportMapping FunctionImportName="SP_GET_DataTempWIntakes" FunctionName="DB_A4A060_csModel.Store.SP_GET_DataTempWIntakes" />
+          <FunctionImportMapping FunctionImportName="SP_GET_AnimalIdList" FunctionName="DB_A4A060_csModel.Store.SP_GET_AnimalIdList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_GET_AnimalIdList_Result">
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Admin_TempIntakesChart" FunctionName="DB_A4A060_csModel.Store.SP_Admin_TempIntakesChart" >
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Admin_TempIntakesChart_Result">
+                <ScalarProperty Name="temperature" ColumnName="temperature" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="intakes" ColumnName="intakes" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="SmsLogs">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.SmsLog">
+              <MappingFragment StoreEntitySet="SmsLogs">
+                <ScalarProperty Name="AspNetUser_Id" ColumnName="AspNetUser_Id" />
+                <ScalarProperty Name="smscId" ColumnName="smscId" />
+                <ScalarProperty Name="datemark" ColumnName="datemark" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="phonenumber" ColumnName="phonenumber" />
+                <ScalarProperty Name="message" ColumnName="message" />
+                <ScalarProperty Name="event" ColumnName="event" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_Admin_SMSserviceList" FunctionName="DB_A4A060_csModel.Store.SP_Admin_SMSserviceList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Admin_SMSserviceList_Result">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Event" ColumnName="Event" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Farm_Alert_Rules">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.Farm_Alert_Rules">
+              <MappingFragment StoreEntitySet="Farm_Alert_Rules">
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="sms" ColumnName="sms" />
+                <ScalarProperty Name="Alert_Name" ColumnName="Alert_Name" />
+                <ScalarProperty Name="AspNetUser_Id" ColumnName="AspNetUser_Id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
