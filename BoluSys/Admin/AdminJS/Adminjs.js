@@ -91,7 +91,7 @@ function AlertsListShow() {
         //stylingMode: "outlined",
         text: "Report",
         elementAttr: {
-            title: "Click To Find",
+            title: "Get Report",
             style: "background-color: #337ab7; color:white;"
         },
         width: 80,
@@ -110,7 +110,7 @@ function AlertsListShow() {
 
             FillDataEmailList(data_db);
         }
-    }); 
+    });
 }
 
 function FillDataEmailList(data_db) {
@@ -122,7 +122,7 @@ function FillDataEmailList(data_db) {
         export: {
             enabled: true,
             fileName: "Email_List",
-            //allowExportSelectedData: true
+            allowExportSelectedData: true
         },
         paging: {
             pageSize: 10
@@ -134,7 +134,8 @@ function FillDataEmailList(data_db) {
         },
         headerFilter: {
             visible: true,
-            allowSearch: true
+            allowSearch: true,
+            allowFiltering: true
         },
         columns: [
 
@@ -159,7 +160,7 @@ function FillDataEmailList(data_db) {
             },
             {
                 dataField: "email",
-                width: 200
+                width: 150
             }]
     });
 
@@ -268,7 +269,7 @@ function FillDataSMSList(data_db) {
                 caption: "Date",
                 dataField: "Date",
                 dataType: "datetime",
-                width:200
+                width: 200
             },
             {
                 cssClass: 'cls',
@@ -368,6 +369,11 @@ function FillData(data_db) {
         headerFilter: {
             visible: true,
             allowSearch: true
+        },
+        export: {
+            enabled: true,
+            fileName: "Gaps",
+            allowExportSelectedData: true
         },
         columns: [
             {
@@ -482,6 +488,10 @@ function FillDataGapsPercent(data_db) {
         headerFilter: {
             visible: true,
             allowSearch: true
+        }, export: {
+            enabled: true,
+            fileName: "GapsPercents",
+            allowExportSelectedData: true
         },
         //columns: [
         //    {
@@ -1078,3 +1088,175 @@ function FillDataTempIntakes(data_db) {
 
 // END Of DownLoad Data section---------------------------------------------------------------
 
+//Users Form Section--------------------------------------------------------------------------
+var farmformtempl = "<div class='demo-container'><div id='form-demo'><div class='widget-container'>"+
+                    "<div id='select_farm'></div><div id='form'></div></div></div></div>";
+
+function UserForm() {
+    $("#PanelSWhow").html(farmformtempl);
+
+    $.getJSON('admin.aspx?SP=GetFarmInfo',
+        function (result) {
+           
+            ShowUserForm(result);
+            //----------------------------------------------
+            $("#select_farm").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                //valueExpr: "AspNetUser_Id",
+                value: result[0],
+                width: "200",
+                onSelectionChanged: function (data) {
+                    //DevExpress.ui.notify({ message: "Hello" + data.value, width: 300, shading: true }, "success", 1500);
+                    $("#form").dxForm("instance").option("formData", data.selectedItem);
+                    //form.option("formData", data);
+                }
+            });
+            //----------------------------------------------
+        });
+
+    //---------------------------------------------------------------
+}
+function ShowUserForm(farminfo) {
+
+    var form = $("#form").dxForm({
+        formData: farminfo[0],
+        readOnly: false,
+        showColonAfterLabel: true,
+        labelLocation: "left",
+        minColWidth: 300,
+        colCount: 3,
+
+        items: [
+            {
+                dataField: "Owner",
+                editorOptions: {
+                    value: farminfo[0].Owner
+                }
+            }//,
+            //{
+            //    dataField: "GeoPosition",
+            //    editorOptions: {
+            //        value: farminfo[0].GeoPosition,
+            //        width: 650
+            //    }
+            //}
+            , {
+                dataField: "Phone",
+                editorOptions: {
+                    mask: "+ (X00) 000-0000",
+                    maskRules: { "X": /[02-9]/ },
+                    value: farminfo[0].Phone
+                }
+            },
+            {
+                dataField: "Email",
+                editorOptions: {
+                    value: farminfo[0].email
+                }
+            },
+            {
+                itemType: "group",
+                caption: "Alerts Dashboard",
+                colCount: 3,
+                items: [
+                    {
+                        dataField: "Q405_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false,
+                        }
+
+                    },
+                    {
+                        dataField: "Q41_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    },
+                    {
+                        dataField: "WI20_SMS",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    },
+                    {
+                        dataField: "Q405_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: true
+                        }
+                    },
+                    {
+                        dataField: "Q41_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: true
+                        }
+                    },
+                    {
+                        dataField: "WI20_email",
+                        editorType: "dxSwitch",
+                        editorOptions: {
+                            value: false
+                        }
+                    }
+                ]
+            },
+            {
+                itemType: "button",
+                horizontalAlignment: "left",
+                buttonOptions: {
+                    text: "Save",
+                    type: "default",
+                    useSubmitBehavior: false,
+                    onClick: function () {
+                        //DevExpress.ui.notify({ message: "Hello", width: 300, shading: true }, "error", 500);
+                        var tt = $("#form").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
+                        SaveFarmInfo(tt);
+                    }
+                },
+            }
+        ]
+    }).dxForm("instance");
+
+
+    //var form =$("#form").dxForm("instance");
+    //form.option("colCount", data.value);
+    //--------------------------------------------
+}
+function SaveFarmInfo(Pars) {
+    //DevExpress.ui.notify({ message: "Data was saved! ", width: 300, shading: true }, "success", 500);
+
+    var pr = {};
+    pr.par1 = "xxxxxxxxxxxxxx";
+
+    var URL = 'admin.aspx?SP=SaveFarmInfo&data=' + JSON.stringify(Pars);
+    myAjaxRequestJsonE(URL, pr, Success_SaveFarmInfo, Error_SaveFarmInfo);
+
+    //$.ajax({
+    //    method: "POST",
+    //    url: 'admin.aspx?SP=SaveFarmInfo',
+    //    data: JSON.stringify(pr),
+    //    contentType: "application/json; charset=utf-8",
+    //    dataType: "json",
+    //    success: function (result) {
+    //        DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "error", 500);
+    //        //----------------------------------------------
+    //    },
+    //    error: function (result) {
+    //        var x = result.responseText;
+    //        x = x;
+    //    }
+    //});
+}
+function Success_SaveFarmInfo(result) {
+    DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "success", 1500);
+}
+function Error_SaveFarmInfo(result) {
+    DevExpress.ui.notify({ message: "Error " + result, width: 300, shading: true }, "error", 1500);
+}
+//End ----------Users Form Section------------------------------------------------------------
+//------------------------------------------------------

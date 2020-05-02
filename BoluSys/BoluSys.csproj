@@ -275,6 +275,7 @@
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
     <Content Include="Farm\Web.config" />
+    <Content Include="Admin\Web.config" />
     <None Include="Properties\PublishProfiles\DeployCattleman.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -552,6 +553,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AspNetUser.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Bolu.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -577,6 +581,10 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FarmCow.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FarmRules.cs" />
+    <Compile Include="Models\Farm_Alert_Rules.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FCN_CowsIsSad_Result.cs">

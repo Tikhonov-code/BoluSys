@@ -13,6 +13,8 @@
         <EntityTypeShape EntityType="DB_A4A060_csModel.Z_AlertLogs" Width="1.5" PointX="7.375" PointY="0.75" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.Farm" Width="1.5" PointX="0.625" PointY="4" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.SmsLog" Width="1.5" PointX="3.375" PointY="5.75" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.Farm_Alert_Rules" Width="1.5" PointX="5.375" PointY="5.75" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.AspNetUser" Width="1.5" PointX="0.75" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

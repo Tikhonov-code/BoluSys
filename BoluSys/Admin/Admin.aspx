@@ -4,7 +4,7 @@
     <!--Menu section------------------------------------------------------------------->
     <div class="row" style="text-align: center; padding: 10px 0; border-width: thin; background-color: #b3d1ff;">
         <h3>Administrator Panel</h3>
-<%--        <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>--%>
+        <%--        <button type="button" class="btn btn-primary" onclick="AlertsListShow();">Alerts List</button>--%>
         <div class="dropdown">
             <button class="auto-style1">Alert Service</button>
             <div class="dropdown-content">
@@ -27,14 +27,18 @@
         <button type="button" class="btn btn-primary" onclick="CowsLogShow();">Cows Log</button>
         <button type="button" class="btn btn-primary" onclick="WIReportShow();">Water Intakes Report</button>
         <button type="button" class="btn btn-primary" onclick="BolusesSetShow();">Settings</button>
-        <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
-        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
-<%--        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>--%>
+        <%--        <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>--%>
+        <%--        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>--%>
+        <button type="button" class="btn btn-primary" onclick="UserForm();">Users</button>
+        <%--        <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>--%>
         <div class="dropdown">
-            <button class="auto-style1">Download Data</button>
+            <button class="auto-style1">Data</button>
             <div class="dropdown-content">
                 <button type="button" class="btn btn-primary" onclick="TempIntakesData();">Temperature + Intakes</button>
-                <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download Data</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/DownloadData.aspx';">Download</button>
+                <button type="button" class="btn btn-primary" onclick="TTNRawConverter();">TTN Raw Converter</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = '../services/admincowsdata.aspx';">Cows Data</button>
+
             </div>
         </div>
         <%--        swagger   https://pilot001.data.thethingsnetwork.org/
@@ -43,10 +47,20 @@
     </div>
     <!------------------------------------------------------------------------------------>
     <!--Menu section------END------------------------------------------------------------->
-
     <!------------------------------------------------------------->
     <div id="PanelSWhow"></div>
     <!------------------------------------------------------------->
+
+    <div class="demo-container">
+        <div id="form-demo">
+            <div class="widget-container">
+                <div id="select_farm"></div>
+                <div id="form"></div>
+            </div>
+
+        </div>
+    </div>
+
     <!--Script Section-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <link href="../../dx/css/dx.light.css" rel="stylesheet" />
@@ -146,12 +160,34 @@
             touch-action: manipulation;
             cursor: pointer;
             user-select: none;
-            color:white;
+            color: white;
             background-color: #337ab7;
             border: 1px solid transparent;
             border-radius: 4px;
         }
     </style>
-    <!--Script Section-->
+    <!------------------------------------------------------>
+    <style type="text/css">
+        #form-container {
+            margin: 10px;
+        }
 
+        .long-title h3 {
+            font-family: 'Segoe UI Light', 'Helvetica Neue Light', 'Segoe UI', 'Helvetica Neue', 'Trebuchet MS', Verdana;
+            font-weight: 200;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <style type="text/css">
+        .dx-switch-off {padding-left: 2px;
+    color: red;
+}
+        .dx-switch-on {padding-left: 2px;
+    color:darkgreen;
+}
+        
+    </style>
+    <!-- Script Section-->
 </asp:Content>

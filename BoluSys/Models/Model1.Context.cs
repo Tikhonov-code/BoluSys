@@ -35,6 +35,8 @@ namespace BoluSys.Models
         public virtual DbSet<Z_AlertLogs> Z_AlertLogs { get; set; }
         public virtual DbSet<Farm> Farms { get; set; }
         public virtual DbSet<SmsLog> SmsLogs { get; set; }
+        public virtual DbSet<Farm_Alert_Rules> Farm_Alert_Rules { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
