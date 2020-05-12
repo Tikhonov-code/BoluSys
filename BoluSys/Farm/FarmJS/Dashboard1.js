@@ -105,7 +105,8 @@ $(function () {
                     var dt = d.getFullYear() + '-' + Number(d.getMonth() + 1) + '-' + d.getDate();
                     $('<a/>')
                         .attr({
-                            href: 'BolusChart?Animal_id=' + cellInfo.value + '&Bolus_id=' + cellInfo.key + '&DateSearch=' + dt + '&SP=ShowChart'
+                            //href: 'BolusChart?Animal_id=' + cellInfo.value + '&Bolus_id=' + cellInfo.key + '&DateSearch=' + dt + '&SP=ShowChart'
+                            href: 'CowPage?bid_ext=' + cellInfo.key + '&dt_ext=' + dt
                         })
                         .text(cellInfo.value)
                         .appendTo(cellElement);
@@ -181,7 +182,7 @@ $(function () {
                     var dt = d.getFullYear() + '-' + Number(d.getMonth() + 1) + '-' + d.getDate();
                     $('<a/>')
                         .attr({
-                            href: 'BolusChart?Animal_id=' + cellInfo.value + '&Bolus_id=' + cellInfo.key + '&DateSearch=' + dt + '&SP=ShowChart'
+                            href: 'CowPage?bid_ext=' + cellInfo.key + '&dt_ext=' + dt
                         })
                         .text(cellInfo.value)
                         .appendTo(cellElement);

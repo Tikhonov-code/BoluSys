@@ -19,8 +19,14 @@ namespace BoluSys.Farm
         public int Bolus_id { get; set; }
         public string Animal_id { get; set; }
 
+        //public string bid_ext { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                bid_ext.Value = Request.QueryString["bid_ext"];
+            }
             string SP = Request.QueryString["SP"];
             int bid;
             switch (SP)
@@ -45,45 +51,127 @@ namespace BoluSys.Farm
                     bid = Convert.ToInt16(Request.QueryString["Bolus_id"]);
                     GetCowInfoSt(bid);
                     break;
+                case "GetCowsLogs":
+                    GetCowsLogs(Convert.ToInt16(Request.QueryString["Bolus_id"]));
+                    break;
+                case "InsertCowsLogs":
+                    InsertCowsLogs();
+                    break;
+                case "RemoveCowsLogs":
+                    RemoveCowsLogs();
+                    break;
+                case "UpdateCowsLogs":
+                    UpdateCowsLogs();
+                    break;
+                case "GetAnimalList":
+                    GetAnimalList(User.Identity.GetUserId(), Convert.ToInt16(Request.QueryString["Bolus_id"]));
+                    break;
+                case "GetGapsData":
+                    GetGapsData(Request.QueryString["DateFrom"], Request.QueryString["DateTo"], Request.QueryString["Bolus_id"]);
+                    break;
+                case "GetGapsDataValue":
+                    GetGapsDataValue(Request.QueryString["DateFrom"], Request.QueryString["DateTo"], Request.QueryString["Bolus_id"]);
+                    break;
+                case "CowDataSaveUpdate":
+                    int bolus_id = Convert.ToInt16(Request.QueryString["bolus_id"]);
+                    string Date_of_Birth = Request.QueryString["Date_of_Birth"];
+                    string Age_Lactation = Request.QueryString["Age_Lactation"];
+                    string Current_Stage_Of_Lactation = Request.QueryString["Current_Stage_Of_Lactation"];
+                    string Calving_Due_Date = Request.QueryString["Calving_Due_Date"];
+                    string Actual_Calving_Date = Request.QueryString["Actual_Calving_Date"];
+
+                    CowDataSaveUpdate(bolus_id, Date_of_Birth, Age_Lactation, Current_Stage_Of_Lactation, Calving_Due_Date, Actual_Calving_Date);
+                    break;
                 default:
                     break;
             }
 
         }
+
         [WebMethod]
-        public static string GetCowInfoSt(int bolus_id)
+        public static string CowDataSaveUpdate(int bolus_id, string Date_of_Birth, string Age_Lactation, string Current_Stage_Of_Lactation, string Calving_Due_Date, string Actual_Calving_Date)
         {
             string result = string.Empty;
             try
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
-                    var bidini = context.Bolus.Where(x => x.bolus_id == bolus_id).DefaultIfEmpty().ToList();
-                    string dob = (bidini[0].Date_of_Birth == null) ? "N/A" : bidini[0].Date_of_Birth.Value.ToShortDateString();
-                    string cdd = (bidini[0].Calving_Due_Date == null) ? "N/A" : bidini[0].Calving_Due_Date.Value.ToShortDateString();
-                    string acd = (bidini[0].Actual_Calving_Date == null) ? "N/A" : bidini[0].Actual_Calving_Date.Value.ToShortDateString();
+                    DateTime xd = new DateTime();
+                    Bolu b_item = new Bolu();
+                    //DateTime fields preparation---------------------------------------------
+                    if (DateTime.TryParse(Date_of_Birth, out xd))
+                    { b_item.Date_of_Birth = xd; }
+                    else
+                    { b_item.Date_of_Birth = DateTime.Now; }
 
-                    result = "<table><tr><td>Lactation # </td><td>" + bidini[0].Age_Lactation +
-                         "</td><td>&nbsp;&nbsp;</td><td>Date of Birth :</td><td>" + dob + "</td></tr>" +
-                              "<tr><td>Current Stage of Lactation : </td><td>" + bidini[0].Current_Stage_Of_Lactation +
-                                 "</td><td>&nbsp;&nbsp;</td><td>Calving Due Date :</td><td>" + cdd + "</td></tr>" +
-                              "<tr><td>Health Concerns Illness History : </td><td>" + bidini[0].Health_Concerns_Illness_History +
-                              "</td><td>&nbsp;&nbsp;</td><td>Actual Calving Date : </td><td>" + acd + "</td></tr>" +
-                              "<tr><td>Overall Health : </td><td>" + bidini[0].Overall_Health + "</td><td></td></tr>" +
-                              "<tr><td>Comments : </td><td>" + bidini[0].Comments + "</td><td></td></tr>" +
-                              "</table>"
-                              ;
+                    if (DateTime.TryParse(Calving_Due_Date, out xd))
+                    { b_item.Calving_Due_Date = xd; }
+                    else
+                    { b_item.Calving_Due_Date = DateTime.Now; }
 
+                    if (DateTime.TryParse(Actual_Calving_Date, out xd))
+                    { b_item.Actual_Calving_Date = xd; }
+                    else
+                    { b_item.Actual_Calving_Date = DateTime.Now; }
+                    //-----------------------------------------------------------------------
+                    Int16 al = 0;
+                    if (Int16.TryParse(Age_Lactation, out al))
+                    { b_item.Age_Lactation = al; }
+                    else
+                    { b_item.Age_Lactation = 0; }
+
+                    //b_item.Age_Lactation                = Convert.ToInt16(Age_Lactation);
+                    b_item.Current_Stage_Of_Lactation = Current_Stage_Of_Lactation;
+
+                    var b_old = context.Bolus.Where(x => x.bolus_id == bolus_id).SingleOrDefault();
+
+                    b_old.Date_of_Birth = b_item.Date_of_Birth;
+                    b_old.Age_Lactation = b_item.Age_Lactation;
+                    b_old.Current_Stage_Of_Lactation = b_item.Current_Stage_Of_Lactation;
+                    b_old.Calving_Due_Date = b_item.Calving_Due_Date;
+                    b_old.Actual_Calving_Date = b_item.Actual_Calving_Date;
+
+                    context.SaveChanges();
+                    b_item = null;
+                    result = "Updated Successfully!";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                result = "None";
+                result = ex.Message;
             }
-            //Response.Clear();
-            ////Response.ContentType = "application/json;charset=UTF-8";
-            //Response.Write(result);
-            //Response.End();
+            return result;
+        }
+
+        [WebMethod]
+        public static string GetCowInfoSt(int bolus_id)
+        {
+            string result = string.Empty;
+            Bolu cow_info = new Bolu();
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var q = context.Bolus.Where(x => x.bolus_id == bolus_id).Select(x => new
+                    {
+                        Animal_ID = x.animal_id,
+                        Bolus_ID = x.bolus_id,
+                        BirthDate = x.Date_of_Birth,
+                        Current_Lactation = x.Age_Lactation,
+                        Lactation_Stage = x.Current_Stage_Of_Lactation,
+                        Lactation_Day = 0,
+                        x.Calving_Due_Date,
+                        x.Actual_Calving_Date
+                    }).SingleOrDefault();
+
+                    result = JsonConvert.SerializeObject(q);
+                }
+            }
+            catch (Exception ex)
+            {
+                var m = ex.Message;
+                cow_info = null;
+            }
             return result;
         }
 
@@ -282,5 +370,263 @@ namespace BoluSys.Farm
             }
             return Evnt_Date;
         }
+
+        // Administrator Cows Logs
+        [WebMethod]
+        public int UpdateCowsLogs()
+        {
+            int id_Update = Convert.ToInt32(Request.QueryString["id"]);
+            string Evnt = Request.Form["Event"];
+            string Descr = Request.Form["Description"];
+            string Event_Date = Request.Form["Event_Date"];
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var cl = context.Cows_log.SingleOrDefault(x => x.id == id_Update);
+
+                if (!string.IsNullOrEmpty(Evnt)) cl.Event = Evnt;
+                if (!string.IsNullOrEmpty(Descr)) cl.Description = Descr;
+                if (!string.IsNullOrEmpty(Event_Date)) cl.Event_Date = Parse_StringToDateTime(Event_Date);
+
+                context.SaveChanges();
+
+            }
+            return id_Update;
+        }
+        [WebMethod]
+        public void GetAnimalList(string user_id, int bid)
+        {
+            //------------------------------------------------------------------------
+            object result;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                //var userid = User.Identity.GetUserId();
+
+                result = (from f in context.FarmCows
+                          join b in context.Bolus on f.Bolus_ID equals b.bolus_id
+                          where f.AspNetUser_ID == user_id && f.Bolus_ID == bid
+                          select new
+                          {
+                              id = f.id,
+                              animal_id = b.animal_id
+                          }
+                          ).ToList();
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+        [WebMethod]
+        public int RemoveCowsLogs()
+        {
+            int idDel = Convert.ToInt32(Request.QueryString["id"]);
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var xraw = context.Cows_log.SingleOrDefault(x => x.id == idDel);
+                if (xraw.id != 0)
+                {
+                    context.Cows_log.Remove(xraw);
+                    context.SaveChanges();
+                }
+            }
+            return idDel;
+        }
+
+        [WebMethod]
+        public int InsertCowsLogs()
+        {
+            int id_new = 0;
+            int aid = Convert.ToInt32(Request.QueryString["animal_id"]);
+            string Evnt = Request.Form["Event"];
+            string Descr = Request.Form["Description"];
+
+            DateTime Evnt_Date = Parse_StringToDateTime(Request.Form["Event_Date"]);
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                Cows_log cl = new Cows_log();
+                cl.animal_id = aid;
+                cl.Event = Evnt;
+                cl.Description = Descr;
+                cl.Event_Date = Evnt_Date;
+                context.Cows_log.Add(cl);
+                context.SaveChanges();
+                id_new = cl.id;
+            }
+            return id_new;
+        }
+
+        [WebMethod]
+        public void GetCowsLogs(int bid)
+        {
+            //------------------------------------------------------------------------
+            List<Cows_log> result;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                //var userid = User.Identity.GetUserId();
+
+                result = (from cl in context.Cows_log
+                          join b in context.Bolus on cl.animal_id equals b.animal_id
+                          join f in context.FarmCows on b.bolus_id equals f.Bolus_ID
+                          where b.bolus_id == bid
+                          select cl).ToList<Cows_log>();
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetGapsData(string dt0, string dt1, string bi_d)
+        {
+            int bolus_id = Convert.ToInt16(bi_d);
+            //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
+            DateTime dt_from = DateTime.Parse(dt0);
+            DateTime dt_to = DateTime.Parse(dt1);
+
+            //Day Begin---------------------------------------
+            Data_Gaps dg_begin = new Data_Gaps();
+            dg_begin.bolus_id = bolus_id;
+            dg_begin.dt_from = dt_from;
+            //------------------------------------------------
+            //Day End---------------------------------------
+            Data_Gaps dg_end = new Data_Gaps();
+            dg_end.bolus_id = bolus_id;
+            dg_end.dt_to = dt_to;
+            //------------------------------------------------
+
+            List<Data_Gaps> result = new List<Data_Gaps>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var res = (from m in context.MeasDatas
+                           join b in context.Bolus on m.bolus_id equals b.bolus_id
+                           join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to
+                                && m.bolus_id == bolus_id
+                           select new
+                           {
+                               bolus_id = m.bolus_id,
+                               animal_id = m.animal_id,
+                               bolus_full_date = m.bolus_full_date,
+                           }).ToList();
+                if (res.Count > 0)
+                {
+
+
+                    double diffinterval = 0;
+                    //Day Begin--------------------------------------------------------------------
+                    dg_begin.animal_id = res[0].animal_id;
+                    dg_begin.dt_to = res[0].bolus_full_date;
+                    diffinterval = (dg_begin.dt_to.Value - dg_begin.dt_from.Value).TotalMinutes;
+
+                    dg_begin.interval = String.Format("{0:0.00}", diffinterval);
+                    if (diffinterval > 15.5)
+                    {
+                        result.Add(dg_begin);
+                    }
+                    //--------------------------------------------------------------------
+
+
+                    var bid = res.Select(x => new { bid = x.bolus_id }).Distinct().OrderBy(x => x.bid).ToArray();
+                    int num_bid = bid.Length;
+
+                    foreach (var item in bid)
+                    {
+                        var m = res.Where(x => x.bolus_id == item.bid).OrderBy(x => x.bolus_full_date).ToList();
+                        int num_m = m.Count;
+                        for (int i = 1; i < num_m; i++)
+                        {
+                            Data_Gaps dg = new Data_Gaps();
+                            dg.bolus_id = m[i].bolus_id;
+                            dg.animal_id = m[i].animal_id;
+                            dg.dt_to = m[i].bolus_full_date.Value;
+                            dg.dt_from = m[i - 1].bolus_full_date.Value;
+                            diffinterval = (m[i].bolus_full_date.Value - m[i - 1].bolus_full_date.Value).TotalMinutes;
+
+                            if (diffinterval > 15.5)
+                            {
+                                dg.interval = String.Format("{0:0.00}", diffinterval);
+                                result.Add(dg);
+                            }
+                            dg = null;
+                        }
+                    }
+                    //--------------------------------------------------------------------
+                    //Day End---------------------------------------------------------------------
+                    dg_end.animal_id = res[0].animal_id;
+                    dg_end.dt_from = res[res.Count - 1].bolus_full_date;
+                    //dg_end.dt_to = dt_to;
+                    diffinterval = (dg_end.dt_to.Value - dg_end.dt_from.Value).TotalMinutes;
+
+                    dg_end.interval = String.Format("{0:0.00}", diffinterval);
+                    if (diffinterval > 15.5)
+                    {
+                        result.Add(dg_end);
+                    }
+                    //Day End---------------------------------------------------------------------
+                }
+                else
+                {
+                    //result = "";
+                }
+            }
+            //---------------------------------------
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+        private void GetGapsDataValue(string dtfrom, string dtto, string bid)
+        {
+            DateTime dt1 = DateTime.Parse(dtfrom);
+            DateTime dt2 = DateTime.Parse(dtto);
+            int bid_int = Convert.ToInt32(bid);
+            //DateTime dt1 = DateTime.Parse("2020-03-15");
+            //DateTime dt2 = DateTime.Parse("2020-03-15 11:59 PM");
+            //int bid_int = Convert.ToInt32(bid);
+            string res_json;
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var res = context.SP_GET_BolusDataGaps(dt1, dt2, bid_int).ToList();
+                    double gaps = Convert.ToDouble(res[0].Gaps);
+                    gaps = (gaps <= 0) ? 0 : gaps;
+                    res_json = JsonConvert.SerializeObject(res[0].Points + gaps.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                res_json = null;
+            }
+            //return res_json;
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+
+
+        //public DateTime Parse_StringToDateTime(string dt)
+        //{
+        //    DateTime Evnt_Date = new DateTime();
+
+        //    //dt = "Sun Nov 24 2019 00:00:00 GMT + 0200(Eastern European Standard Time)";
+
+        //    bool dtct = DateTime.TryParse(dt, out Evnt_Date);
+        //    if (!dtct)
+        //    {
+        //        string date = dt.Substring(4, 11);
+        //        string s = DateTime.ParseExact(date, "MMM dd yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+        //        Evnt_Date = (DateTime.TryParse(s, out Evnt_Date)) ? Evnt_Date : DateTime.Now;
+        //    }
+        //    return Evnt_Date;
+        //}
     }
 }

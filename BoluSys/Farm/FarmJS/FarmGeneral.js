@@ -28,6 +28,9 @@ function GetToday() {
 }
 function ConvertDateToMyF(dt) {
     var month, day, year, hours, minutes, seconds;
+    if (typeof dt === 'string' || dt instanceof String) {
+        return dt;
+    }
     if (dt == "") {
         return null;
     }
