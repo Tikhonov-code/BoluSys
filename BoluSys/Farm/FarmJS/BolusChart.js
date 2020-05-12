@@ -479,79 +479,117 @@ function DateTimeFormat(dtpar) {
 }
 
 //------Options Section--------------------------------------------
-$(function () {
-    var now = new Date();
+//$(function () {
+//    var now = new Date();
 
-    $("#DaySet").dxDateBox({
-        type: "date",
-        value: now,
-        onValueChanged: function (data) {
-            //DevExpress.ui.notify(data.value, "warning", 500);
-            //$("#dateFrom").dxDateBox("instance").option('value', data.value);
-            //dateFrom_Show(data.value);
-            //dateTo_Show(data.value);
+//    $("#DaySet").dxDateBox({
+//        type: "date",
+//        value: now,
+//        onValueChanged: function (data) {
+//            //DevExpress.ui.notify(data.value, "warning", 500);
+//            //$("#dateFrom").dxDateBox("instance").option('value', data.value);
+//            //dateFrom_Show(data.value);
+//            //dateTo_Show(data.value);
 
-            //ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
-            //IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-            //GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-            //GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-            //GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
-        }
-    });
-    $("#dateFrom1").dxDateBox({
-        type: "date",
-        value: now,
-        onValueChanged: function (data) {
-        }
-    });
-    $("#dateTo1").dxDateBox({
-        type: "date",
-        value: now,
-        onValueChanged: function (data) {
-        }
-    });
-    var ds = [
-        {
-            bolus_id: "1",
-            animal_id:"7070"
-        },
-        {
-            bolus_id: "2",
-            animal_id: "7071"
-        }
+//            //ChartCreate("#chart_temp", ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val(), "temp");
+//            //IntakesChart_Show0(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetTotalIntakes(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetAverTemperature(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//            //GetGapsDataValue(ConvertDateToMyF(df), ConvertDateToMyF(newValue), $("#Bolus_id").val());
+//        }
+//    });
+//    $("#dateFrom1").dxDateBox({
+//        type: "date",
+//        value: now,
+//        onValueChanged: function (data) {
+//        }
+//    });
+//    $("#dateTo1").dxDateBox({
+//        type: "date",
+//        value: now,
+//        onValueChanged: function (data) {
+//        }
+//    });
+//    var ds = [
+//        {
+//            bolus_id: "1",
+//            animal_id:"7070"
+//        },
+//        {
+//            bolus_id: "2",
+//            animal_id: "7071"
+//        }
 
-    ];
-    $("#animal_id").dxSelectBox({
-        //items: AnimalIDlist,
-        placeholder: "Choose Animal_id",
-        showClearButton: true,
-        dataSource: ds,
-        displayExpr: "animal_id",
-        valueExpr: "bolus_id",
-        width:"200px",
-        //value: vl,//ds[0].bolus_id,   
-        //------------------------------------------------------
+//    ];
+//    $("#animal_id").dxSelectBox({
+//        //items: AnimalIDlist,
+//        placeholder: "Choose Animal_id",
+//        showClearButton: true,
+//        dataSource: ds,
+//        displayExpr: "animal_id",
+//        valueExpr: "bolus_id",
+//        width:"200px",
+//        //value: vl,//ds[0].bolus_id,   
+//        //------------------------------------------------------
 
-        onValueChanged: function (e) {
-            var bid = e.value;
-            $("#Bolus_id").val(bid);
+//        onValueChanged: function (e) {
+//            var bid = e.value;
+//            $("#Bolus_id").val(bid);
 
-            var aid_c = ds.filter(a => a.bolus_id == bid);
-            $("#Animal_id").val(aid_c[0].animal_id);
-            var dto = new Date($("#dateTo").dxDateBox("instance").option('value'));
-            var dfr = new Date($("#dateFrom").dxDateBox("instance").option('value'));
+//            var aid_c = ds.filter(a => a.bolus_id == bid);
+//            $("#Animal_id").val(aid_c[0].animal_id);
+//            var dto = new Date($("#dateTo").dxDateBox("instance").option('value'));
+//            var dfr = new Date($("#dateFrom").dxDateBox("instance").option('value'));
 
-            ////ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
-            //ChartCreate("#chart_temp", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "temp");
+//            ////ChartCreate("#chart", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "full");
+//            //ChartCreate("#chart_temp", ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid, "temp");
 
-            //IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
-            //GetTotalIntakes(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
-            //GetAverTemperature(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
-            //GetGapsDataValue(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
-            //GetCowInfo(bid);
-            //GetCowsLogs(aid_c[0].animal_id);
+//            //IntakesChart_Show0(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+//            //GetTotalIntakes(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+//            //GetAverTemperature(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+//            //GetGapsDataValue(ConvertDateToMyF(dfr), ConvertDateToMyF(dto), bid);
+//            //GetCowInfo(bid);
+//            //GetCowsLogs(aid_c[0].animal_id);
 
-        }
-    });
-});
+//        }
+//    });
+//});
 //------Options Section--------------------------------------------
+
+//Cow Personal Section---------------------------------------------
+//$(function () {
+//    var form = $("#form_CPS").dxForm({
+//        formData: cow_data[0],
+//        readOnly: false,
+//        showColonAfterLabel: true,
+//        labelLocation: "top",
+//        minColWidth: 300,
+//        colCount: 4
+//    }).dxForm("instance");
+//    $("#read-only").dxCheckBox({
+//        text: "readOnly",
+//        value: false,
+//        onValueChanged: function (data) {
+//            form.option("readOnly", data.value);
+//        }
+//    });
+//    $("#normal-contained").dxButton({
+//        stylingMode: "contained",
+//        text: "Contained",
+//        type: "normal",
+//        width: 120,
+//        onClick: function () {
+//            DevExpress.ui.notify("The Contained button was clicked");
+//        }
+//    });
+//});
+//var cow_data = [{
+//    "Animal_id": "96",
+//    "Lactation": 2,
+//    "Current Stage of Lactation": "N/A",
+//    "Health Concerns Illness History": "No",
+//    "Overall Health": "good",
+//    "Date of Birth": "3/5/2018",
+//    "Calving Due Date": "3/5/2019",
+//    "Actual Calving Date": "3/5/2020"
+//}];

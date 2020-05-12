@@ -41,30 +41,7 @@
         Total Water Intakes:<input id="TotalIntakes" style="width: 60px;" type="text" value="<%# TotalIntakes %>" />, Litres
 
     </div>
-    <!---Options Panel------------------------------------------------------------->
-    <%--<div class="options">
-        <div class="caption center">Options</div>
-        <div class="option">
-            <span>Show Day:</span>
-            <div id="DaySet"></div>
-        </div>
-        <div class="option left">
-            <span>Date From:</span>
-            <div id="dateFrom1"></div>
-        </div>
-        <div class="option">
-            <span>Date To:</span>
-            <div id="dateTo1"></div>
-        </div>
-        <div class="option">
-            <span>Animal :</span>
-            <div id="animal_id"></div>
-        </div>
-    </div>--%>
-    <!---------------------------------------------------------------->
-    <%--<div class="demo-container">
-        <div id="chart"></div>
-    </div>--%>
+
     <div class="demo-container">
         <div id="chart_temp"></div>
     </div>
@@ -91,7 +68,21 @@
         <div id="CowsLogList" style="border-style: solid; border-color: #999999;"></div>
     </div>
     <!---------------------------------------------------------------->
-
+    <!--Cow Personal Section------------------------------------------>
+    <%--<div class="cow-container">
+        <div id="form-cow">
+            <div class="cow-widget-container">
+                <div id="form_CPS"></div>
+                <div class="cow-options">
+                    <div class="cow-caption">Options</div>
+                    <div class="cow-option">
+                        <div id="read-only"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>--%>
+    <!--End of Cow Personal Section----------------------------------->
     <!--Script Section-->
     <link href="../../dx/css/dx.light.css" rel="stylesheet" />
     <link href="../../dx/css/dx.common.css" rel="stylesheet" />
@@ -109,7 +100,7 @@
             height: 222px;
         }
         /*   Logs list css       */
-        .selected-data,
+        /*.selected-data,
         .options {
             margin-top: 20px;
             padding: 20px;
@@ -128,35 +119,63 @@
             .option > span {
                 margin-right: 10px;
             }
-/*                      */
-.options {
-    padding: 20px;
-    background-color: rgba(191, 191, 191, 0.15);
-    margin-top: 20px;
-}
+        /*                      */
+        /*.options {
+            padding: 20px;
+            background-color: rgba(191, 191, 191, 0.15);
+            margin-top: 20px;
+        }
 
-.caption {
+        .caption {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .option {
+            display: inline-block;
+            margin-right: 70px;
+            margin-top: 5px;
+        }
+
+            .option > span {
+                margin: 0 10px 0 0;
+            }
+
+        .checkbox {
+            margin-top: -4px;
+        }
+
+        .option > .dx-widget {
+            display: inline-block;
+            vertical-align: middle;
+        }*/
+    </style>
+
+    <style type="text/css">
+        .cow-widget-container {
+    margin-right: 320px;
+    padding: 20px;
+    max-width: 550px;
+    min-width: 300px;
+}
+#form_CPS {
+    margin-top: 25px;
+}
+.cow-options {
+    padding: 20px;
+    /*position: absolute;*/
+    bottom: 0;
+    right: 0;
+    width: 260px;
+    top: 0;
+    background-color: rgba(191, 191, 191, 0.15);
+}
+.cow-caption {
     font-size: 18px;
     font-weight: 500;
 }
-
-.option {
-    display: inline-block;
-    margin-right: 70px;
-    margin-top: 5px;
-}
-
-.option > span {
-   margin: 0 10px 0 0;
-}
-
-.checkbox{
-    margin-top: -4px;
-}
-
-.option > .dx-widget {
-    display: inline-block;
-    vertical-align: middle;
+.cow-option {
+    margin-top: 10px;
 }
     </style>
 </asp:Content>
