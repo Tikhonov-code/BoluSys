@@ -6,7 +6,7 @@ var dt20 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 24, 0, 0, 0);
 $(function () {
 
     var bid_ext = $("#MainContent_bid_ext").val();
-   // alert("bid_ext = " + bid_ext);
+    // alert("bid_ext = " + bid_ext);
 
     var farmName = $.getJSON("CowPage.aspx?SP=GetFarmName"
         , function (result) {
@@ -38,7 +38,7 @@ function TodayCowpage(bid_ext) {
 }
 
 function FindBolusIDindex(bidlist, par) {
-    var bidindex =0;
+    var bidindex = 0;
     var num = bidlist.length;
     for (var i = 0; i < num; i++) {
         if (bidlist[i].bolus_id == par) {
@@ -91,7 +91,7 @@ function ShowForm(animalList, bid_ext) {
                             //var dt1 = ConvertDateToMyF(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 0, 0, 0, 0));
                             //var dt2 = ConvertDateToMyF(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 24, 0, 0, 0));
                             //$("#From").dxDateBox("instance").option('value', dt1);
-                           // $("#To").dxDateBox("instance").option('value', dt2);
+                            // $("#To").dxDateBox("instance").option('value', dt2);
                             var dt1 = ConvertDateToMyF($("#From").dxDateBox("instance").option('value'));
                             var dt2 = ConvertDateToMyF($("#To").dxDateBox("instance").option('value'));
 
@@ -226,7 +226,7 @@ function ShowForm(animalList, bid_ext) {
 
                                     var dt1 = ConvertDateToMyF($("#From").dxDateBox("instance").option('value'));
                                     var dt2 = ConvertDateToMyF(e.value);
-                                   // dt2 = dt2.split('/').join('-');
+                                    // dt2 = dt2.split('/').join('-');
                                     //----------------------------------------------------------------
                                     ChartCreate('#chart_temp', dt1, dt2, bid);
                                     IntakesChart_Show(dt1, dt2, bid);
@@ -344,7 +344,7 @@ function GetGapsDataValue(dt0, dt1, bid) {
             var gap = result.slice(ind1 - ind2);
             //var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
 
-var mark = (Number(gap) < 5) ? "<i class='dx-icon-check' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+            var mark = (Number(gap) < 5) ? "<i class='dx-icon-check' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
             $("#DataGapsValue").html(result + "% " + mark);
         });
     }
@@ -756,7 +756,7 @@ function CowDataSave(Bolus_ID) {
 
             $("#CowInfo_form").dxForm("instance").getEditor("Calving_Due_Date").option("value", "N/A");
             $("#CowInfo_form").dxForm("instance").getEditor("Actual_Calving_Date").option("value", Actual_Calving_Date);
-            
+
             break;
         case "Dry", "Pregnant":
             Calving_Due_Date = $("#cow_cdd").val();
@@ -777,7 +777,7 @@ function CowDataSave(Bolus_ID) {
         default:
             break;
     }
-  
+
     $("#CowInfo_form").dxForm("instance").getEditor("Current_Lactation").option("value", $("#cow_clac").val());
     $("#CowInfo_form").dxForm("instance").getEditor("BirthDate").option("value", $("#cow_bd").val());
     $("#CowInfo_form").dxForm("instance").getEditor("Lactation_Stage").option("value", lactationStage);
@@ -838,38 +838,38 @@ function CowsLogShow(bid) {
 }
 function CowsLogFun(bid) {
     var selectedRowIndex = -1;
-   
-    $("#action-add").dxSpeedDialAction({
-        label: "Add row",
-        icon: "add",
-        index: 1,
-        onClick: function () {
-            grid.addRow();
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
 
-    var deleteSDA = $("#action-remove").dxSpeedDialAction({
-        icon: "trash",
-        label: "Delete row",
-        index: 2,
-        visible: false,
-        onClick: function () {
-            grid.deleteRow(selectedRowIndex);
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
+    //$("#action-add").dxSpeedDialAction({
+    //    label: "Add row",
+    //    icon: "add",
+    //    index: 1,
+    //    onClick: function () {
+    //        grid.addRow();
+    //        grid.deselectAll();
+    //    }
+    //}).dxSpeedDialAction("instance");
 
-    var editSDA = $("#action-edit").dxSpeedDialAction({
-        label: "Edit row",
-        icon: "edit",
-        index: 3,
-        visible: false,
-        onClick: function () {
-            grid.editRow(selectedRowIndex);
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
+    //var deleteSDA = $("#action-remove").dxSpeedDialAction({
+    //    icon: "trash",
+    //    label: "Delete row",
+    //    index: 2,
+    //    visible: false,
+    //    onClick: function () {
+    //        grid.deleteRow(selectedRowIndex);
+    //        grid.deselectAll();
+    //    }
+    //}).dxSpeedDialAction("instance");
+
+    //var editSDA = $("#action-edit").dxSpeedDialAction({
+    //    label: "Edit row",
+    //    icon: "edit",
+    //    index: 3,
+    //    visible: false,
+    //    onClick: function () {
+    //        grid.editRow(selectedRowIndex);
+    //        grid.deselectAll();
+    //    }
+    //}).dxSpeedDialAction("instance");
 
     //----------------------------------------
     var cowsList = new DevExpress.data.CustomStore({
@@ -960,7 +960,7 @@ function CowsLogFun(bid) {
                 }
             },
             texts: {
-                confirmDeleteMessage: "Done"
+                confirmDeleteMessage: "Are you sure?"
             },
             form: {
                 items: [{
@@ -996,12 +996,41 @@ function CowsLogFun(bid) {
             e.toolbarOptions.items.unshift({
                 location: "before",
                 template: function () {
-                    return $("<div/>")
-                        .addClass("informer")
-                        .append($("<span />")
-                            .addClass("name")
-                            .text("Events List")
-                        );
+                    var mytemp = $("<div/>").addClass("informer").append(
+                        $("<span />").addClass("name").text("Events List,           actions: "),
+                        $("<div>").dxButton({
+                            cssClass:"dx-button-success",
+                            icon: "edit",
+                            hint: "Edit",
+                            type: "success",
+                            onClick: function () {
+                                grid.editRow(selectedRowIndex);
+                                grid.deselectAll();
+                            }
+                        }),
+                         $("<span />").addClass("name").text(" "),
+                        $("<div>").dxButton({
+                            icon: "trash",
+                            hint: "Delete",
+                            type: "success",
+                            onClick: function () {
+                                grid.deleteRow(selectedRowIndex);
+                                grid.deselectAll();
+                            }
+                        }),
+                        $("<span />").addClass("name").text(" "),
+                        $("<div>").dxButton({
+                            icon: "plus",
+                            hint: "Add",
+                            type: "success",
+                            onClick: function () {
+                                grid.addRow();
+                                grid.deselectAll();
+                            }
+                        })
+                    );
+
+                    return mytemp;
                 }
             });
         },
