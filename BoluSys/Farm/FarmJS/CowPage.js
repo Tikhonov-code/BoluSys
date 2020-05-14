@@ -34,6 +34,7 @@ function TodayCowpage(bid_ext) {
     IntakesChart_Show(dt1, dt2, bid_ext);
     DataGapsShow(bid_ext, dt1, dt2);
     GetCowInfo(bid_ext);
+    GetGapsDataValue(dt1, dt2, bid_ext);
 }
 
 function FindBolusIDindex(bidlist, par) {
@@ -97,6 +98,7 @@ function ShowForm(animalList, bid_ext) {
                             ChartCreate('#chart_temp', dt1, dt2, bid);
                             IntakesChart_Show(dt1, dt2, bid);
                             DataGapsShow(bid, dt1, dt2);
+                            GetGapsDataValue(dt1, dt2, bid);
                         }
                     }
                 }]
@@ -127,6 +129,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -150,6 +153,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -174,6 +178,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -199,6 +204,7 @@ function ShowForm(animalList, bid_ext) {
                                     ChartCreate('#chart_temp', dt1, dt2, bid);
                                     IntakesChart_Show(dt1, dt2, bid);
                                     DataGapsShow(bid, dt1, dt2);
+                                    GetGapsDataValue(dt1, dt2, bid);
                                 }
                             }
                         }
@@ -225,6 +231,7 @@ function ShowForm(animalList, bid_ext) {
                                     ChartCreate('#chart_temp', dt1, dt2, bid);
                                     IntakesChart_Show(dt1, dt2, bid);
                                     DataGapsShow(bid, dt1, dt2);
+                                    GetGapsDataValue(dt1, dt2, bid);
                                 }
                             }
                         }
@@ -252,6 +259,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     }
@@ -334,7 +342,9 @@ function GetGapsDataValue(dt0, dt1, bid) {
             var ind1 = result.lastIndexOf(":") + 1;
             var ind2 = result.length;
             var gap = result.slice(ind1 - ind2);
-            var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+            //var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+
+var mark = (Number(gap) < 5) ? "<i class='dx-icon-check' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
             $("#DataGapsValue").html(result + "% " + mark);
         });
     }
