@@ -758,7 +758,8 @@ function CowDataSave(Bolus_ID) {
             $("#CowInfo_form").dxForm("instance").getEditor("Actual_Calving_Date").option("value", Actual_Calving_Date);
 
             break;
-        case "Dry", "Pregnant":
+        case "Dry":
+        case "Pregnant":
             Calving_Due_Date = $("#cow_cdd").val();
             Actual_Calving_Date = $("#cow_acd").val();
 
@@ -999,7 +1000,7 @@ function CowsLogFun(bid) {
                     var mytemp = $("<div/>").addClass("informer").append(
                         $("<span />").addClass("name").text("Events List,           actions: "),
                         $("<div>").dxButton({
-                            cssClass:"dx-button-success",
+                            cssClass: "dx-button-success",
                             icon: "edit",
                             hint: "Edit",
                             type: "success",
@@ -1008,7 +1009,7 @@ function CowsLogFun(bid) {
                                 grid.deselectAll();
                             }
                         }),
-                         $("<span />").addClass("name").text(" "),
+                        $("<span />").addClass("name").text(" "),
                         $("<div>").dxButton({
                             icon: "trash",
                             hint: "Delete",
