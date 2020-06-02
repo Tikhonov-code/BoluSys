@@ -64,6 +64,15 @@ namespace BoluSys.Admin
                 case "GetDataGapsPercent":
                     GetDataGapsPercent(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
                     break;
+                case "GetDataGapsMap":
+                    //+ "&lactat=" + lactat + "&bid=" + bid
+                    int bid = Convert.ToInt16( Request.QueryString["bid"]);
+                    string lactat = Request.QueryString["lactat"];
+                    GetDataGapsMap(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"],lactat,bid);
+                    break;
+                case "GetBolusesSet_GapsMap":
+                    GetBolusesSet_GapsMap(Request.QueryString["userid"]);
+                    break;
                 case "GetFarmNameList":
                     GetFarmNameList();
                     break;
@@ -202,7 +211,7 @@ namespace BoluSys.Admin
             bool b_result = false;
             string[] str0 = str.Split(':');
             string result = str0[1].Replace("\"", "").Replace("}", "").Trim();
-            if (result == "0"|| result =="false")
+            if (result == "0" || result == "false")
             {
                 b_result = false;
             }
@@ -456,6 +465,41 @@ namespace BoluSys.Admin
             Response.Write(res_json);
             Response.End();
         }
+        private void GetBolusesSet_GapsMap(string user_id)
+        {
+            string res_json = "";
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    var r = (from b in context.Bolus
+                             join fc in context.FarmCows on b.bolus_id equals fc.Bolus_ID
+                             join f in context.Farms on fc.AspNetUser_ID equals f.AspNetUser_Id
+                             where f.AspNetUser_Id == user_id
+                             select new
+                             {
+                                 Name = f.Name,
+                                 bolus_id = b.bolus_id,
+                                 animal_id = b.animal_id,
+                                 status = b.status
+                             }).OrderBy(x => x.animal_id).ToList();
+                    //----------add item bolus_id = Any-----------------------
+                    //{\"Name\":\"Markhill Farm\",\"bolus_id\":97,\"animal_id\":568,\"status\":true}
+                    //--------------------------------------------------------
+                    res_json = JsonConvert.SerializeObject(r);
+                    res_json = "[{\"Name\":\"Any Farm\",\"bolus_id\":0,\"animal_id\":\"Any\",\"status\":true}," + res_json.Substring(1, res_json.Length - 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                res_json = ex.Message;
+            }
+
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
 
         private void GetWiReportData(string dt)
         {
@@ -595,6 +639,68 @@ namespace BoluSys.Admin
 
         }
 
+        private void GetDataGapsMap(string dt0, string dt1, string userid,string lactat,int bid)
+        {
+            //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
+            DateTime dt_from = DateTime.Parse(dt0.Substring(0, 10)).Date;
+            DateTime dt_to = DateTime.Parse(dt1.Substring(0, 10)).Date;
+            int days;
+            if (dt_from.Date >= dt_to.Date)
+            {
+                days = 1;
+            }
+            else
+            {
+                days = Convert.ToInt16((dt_to - dt_from).TotalDays);
+            }
+
+            int time_interval = 1;
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable();
+
+            string connstr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            SqlConnection con = new SqlConnection(connstr);
+            SqlCommand cmd = new SqlCommand("SP_Admin_GapsDHMap", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@dt", dt_to.ToShortDateString()));
+            cmd.Parameters.Add(new SqlParameter("@day", days));
+            cmd.Parameters.Add(new SqlParameter("@time_interval", time_interval));
+            cmd.Parameters.Add(new SqlParameter("@user_id", userid));
+            cmd.Parameters.Add(new SqlParameter("@lactat", lactat));
+            cmd.Parameters.Add(new SqlParameter("@bid", bid));
+            SqlDataReader rdr = null;
+            try
+            {
+                con.Open();
+                rdr = cmd.ExecuteReader();
+                dt.Load(rdr);
+            }
+            catch (Exception ex)
+            {
+                var x = ex.Message;
+                dt = null;
+            }
+            finally
+            {
+                con.Close();
+                if(rdr!= null) rdr.Close();
+            }
+
+            if (dt==null)
+            {
+                Response.Clear();
+                Response.ContentType = "application/json;charset=UTF-8";
+                Response.Write("");
+                Response.End();
+            }
+            var res_json = JsonConvert.SerializeObject(dt);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+
+        }
 
         // Administrator Cows Logs
         [WebMethod]

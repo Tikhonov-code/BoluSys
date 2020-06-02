@@ -512,6 +512,151 @@ function FillDataGapsPercent(data_db) {
 
 };
 
+//-------Gaps Map for Herd----------------------------------------
+var datagapsMap = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Data Gaps Map For Herd</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
+    "<div class='col-sm-1'  id='farm_user'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
+    "<div class='col-sm-2' style='text-align: left;'><div id='SearchGaps'></div></div></div>" +
+    "<div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Lactation Stage:</div>" +
+    "<div class='col-sm-1' id='cow_lac_stg'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Animal ID:</div>" +
+    "<div class='col-sm-3' id='SB_animal_id'></div>" +
+    "</div>"+
+    "<div class='container'><div id='GridGaps'></div></div></div>"+   
+"</div >";
+var ds_cow_lac_stg = ["Any", "Open", "Dry", "Pregnant"];
+
+function AnimalListDef(userid) {
+    $.getJSON('admin.aspx?SP=GetBolusesSet_GapsMap&userid=' + userid,
+        function (result) {
+            $("#SB_animal_id").dxSelectBox({
+                dataSource: result,
+                displayExpr: "animal_id",
+                valueExpr: "bolus_id",
+                //value: result[0],
+                width: "200"
+            });
+        });
+}
+
+function GapsMapShow() {
+    $("#PanelSWhow").html(datagapsMap);
+
+    $.getJSON('admin.aspx?SP=GetFarmNameList',
+        function (result) {
+            $("#farm_user").dxSelectBox({
+                dataSource: result,
+                displayExpr: "Name",
+                valueExpr: "AspNetUser_Id",
+                width: "200",
+                onValueChanged: function (e) {
+                    AnimalListDef(e.value);
+                }
+            });
+        });
+    //----------------------------------------------------
+    $("#cow_lac_stg").dxSelectBox({
+        dataSource: ds_cow_lac_stg,
+        value: ds_cow_lac_stg[0],
+        width: "200"
+    });
+
+    //----------------------------------------------------
+    var now = new Date();
+    var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    var now_end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+
+    $("#DateFrom").dxDateBox({
+        type: "datetime",
+        name: "Date From:",
+        value: now_begin,
+        width: "200"
+    });
+
+    $("#DateTo").dxDateBox({
+        type: "datetime",
+        value: now_end,
+        width: "200"
+    });
+
+    var data_db;
+
+    $("#SearchGaps").dxButton({
+        //stylingMode: "outlined",
+        text: "Report",
+        elementAttr: {
+            title: "Click To Find",
+            style: "background-color: #337ab7; color:white;"
+        },
+        width: 80,
+        onClick: function () {
+            data_db = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                //key: "bolus_id",
+                load: function (loadOptions) {
+                    var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
+                    var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
+                    var userid = $("#farm_user").dxSelectBox("instance").option("value");
+                    var lactat = $("#cow_lac_stg").dxSelectBox("instance").option("value");
+                    var bid = $("#SB_animal_id").dxSelectBox("instance").option("value");
+                    if (bid == null) {
+                        bid = 0;
+                    }
+                    return $.getJSON('Admin.aspx?SP=GetDataGapsMap&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid + "&lactat=" + lactat + "&bid=" + bid);
+                }
+            });
+
+            FillDataGapsMap(data_db);
+        }
+    });
+};
+function FillDataGapsMap(data_db) {
+    $("#GridGaps").dxDataGrid({
+        dataSource: data_db,
+        showBorders: true,
+        paging: {
+            pageSize: 24
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [24],
+            showInfo: true
+        },
+        headerFilter: {
+            visible: true,
+            allowSearch: true
+        }, export: {
+            enabled: true,
+            fileName: "GapsPercents",
+            allowExportSelectedData: true
+        },
+        //columns: [
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Bolus_id",
+        //        dataField: "bolus_id",
+        //        width:100
+        //    },
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Animal_id",
+        //        dataField: "animal_id",
+        //        width: 100
+        //    }]
+    });
+
+};
+
+
 //END-------Data Gaps Section----------------------------------------
 
 //--------Water Intakes Report Section----------------------------------------
@@ -1236,21 +1381,6 @@ function SaveFarmInfo(Pars) {
     var URL = 'admin.aspx?SP=SaveFarmInfo&data=' + JSON.stringify(Pars);
     myAjaxRequestJsonE(URL, pr, Success_SaveFarmInfo, Error_SaveFarmInfo);
 
-    //$.ajax({
-    //    method: "POST",
-    //    url: 'admin.aspx?SP=SaveFarmInfo',
-    //    data: JSON.stringify(pr),
-    //    contentType: "application/json; charset=utf-8",
-    //    dataType: "json",
-    //    success: function (result) {
-    //        DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "error", 500);
-    //        //----------------------------------------------
-    //    },
-    //    error: function (result) {
-    //        var x = result.responseText;
-    //        x = x;
-    //    }
-    //});
 }
 function Success_SaveFarmInfo(result) {
     DevExpress.ui.notify({ message: "Data was saved! " + result, width: 300, shading: true }, "success", 1500);

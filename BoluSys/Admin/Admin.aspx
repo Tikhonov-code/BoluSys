@@ -20,6 +20,7 @@
             <div class="dropdown-content">
                 <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Intervals in min</button>
                 <button type="button" class="btn btn-primary" onclick="GapsByFarmHerdShow();">Gaps in % for Herd</button>
+                <button type="button" class="btn btn-primary" onclick="GapsMapShow();">Gaps Map for Herd</button>
                 <%--<a href="#">Intervals in min</a>
                 <a href="#">Gaps % for Herd</a>--%>
             </div>

@@ -47,6 +47,19 @@
             </div>
         </div>
 
+<!--------------The DataGrid Section Lost Cows------------------------------------------------------------>
+            <%--        Pivot grid--%>
+       <%-- <div class="row">
+            
+            <div class="well well-sm" style="text-align: center;">
+                <h4>List Of Lost Cows</h4>
+            </div>
+            <div class="demo-container">
+                <div id="lostCows_grid" style="align-content: center;"></div>
+            </div>
+        </div>--%>
+
+
         <%--    Data section--%>
         <div style="display: none;">
             <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
@@ -65,8 +78,9 @@
             font-weight: bold;
             color: black;
         }
+
         .dx-row-total .dx-grandtotal .cls {
-            visibility:hidden
+            visibility: hidden
         }
     </style>
     <!--Script Section-->
