@@ -8,11 +8,14 @@
         <!----------------Top Line------------------------------------------------>
         <div class="well" style="text-align: center; background-color: #d9d9d9; border: solid; border-color: blue;">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-2">
                     <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Total Number Of Cows: <%= TotalCowsNumberInfo %></mark>
                 </div>
+                <div class="col-lg-4">
+                    <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Cows Under Monitoring 24h: <%=  HealthyCowsNumber %></mark>
+                </div>
                 <div class="col-lg-6">
-                    <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Cows Under Monitoring: <%=  HealthyCowsNumber %></mark>
+                    <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Lactation: <%= LactationStat %></mark>
                 </div>
             </div>
         </div>
@@ -47,41 +50,50 @@
             </div>
         </div>
 
-<!--------------The DataGrid Section Lost Cows------------------------------------------------------------>
-            <%--        Pivot grid--%>
-       <%-- <div class="row">
-            
+        <!--------------The DataGrid Section Lost Cows------------------------------------------------------------>
+        <div class="row">
             <div class="well well-sm" style="text-align: center;">
-                <h4>List Of Lost Cows</h4>
+                <h4>No Signal The Last Hours</h4>
             </div>
-            <div class="demo-container">
-                <div id="lostCows_grid" style="align-content: center;"></div>
+            <div id="form_lc">
+                <div class="dx-fieldset" id="lostcows-container">
+                    <div class="dx-field">
+                        <div class="dx-field-label" style="width: 150px;">Time period, h:</div>
+                        <div class="dx-field-value">
+                            <div id="period_hour"></div>
+                        </div>
+                    </div>
+                    <div id="lostCows_grid" style="align-content: center;"></div>
+                </div>
             </div>
-        </div>--%>
 
-
-        <%--    Data section--%>
-        <div style="display: none;">
-            <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
-            <input id="CowsToCheckNumber" type="number" value="<%= CowsToCheckNumber %>" />
-            <input id="CowsAtRiskNumber" type="number" value="<%= CowsAtRiskNumber %>" />
+            <%--    Data section---------------------------------------------------------------------------------%>
+            <div style="display: none;">
+                <input id="TotalCowsNumberInfo" type="number" value="<%= TotalCowsNumberInfo %>" />
+                <input id="CowsToCheckNumber" type="number" value="<%= CowsToCheckNumber %>" />
+                <input id="CowsAtRiskNumber" type="number" value="<%= CowsAtRiskNumber %>" />
+            </div>
         </div>
-    </div>
-    <!--Script Section-->
-    <link href="../../dx/css/dx.light.css" rel="stylesheet" />
-    <link href="../../dx/css/dx.common.css" rel="stylesheet" />
-    <script src="../../dx/js/dx.all.js"></script>
-    <script src="FarmJS/Dashboard1.js"></script>
-    <style type="text/css">
-        .dx-datagrid-headers .cls {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            color: black;
-        }
+        <!--Script Section-->
+        <link href="../../dx/css/dx.light.css" rel="stylesheet" />
+        <link href="../../dx/css/dx.common.css" rel="stylesheet" />
+        <script src="../../dx/js/dx.all.js"></script>
+        <script src="FarmJS/Dashboard1.js"></script>
+        <style type="text/css">
+            .dx-datagrid-headers .cls {
+                background-color: #f2f2f2;
+                font-weight: bold;
+                color: black;
+            }
 
-        .dx-row-total .dx-grandtotal .cls {
-            visibility: hidden
-        }
-    </style>
-    <!--Script Section-->
+            .dx-row-total .dx-grandtotal .cls {
+                visibility: hidden
+            }
+            /*Lost Cows Section*/
+            #lostcows-container > .dx-field  {
+                width: 400px;
+            }
+
+        </style>
+        <!--Script Section-->
 </asp:Content>

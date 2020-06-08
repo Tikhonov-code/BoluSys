@@ -266,6 +266,15 @@
           <Parameter Name="temp_limit" Type="float" Mode="In" />
           <Parameter Name="measurements" Type="int" Mode="In" />
         </Function>
+        <Function Name="SP_GET_FarmLactationStat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="user_id" Type="nvarchar" Mode="In" />
+          <Parameter Name="result" Type="varchar" Mode="InOut" />
+        </Function>
+        <Function Name="SP_GET_FarmLostCows" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="user_id" Type="nvarchar" Mode="In" />
+          <Parameter Name="interval_hours" Type="int" Mode="In" />
+          <Parameter Name="dt_toronto" Type="datetime" Mode="In" />
+        </Function>
         <Function Name="SP_GET_WaterIntakesSum" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt1" Type="datetime2" Mode="In" />
           <Parameter Name="dt2" Type="datetime2" Mode="In" />
@@ -438,6 +447,15 @@
           </FunctionImport>
           <EntitySet Name="Farm_Alert_Rules" EntityType="DB_A4A060_csModel.Farm_Alert_Rules" />
           <EntitySet Name="AspNetUsers" EntityType="DB_A4A060_csModel.AspNetUser" />
+          <FunctionImport Name="SP_GET_FarmLostCows" ReturnType="Collection(DB_A4A060_csModel.SP_GET_FarmLostCows_Result)">
+            <Parameter Name="user_id" Mode="In" Type="String" />
+            <Parameter Name="interval_hours" Mode="In" Type="Int32" />
+            <Parameter Name="dt_toronto" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="SP_GET_FarmLactationStat">
+            <Parameter Name="user_id" Mode="In" Type="String" />
+            <Parameter Name="result" Mode="InOut" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -647,6 +665,12 @@
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="SP_GET_FarmLostCows_Result">
+          <Property Type="Int32" Name="bolus_id" Nullable="true" />
+          <Property Type="String" Name="animal_id" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="lastdate" Nullable="true" />
+          <Property Type="String" Name="Current_Stage_Of_Lactation" Nullable="true" MaxLength="10" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -952,6 +976,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_FarmLostCows" FunctionName="DB_A4A060_csModel.Store.SP_GET_FarmLostCows">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_GET_FarmLostCows_Result">
+                <ScalarProperty Name="bolus_id" ColumnName="bolus_id" />
+                <ScalarProperty Name="animal_id" ColumnName="animal_id" />
+                <ScalarProperty Name="lastdate" ColumnName="lastdate" />
+                <ScalarProperty Name="Current_Stage_Of_Lactation" ColumnName="Current_Stage_Of_Lactation" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_GET_FarmLactationStat" FunctionName="DB_A4A060_csModel.Store.SP_GET_FarmLactationStat" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

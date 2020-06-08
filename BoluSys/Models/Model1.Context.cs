@@ -447,5 +447,31 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_SMSserviceList_Result>("SP_Admin_SMSserviceList", dt0Parameter, dt1Parameter, farm_userIDParameter);
         }
+    
+        public virtual ObjectResult<SP_GET_FarmLostCows_Result> SP_GET_FarmLostCows(string user_id, Nullable<int> interval_hours, Nullable<System.DateTime> dt_toronto)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            var interval_hoursParameter = interval_hours.HasValue ?
+                new ObjectParameter("interval_hours", interval_hours) :
+                new ObjectParameter("interval_hours", typeof(int));
+    
+            var dt_torontoParameter = dt_toronto.HasValue ?
+                new ObjectParameter("dt_toronto", dt_toronto) :
+                new ObjectParameter("dt_toronto", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_FarmLostCows_Result>("SP_GET_FarmLostCows", user_idParameter, interval_hoursParameter, dt_torontoParameter);
+        }
+    
+        public virtual int SP_GET_FarmLactationStat(string user_id, ObjectParameter result)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_FarmLactationStat", user_idParameter, result);
+        }
     }
 }
