@@ -62,13 +62,15 @@ namespace BoluSys.Admin
                     UpdateBolusStatus();
                     break;
                 case "GetDataGapsPercent":
-                    GetDataGapsPercent(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"]);
+                    //dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid + "&lactat=" + lactat + "&bid=" + bid)
+
+                    GetDataGapsPercent(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"], Request.QueryString["lactat"], Request.QueryString["bid"]);
                     break;
                 case "GetDataGapsMap":
                     //+ "&lactat=" + lactat + "&bid=" + bid
-                    int bid = Convert.ToInt16( Request.QueryString["bid"]);
+                    int bid = Convert.ToInt16(Request.QueryString["bid"]);
                     string lactat = Request.QueryString["lactat"];
-                    GetDataGapsMap(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"],lactat,bid);
+                    GetDataGapsMap(Request.QueryString["dt0"], Request.QueryString["dt1"], Request.QueryString["userid"], lactat, bid);
                     break;
                 case "GetBolusesSet_GapsMap":
                     GetBolusesSet_GapsMap(Request.QueryString["userid"]);
@@ -597,22 +599,25 @@ namespace BoluSys.Admin
             Response.End();
         }
 
-        private void GetDataGapsPercent(string dt0, string dt1, string userid)
+        private void GetDataGapsPercent(string dt0, string dt1, string userid, string lactat, string bid)
         {
+            int bolus_id = Convert.ToInt16(bid);
             //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
             DateTime dt_from = DateTime.Parse(dt0).Date;
             DateTime dt_to = DateTime.Parse(dt1).Date;
 
-            DataSet ds = new DataSet();
+            ///DataSet ds = new DataSet();
             DataTable dt = new DataTable();
 
             string connstr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             SqlConnection con = new SqlConnection(connstr);
-            SqlCommand cmd = new SqlCommand("SP_Admin_GapsByFarmHerd", con);
+            SqlCommand cmd = new SqlCommand("SP_Admin_GapsByFarmHerdlacbid", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new SqlParameter("@dt0", dt_from.ToShortDateString()));
             cmd.Parameters.Add(new SqlParameter("@dt1", dt_to.ToShortDateString()));
             cmd.Parameters.Add(new SqlParameter("@user", userid));
+            cmd.Parameters.Add(new SqlParameter("@lactat", lactat));
+            cmd.Parameters.Add(new SqlParameter("@bid", bolus_id));
             SqlDataReader rdr = null;
             try
             {
@@ -623,15 +628,20 @@ namespace BoluSys.Admin
             catch (Exception ex)
             {
                 var x = ex.Message;
+                dt = null;
             }
             finally
             {
                 con.Close();
-                rdr.Close();
+                if(rdr != null)rdr.Close();
+            }
+            string todaydate = DateTime.Now.Date.ToShortDateString();
+            string res_json = "[{\"bolus_id\":0,\"animal_id\":0}]";//,\""+todaydate+"\":0}]";
+            if (dt != null)
+            {
+                res_json = JsonConvert.SerializeObject(dt);
             }
 
-
-            var res_json = JsonConvert.SerializeObject(dt);
             Response.Clear();
             Response.ContentType = "application/json;charset=UTF-8";
             Response.Write(res_json);
@@ -639,7 +649,7 @@ namespace BoluSys.Admin
 
         }
 
-        private void GetDataGapsMap(string dt0, string dt1, string userid,string lactat,int bid)
+        private void GetDataGapsMap(string dt0, string dt1, string userid, string lactat, int bid)
         {
             //Wed Jan 15 2020 10:23:00 GMT 0200 (Eastern European Standard Time)
             DateTime dt_from = DateTime.Parse(dt0.Substring(0, 10)).Date;
@@ -684,10 +694,10 @@ namespace BoluSys.Admin
             finally
             {
                 con.Close();
-                if(rdr!= null) rdr.Close();
+                if (rdr != null) rdr.Close();
             }
 
-            if (dt==null)
+            if (dt == null)
             {
                 Response.Clear();
                 Response.ContentType = "application/json;charset=UTF-8";

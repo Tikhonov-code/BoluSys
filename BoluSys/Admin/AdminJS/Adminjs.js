@@ -9,16 +9,6 @@ var datagaps = "<div id='DataGapsDiv' " + tableborders + "><div class='row' styl
     "<div class='col-md-3'><div id='DateFrom'></div></div><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
     "<div class='col-md-3'><div id='DateTo'></div></div><div class='col-md-4'><div id='SearchGaps'></div></div></div><div class='container'>" +
     "<div id='GridGaps'></div></div></div></div>";
-var datagapsPercent = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
-    "<h3>Data Gaps In % For Herd</h3></div><div class='row'>" +
-    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
-    "<div class='col-sm-1'  id='farm_user'></div>" +
-    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
-    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
-    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
-    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
-    "<div class='col-sm-2' style='text-align: left;'><div id='SearchGaps'></div></div></div><div class='container'>" +
-    "<div id='GridGaps'></div></div></div></div>";
 
 var wiReport = "<div id='WiReportDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
     "<h3>Water Intakes Report</h3></div><div class='row'><div class='col-md-1' style='text-align: right; padding: 10px 0;'>Report Date:</div>" +
@@ -412,7 +402,25 @@ function FillData(data_db) {
     });
 
 };
+
 //-------Gaps in % for Herd----------------------------------------
+var datagapsPercent = "<div id='DataGapsDiv' " + tableborders + "><div class='row' style='text-align: center; padding: 10px 0; border-width: thin; background-color: " + titlecolor + ";'>" +
+    "<h3>Data Gaps In % For Herd</h3></div><div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Farm:</div>" +
+    "<div class='col-sm-1'  id='farm_user'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date From:</div>" +
+    "<div class='col-sm-3'><div id='DateFrom'></div></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Date To:</div>" +
+    "<div class='col-sm-2'><div id='DateTo'></div></div>" +
+    "<div class='col-sm-2' style='text-align: left;'><div id='SearchGaps'></div></div></div>" +
+    "<div class='row'>" +
+    "<div class='col-sm-1' style='text-align: left; padding: 10px 0;'>Lactation Stage:</div>" +
+    "<div class='col-sm-1' id='cow_lac_stg'></div>" +
+    "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Animal ID:</div>" +
+    "<div class='col-sm-3' id='SB_animal_id'></div>" +
+    "</div>" +
+    "<div class='container'>" +
+    "<div id='GridGaps'></div></div></div></div>";
 
 function GapsByFarmHerdShow() {
     $("#PanelSWhow").html(datagapsPercent);
@@ -424,10 +432,20 @@ function GapsByFarmHerdShow() {
                 displayExpr: "Name",
                 valueExpr: "AspNetUser_Id",
                 //value: result[0].ID,
-                width: "200"
+                width: "200",
+                onValueChanged: function (e) {
+                    AnimalListDef(e.value);
+                }
             });
         });
+    //----------------------------------------------------
+    $("#cow_lac_stg").dxSelectBox({
+        dataSource: ds_cow_lac_stg,
+        value: ds_cow_lac_stg[0],
+        width: "200"
+    });
 
+    //----------------------------------------------------
     //----------------------------------------------------
     var now = new Date();
     var now_begin = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
@@ -465,7 +483,14 @@ function GapsByFarmHerdShow() {
                     var dt0 = ConvertDateToMyF($("#DateFrom").dxDateBox("instance").option("value"));
                     var dt1 = ConvertDateToMyF($("#DateTo").dxDateBox("instance").option("value"));
                     var userid = $("#farm_user").dxSelectBox("instance").option("value");
-                    return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid);
+                    //return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid);
+
+                    var lactat = $("#cow_lac_stg").dxSelectBox("instance").option("value");
+                    var bid = $("#SB_animal_id").dxSelectBox("instance").option("value");
+                    if (bid == null) {
+                        bid = 0;
+                    }
+                    return $.getJSON('Admin.aspx?SP=GetDataGapsPercent&dt0=' + dt0 + '&dt1=' + dt1 + "&userid=" + userid + "&lactat=" + lactat + "&bid=" + bid);
                 }
             });
 
