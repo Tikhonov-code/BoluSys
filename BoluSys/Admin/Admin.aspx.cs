@@ -427,7 +427,7 @@ namespace BoluSys.Admin
             }
             catch (Exception ex)
             {
-
+                var x = ex.Message;
                 throw;
             }
             Response.Clear();
@@ -677,7 +677,19 @@ namespace BoluSys.Admin
             cmd.Parameters.Add(new SqlParameter("@day", days));
             cmd.Parameters.Add(new SqlParameter("@time_interval", time_interval));
             cmd.Parameters.Add(new SqlParameter("@user_id", userid));
-            cmd.Parameters.Add(new SqlParameter("@lactat", lactat));
+
+            string lacstr = "";
+            if (lactat != "")
+            {
+                lacstr = "\'" + lactat.Replace("_", "\',\'");
+                lacstr = lacstr.Substring(0, lacstr.Length - 3) + "\'";
+            }
+            else
+            {
+                lacstr = "NoChoice";
+            }
+            cmd.Parameters.Add(new SqlParameter("@lactat", lacstr));
+
             cmd.Parameters.Add(new SqlParameter("@bid", bid));
             SqlDataReader rdr = null;
             try

@@ -6,17 +6,22 @@
             <div id="AutoRefresh"></div>
         </div>--%>
         <!----------------Top Line------------------------------------------------>
-        <div class="well" style="text-align: center; background-color: #d9d9d9; border: solid; border-color: blue;">
+        <div class="well" style="text-align: left; background-color: #d9d9d9; border: solid; border-color: blue;">
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-4">
                     <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Total Number Of Cows: <%= TotalCowsNumberInfo %></mark>
                 </div>
-                <div class="col-lg-4">
-                    <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Cows Under Monitoring 24h: <%=  HealthyCowsNumber %></mark>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Cows Under Monitoring 24h: <%=  HealthyCowsNumber %></mark>
+                    </div>
+                    <div class="row">
+                        <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Lactation: <%= LactationStat %></mark>
+                    </div>
                 </div>
-                <div class="col-lg-6">
+                <%-- <div class="col-lg-6">
                     <mark style="font-size: large; font-weight: bold; background-color: #d9d9d9;">Lactation: <%= LactationStat %></mark>
-                </div>
+                </div>--%>
             </div>
         </div>
         <!--------------Dashboard Section------------------------------------------------------------->
@@ -90,10 +95,10 @@
                 visibility: hidden
             }
             /*Lost Cows Section*/
-            #lostcows-container > .dx-field  {
+            #lostcows-container > .dx-field {
                 width: 400px;
             }
-
         </style>
         <!--Script Section-->
+    </div>
 </asp:Content>
