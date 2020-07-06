@@ -37,6 +37,8 @@ namespace BoluSys.Models
         public virtual DbSet<SmsLog> SmsLogs { get; set; }
         public virtual DbSet<Farm_Alert_Rules> Farm_Alert_Rules { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<FarmPhone> FarmPhones { get; set; }
+        public virtual DbSet<FarmEmail> FarmEmails { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {
@@ -446,6 +448,32 @@ namespace BoluSys.Models
                 new ObjectParameter("farm_userID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Admin_SMSserviceList_Result>("SP_Admin_SMSserviceList", dt0Parameter, dt1Parameter, farm_userIDParameter);
+        }
+    
+        public virtual ObjectResult<SP_GET_FarmLostCows_Result> SP_GET_FarmLostCows(string user_id, Nullable<int> interval_hours, Nullable<System.DateTime> dt_toronto)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            var interval_hoursParameter = interval_hours.HasValue ?
+                new ObjectParameter("interval_hours", interval_hours) :
+                new ObjectParameter("interval_hours", typeof(int));
+    
+            var dt_torontoParameter = dt_toronto.HasValue ?
+                new ObjectParameter("dt_toronto", dt_toronto) :
+                new ObjectParameter("dt_toronto", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_GET_FarmLostCows_Result>("SP_GET_FarmLostCows", user_idParameter, interval_hoursParameter, dt_torontoParameter);
+        }
+    
+        public virtual int SP_GET_FarmLactationStat(string user_id, ObjectParameter result)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_FarmLactationStat", user_idParameter, result);
         }
     }
 }

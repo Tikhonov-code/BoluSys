@@ -6,7 +6,7 @@ var dt20 = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 24, 0, 0, 0);
 $(function () {
 
     var bid_ext = $("#MainContent_bid_ext").val();
-   // alert("bid_ext = " + bid_ext);
+    // alert("bid_ext = " + bid_ext);
 
     var farmName = $.getJSON("CowPage.aspx?SP=GetFarmName"
         , function (result) {
@@ -34,10 +34,11 @@ function TodayCowpage(bid_ext) {
     IntakesChart_Show(dt1, dt2, bid_ext);
     DataGapsShow(bid_ext, dt1, dt2);
     GetCowInfo(bid_ext);
+    GetGapsDataValue(dt1, dt2, bid_ext);
 }
 
 function FindBolusIDindex(bidlist, par) {
-    var bidindex =0;
+    var bidindex = 0;
     var num = bidlist.length;
     for (var i = 0; i < num; i++) {
         if (bidlist[i].bolus_id == par) {
@@ -90,13 +91,14 @@ function ShowForm(animalList, bid_ext) {
                             //var dt1 = ConvertDateToMyF(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 0, 0, 0, 0));
                             //var dt2 = ConvertDateToMyF(new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 24, 0, 0, 0));
                             //$("#From").dxDateBox("instance").option('value', dt1);
-                           // $("#To").dxDateBox("instance").option('value', dt2);
+                            // $("#To").dxDateBox("instance").option('value', dt2);
                             var dt1 = ConvertDateToMyF($("#From").dxDateBox("instance").option('value'));
                             var dt2 = ConvertDateToMyF($("#To").dxDateBox("instance").option('value'));
 
                             ChartCreate('#chart_temp', dt1, dt2, bid);
                             IntakesChart_Show(dt1, dt2, bid);
                             DataGapsShow(bid, dt1, dt2);
+                            GetGapsDataValue(dt1, dt2, bid);
                         }
                     }
                 }]
@@ -127,6 +129,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -150,6 +153,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -174,6 +178,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     },
@@ -199,6 +204,7 @@ function ShowForm(animalList, bid_ext) {
                                     ChartCreate('#chart_temp', dt1, dt2, bid);
                                     IntakesChart_Show(dt1, dt2, bid);
                                     DataGapsShow(bid, dt1, dt2);
+                                    GetGapsDataValue(dt1, dt2, bid);
                                 }
                             }
                         }
@@ -220,11 +226,12 @@ function ShowForm(animalList, bid_ext) {
 
                                     var dt1 = ConvertDateToMyF($("#From").dxDateBox("instance").option('value'));
                                     var dt2 = ConvertDateToMyF(e.value);
-                                   // dt2 = dt2.split('/').join('-');
+                                    // dt2 = dt2.split('/').join('-');
                                     //----------------------------------------------------------------
                                     ChartCreate('#chart_temp', dt1, dt2, bid);
                                     IntakesChart_Show(dt1, dt2, bid);
                                     DataGapsShow(bid, dt1, dt2);
+                                    GetGapsDataValue(dt1, dt2, bid);
                                 }
                             }
                         }
@@ -252,6 +259,7 @@ function ShowForm(animalList, bid_ext) {
                                 ChartCreate('#chart_temp', dt1, dt2, bid);
                                 IntakesChart_Show(dt1, dt2, bid);
                                 DataGapsShow(bid, dt1, dt2);
+                                GetGapsDataValue(dt1, dt2, bid);
                             }
                         }
                     }
@@ -334,7 +342,9 @@ function GetGapsDataValue(dt0, dt1, bid) {
             var ind1 = result.lastIndexOf(":") + 1;
             var ind2 = result.length;
             var gap = result.slice(ind1 - ind2);
-            var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+            //var mark = (Number(gap) < 5) ? "<i class='far fa-thumbs-up' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
+
+            var mark = (Number(gap) < 5) ? "<i class='dx-icon-check' style='font-size:36px; color:green;' ></i>" : "<i class='fa fa-warning' style='font-size: 48px; color: red'></i>";
             $("#DataGapsValue").html(result + "% " + mark);
         });
     }
@@ -580,8 +590,8 @@ function cow_data_block(cow_data0) {
     var cow_data = cow_data0,
         popup = null,
         popupOptions = {
-            width: 350,
-            height: 250,
+            width: 450,
+            height: 300,
             contentTemplate: function () {
                 var Openselected = '';
                 var Dryselected = '';
@@ -601,14 +611,17 @@ function cow_data_block(cow_data0) {
                 return $("<div />").append(
                     //<input id="Text1" type="text" />
 
-                    $("<table><tr height='30'><td width='150px'>Birth Date:</td><td></td><td><input id='cow_bd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.BirthDate)) + "/></td></tr>" +
+                    //$("<table><tr height='30'><td width='150px'>Birth Date:</td><td></td><td><input id='cow_bd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.BirthDate)) + "/></td></tr>" +
+                    $("<table><tr height='30'><td width='150px'>Birth Date:</td><td></td><td><div id='cow_bd'></div></td></tr>" +
                         "<tr height='30'><td width='150px'>Current Lactation:</td><td></td><td><input id='cow_clac' type='number' value='" + cow_data.Current_Lactation + "' min='0' max='9'/></td></tr>" +
                         "<tr height='30'><td width='150px'>Lactation Stage:</td><td></td><td><select id='cow_lac_stg'>" +
                         "<option value='Open' " + Openselected + ">Open</option>" +
                         "<option value='Dry' " + Dryselected + ">Dry</option>" +
                         "<option value='Pregnant' " + Pregnantselected + ">Pregnant</option></select></td></tr>" +
-                        "<tr height='30'><td width='150px'>Calving Due Date:</td><td></td><td><input id='cow_cdd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Calving_Due_Date)) + "/></td></tr>" +
-                        "<tr height='30'><td width='150px'>Actual Calving Date:</td><td></td><td><input id='cow_acd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Actual_Calving_Date)) + "/></td></tr>" +
+                        //"<tr height='30'><td width='150px'>Calving Due Date:</td><td></td><td><input id='cow_cdd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Calving_Due_Date)) + "/></td></tr>" +
+                        "<tr height='30'><td width='150px'>Calving Due Date:</td><td></td><td><div id='cow_cdd'></div></td></tr>" +
+                        //"<tr height='30'><td width='150px'>Actual Calving Date:</td><td></td><td><input id='cow_acd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Actual_Calving_Date)) + "/></td></tr>" +
+                        "<tr height='30'><td width='150px'>Actual Calving Date:</td><td></td><td><div id='cow_acd'></div></td></tr>" +
                         "<tr></tr><tr height='30'><td></td><td></td><td style='text-align: right; hight:'><input class='btn btn-success' type='button' value='Save' onclick='CowDataSave(" + cow_data.Bolus_ID + ");'>" +
                         "</td></tr></table>")
                 );
@@ -626,12 +639,41 @@ function cow_data_block(cow_data0) {
 
         if (popup) {
             popup.option("contentTemplate", popupOptions.contentTemplate.bind(this));
-
         } else {
             popup = $("#popup").dxPopup(popupOptions).dxPopup("instance");
         }
-
+       
         popup.show();
+        //-----------------------------------
+        $("#cow_bd").dxDateBox({
+            placeholder: "10/16/2018",
+            showClearButton: true,
+            useMaskBehavior: true,
+            displayFormat: "shortdate",
+            type: "date",
+            value: ConvertDateToMyF(new Date(cow_data.BirthDate))
+        });
+        var xcow_cdd = cow_data.Calving_Due_Date;
+        if (xcow_cdd == "N/A") {
+            xcow_cdd = new Date();
+        }
+       
+        $("#cow_cdd").dxDateBox({
+            placeholder: "10/16/2018",
+            showClearButton: true,
+            useMaskBehavior: true,
+            displayFormat: "shortdate",
+            type: "date",
+            value: ConvertDateToMyF(new Date(xcow_cdd))
+        });
+        var xcow_acd = cow_data.Actual_Calving_Date;
+        if (xcow_acd == "N/A") {
+            xcow_acd = new Date();
+        }
+        $("#cow_acd").dxDateBox({
+            type: "datetime",
+            value: ConvertDateToMyF(new Date(xcow_acd))
+        });
     };
     //===================================
 
@@ -653,14 +695,16 @@ function cow_data_block(cow_data0) {
                     items: [{
                         dataField: "Bolus_ID",
                         editorOptions: {
-                            readOnly: true
+                            readOnly: true,
+                            width: 70
                         }
                     }, {
                         dataField: "BirthDate",
                         //editorType: "dxDateBox",
                         editorOptions: {
                             readOnly: true,
-                            type: "date"
+                            type: "date",
+                            width: 95
                         }
                     },
                     {
@@ -681,7 +725,8 @@ function cow_data_block(cow_data0) {
                         dataField: "Lactation_Day",//"Lactation_Day",
                         editorOptions: {
                             // value: lac_Day,
-                            readOnly: true
+                            readOnly: true,
+                            width: 70
                         },
                     },
                     {
@@ -689,11 +734,8 @@ function cow_data_block(cow_data0) {
                         //editorType: "dxDateBox",
                         editorOptions: {
                             //value: cal_due_date,
-                            readOnly: true
-                            //onInitialized: function (data) {
-                            //    var x = $("#CowInfo_form").dxForm("instance").getEditor("Lactation_Stage").value;
-                            //    DevExpress.ui.notify("Lactation_Stage = "+x, "warning", 1500);
-                            //}
+                            readOnly: true,
+                            width: 95
                         }
                     }
                         , {
@@ -701,7 +743,8 @@ function cow_data_block(cow_data0) {
                         //editorType: "dxDateBox",
                         editorOptions: {
                             //value: act_cal_date,
-                            readOnly: true
+                            readOnly: true,
+                            width: 160
                         }
                     }, {
                         itemType: "button",
@@ -730,50 +773,59 @@ function CowDataSave(Bolus_ID) {
     //    if (dialogResult) {
 
     //rules -------------"Confirmed"----------------------------------
-    var Calving_Due_Date;
-    var Actual_Calving_Date;
+    var Actual_Calving_Date = $("#cow_acd").dxDateBox("instance").option("value");
+    var Calving_Due_Date    = $("#cow_cdd").dxDateBox("instance").option("value");
     var lactationStage = $("#cow_lac_stg").val();
 
     switch (lactationStage) {
         case "Open":
-            Calving_Due_Date = null;
-            Actual_Calving_Date = $("#cow_acd").val();
 
-            if (Actual_Calving_Date == null || Actual_Calving_Date == undefined) {
-                DevExpress.ui.notify("Actual_Calving_Date required!", "warning", 1000);
+            if (Actual_Calving_Date == null || Actual_Calving_Date == undefined || Actual_Calving_Date == "") {
+                DevExpress.ui.notify("Actual_Calving_Date required!", "warning", 1500);
                 return;
             }
 
             $("#CowInfo_form").dxForm("instance").getEditor("Calving_Due_Date").option("value", "N/A");
+            Calving_Due_Date = null;
             $("#CowInfo_form").dxForm("instance").getEditor("Actual_Calving_Date").option("value", Actual_Calving_Date);
-            
-            break;
-        case "Dry", "Pregnant":
-            Calving_Due_Date = $("#cow_cdd").val();
-            Actual_Calving_Date = $("#cow_acd").val();
 
-            if (Calving_Due_Date == null || Calving_Due_Date == undefined) {
-                DevExpress.ui.notify("Calving_Due_Date required!", "warning", 1000);
-                return;
-            }
-            if (Actual_Calving_Date == null || Actual_Calving_Date == undefined) {
-                DevExpress.ui.notify("Actual_Calving_Date required!", "warning", 1000);
+            break;
+
+        case "Dry":
+           
+            if (Calving_Due_Date == null || Calving_Due_Date == undefined || Calving_Due_Date == "") {
+                DevExpress.ui.notify("Calving_Due_Date required!", "warning", 1500);
                 return;
             }
 
             $("#CowInfo_form").dxForm("instance").getEditor("Calving_Due_Date").option("value", Calving_Due_Date);
+            $("#CowInfo_form").dxForm("instance").getEditor("Actual_Calving_Date").option("value", "N/A");
+            break;
+        case "Pregnant":
+            
+
+            if (Calving_Due_Date == null || Calving_Due_Date == undefined || Calving_Due_Date == "") {
+                DevExpress.ui.notify("Calving_Due_Date required!", "warning", 1500);
+                return;
+            }
+            if (Actual_Calving_Date == null || Actual_Calving_Date == undefined || Actual_Calving_Date == "") {
+                DevExpress.ui.notify("Actual_Calving_Date required!", "warning", 1500);
+                return;
+            }
+            $("#CowInfo_form").dxForm("instance").getEditor("Calving_Due_Date").option("value", Calving_Due_Date);
             $("#CowInfo_form").dxForm("instance").getEditor("Actual_Calving_Date").option("value", Actual_Calving_Date);
             break;
+
         default:
             break;
     }
-  
+    var Cow_bd = $("#cow_bd").dxDateBox("instance").option("value");
     $("#CowInfo_form").dxForm("instance").getEditor("Current_Lactation").option("value", $("#cow_clac").val());
-    $("#CowInfo_form").dxForm("instance").getEditor("BirthDate").option("value", $("#cow_bd").val());
+    $("#CowInfo_form").dxForm("instance").getEditor("BirthDate").option("value", Cow_bd);
     $("#CowInfo_form").dxForm("instance").getEditor("Lactation_Stage").option("value", lactationStage);
     var Age_Lactation = $("#cow_clac").val();
 
-    var ac_date = new Date($("#cow_acd").val());
+    var ac_date = new Date(Actual_Calving_Date);
     var today = new Date();
     // To calculate the no. of days between two dates 
     var Difference_In_Days = Math.round((today - ac_date) / (1000 * 3600 * 24));
@@ -781,7 +833,7 @@ function CowDataSave(Bolus_ID) {
     $("#CowInfo_form").dxForm("instance").getEditor("Lactation_Day").option("value", Difference_In_Days);
     //---------------------------------------------------------------------------------------------------------------
     //cow_data0.Date_of_Birth = $("#cow_bd").val();
-    CowDataSaveUpdate(Bolus_ID, $("#cow_bd").val(), Age_Lactation, lactationStage, Calving_Due_Date, Actual_Calving_Date);
+    CowDataSaveUpdate(Bolus_ID, Cow_bd, Age_Lactation, lactationStage, Calving_Due_Date, Actual_Calving_Date);
     //---------------------------------------------------------------------------------------------------------------
     // hide popup edit form
     $("#popup").dxPopup("hide");
@@ -828,38 +880,6 @@ function CowsLogShow(bid) {
 }
 function CowsLogFun(bid) {
     var selectedRowIndex = -1;
-   
-    $("#action-add").dxSpeedDialAction({
-        label: "Add row",
-        icon: "add",
-        index: 1,
-        onClick: function () {
-            grid.addRow();
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
-
-    var deleteSDA = $("#action-remove").dxSpeedDialAction({
-        icon: "trash",
-        label: "Delete row",
-        index: 2,
-        visible: false,
-        onClick: function () {
-            grid.deleteRow(selectedRowIndex);
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
-
-    var editSDA = $("#action-edit").dxSpeedDialAction({
-        label: "Edit row",
-        icon: "edit",
-        index: 3,
-        visible: false,
-        onClick: function () {
-            grid.editRow(selectedRowIndex);
-            grid.deselectAll();
-        }
-    }).dxSpeedDialAction("instance");
 
     //----------------------------------------
     var cowsList = new DevExpress.data.CustomStore({
@@ -950,7 +970,7 @@ function CowsLogFun(bid) {
                 }
             },
             texts: {
-                confirmDeleteMessage: "Done"
+                confirmDeleteMessage: "Are you sure?"
             },
             form: {
                 items: [{
@@ -986,12 +1006,41 @@ function CowsLogFun(bid) {
             e.toolbarOptions.items.unshift({
                 location: "before",
                 template: function () {
-                    return $("<div/>")
-                        .addClass("informer")
-                        .append($("<span />")
-                            .addClass("name")
-                            .text("Events List")
-                        );
+                    var mytemp = $("<div/>").addClass("informer").append(
+                        $("<span />").addClass("name").text("Events List,           actions: "),
+                        $("<div>").dxButton({
+                            cssClass: "dx-button-success",
+                            icon: "edit",
+                            hint: "Edit",
+                            type: "success",
+                            onClick: function () {
+                                grid.editRow(selectedRowIndex);
+                                grid.deselectAll();
+                            }
+                        }),
+                        $("<span />").addClass("name").text(" "),
+                        $("<div>").dxButton({
+                            icon: "trash",
+                            hint: "Delete",
+                            type: "success",
+                            onClick: function () {
+                                grid.deleteRow(selectedRowIndex);
+                                grid.deselectAll();
+                            }
+                        }),
+                        $("<span />").addClass("name").text(" "),
+                        $("<div>").dxButton({
+                            icon: "plus",
+                            hint: "Add",
+                            type: "success",
+                            onClick: function () {
+                                grid.addRow();
+                                grid.deselectAll();
+                            }
+                        })
+                    );
+
+                    return mytemp;
                 }
             });
         },

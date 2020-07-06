@@ -34,6 +34,7 @@ function ConvertDateToMyF(dt) {
     if (dt == "") {
         return null;
     }
+
     m = ("0" + (dt.getMonth() + 1)).slice(-2);
     d = ("0" + dt.getDate()).slice(-2);
     h = ("0" + dt.getHours()).slice(-2);

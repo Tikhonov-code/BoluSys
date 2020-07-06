@@ -3,6 +3,8 @@ using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,6 +20,7 @@ namespace BoluSys.Farm
         public int HealthyCowsNumber { get; set; }
         public int CowsAtRiskNumber { get; set; }
         public int CowsToCheckNumber { get; set; }
+        public string LactationStat { get; set; }
 
         public static string user_id { get; set; }
         public static string user_email { get; set; }
@@ -26,6 +29,10 @@ namespace BoluSys.Farm
         {
             user_id = User.Identity.GetUserId();
             user_email = User.Identity.GetUserName();
+            if (!IsPostBack)
+            {
+                GetLoctationStat(user_id);
+            }
             GetTotalCountsForDashboard(user_id);
             GetCowsInfo(user_id);
             string SP = Request.QueryString["SP"];
@@ -41,16 +48,54 @@ namespace BoluSys.Farm
                 case "GetDataIntegrity":
                     GetDataIntegrity(user_id);
                     break;
+                case "GetLostCowsList":
+                    GetLostCowsList(user_id, Convert.ToInt16(Request.QueryString["period_hour"]));
+                    break;
                 default:
                     break;
             }
+        }
+
+        private void GetLoctationStat(string user_id)
+        {
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                System.Data.Entity.Core.Objects.ObjectParameter result = new System.Data.Entity.Core.Objects.ObjectParameter("result", typeof(string));
+
+                context.SP_GET_FarmLactationStat(user_id, result);
+                LactationStat=result.Value.ToString();
+            }
+
+            //var res_json = JsonConvert.SerializeObject(result);
+            //Response.Clear();
+            //Response.ContentType = "application/json;charset=UTF-8";
+            //Response.Write(res_json);
+            //Response.End();
+            //return LactationStat;
+        }
+
+        private void GetLostCowsList(string user_id, int period_hour)
+        {
+            DateTime dt = GetTorontoLocalDateTime();
+            List<SP_GET_FarmLostCows_Result> result;
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                result = context.SP_GET_FarmLostCows(user_id, period_hour, dt).ToList();
+            }
+
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         private void GetDataIntegrity(string user_id)
         {
             DateTime dt = GetTorontoLocalDateTime().Date.AddDays(-1);
             dt = new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
-            List<DataGapsFarm_Result> result ;
+            List<DataGapsFarm_Result> result;
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
                 result = context.DataGapsFarm(dt, 7, user_id).ToList();
@@ -111,7 +156,7 @@ namespace BoluSys.Farm
                 var res = (from m in context.MeasDatas
                            join b in context.Bolus on m.bolus_id equals b.bolus_id
                            join fc in context.FarmCows on m.bolus_id equals fc.Bolus_ID
-                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to &&b.status == true
+                           where m.bolus_full_date >= dt_from && m.bolus_full_date <= dt_to && b.status == true
                            select new
                            {
                                bolus_id = m.bolus_id,

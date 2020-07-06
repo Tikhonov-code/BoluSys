@@ -20,6 +20,7 @@
             <div class="dropdown-content">
                 <button type="button" class="btn btn-primary" onclick="DataGapsShow();">Intervals in min</button>
                 <button type="button" class="btn btn-primary" onclick="GapsByFarmHerdShow();">Gaps in % for Herd</button>
+                <button type="button" class="btn btn-primary" onclick="GapsMapShow();">Gaps Map for Herd</button>
                 <%--<a href="#">Intervals in min</a>
                 <a href="#">Gaps % for Herd</a>--%>
             </div>
@@ -66,6 +67,9 @@
     <link href="../../dx/css/dx.light.css" rel="stylesheet" />
     <link href="../../dx/css/dx.common.css" rel="stylesheet" />
     <script src="../../dx/js/dx.all.js"></script>
+    <!-------------------------------------------->
+<%--    <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/20.1.4/js/dx.all.js"></script>--%>
+    <!-------------------------------------------->
     <script src="AdminJS/Adminjs.js"></script>
     <script src="../Farm/FarmJS/FarmGeneral.js"></script>
     <link href="../Services/MyCSS/AdminCowsLogs.css" rel="stylesheet" />
@@ -105,7 +109,6 @@
             background-color: #337ab7;
             color: white;
             padding: 6px 12px;
-            ;
             font-size: 14px;
             border: none;
             cursor: pointer;

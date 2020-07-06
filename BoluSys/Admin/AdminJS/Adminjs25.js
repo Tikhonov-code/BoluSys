@@ -421,7 +421,7 @@ var datagapsPercent = "<div id='DataGapsDiv' " + tableborders + "><div class='ro
     "</div>" +
     "<div class='container'>" +
     "<div id='GridGaps'></div></div></div></div>";
-var ds_cow_lac_stgPer = ["Any", "Open", "Dry", "Pregnant"];
+
 function GapsByFarmHerdShow() {
     $("#PanelSWhow").html(datagapsPercent);
 
@@ -440,8 +440,8 @@ function GapsByFarmHerdShow() {
         });
     //----------------------------------------------------
     $("#cow_lac_stg").dxSelectBox({
-        dataSource: ds_cow_lac_stgPer,
-        value: ds_cow_lac_stgPer[0],
+        dataSource: ds_cow_lac_stg,
+        value: ds_cow_lac_stg[0],
         width: "200"
     });
 
@@ -517,7 +517,22 @@ function FillDataGapsPercent(data_db) {
             enabled: true,
             fileName: "GapsPercents",
             allowExportSelectedData: true
-        }
+        },
+        //columns: [
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Bolus_id",
+        //        dataField: "bolus_id",
+        //        width:100
+        //    },
+        //    {
+        //        cssClass: 'cls',
+        //        alignment: 'center',
+        //        caption: "Animal_id",
+        //        dataField: "animal_id",
+        //        width: 100
+        //    }]
     });
 
 };
@@ -537,10 +552,10 @@ var datagapsMap = "<div id='DataGapsDiv' " + tableborders + "><div class='row' s
     "<div class='col-sm-1' id='cow_lac_stg'></div>" +
     "<div class='col-sm-1' style='text-align: right; padding: 10px 0;'>Animal ID:</div>" +
     "<div class='col-sm-3' id='SB_animal_id'></div>" +
-    "</div>" +
-    "<div class='container'><div id='GridGaps'></div></div></div>" +
-    "</div >";
-var ds_cow_lac_stg = ["Undef","Open", "Dry", "Pregnant"];
+    "</div>"+
+    "<div class='container'><div id='GridGaps'></div></div></div>"+   
+"</div >";
+var ds_cow_lac_stg = ["Open", "Dry", "Pregnant"];
 
 function AnimalListDef(userid) {
     $.getJSON('admin.aspx?SP=GetBolusesSet_GapsMap&userid=' + userid,
@@ -617,7 +632,7 @@ function GapsMapShow() {
                     //------------------------------------------------------------------------
                     var lactatstr = "";
                     for (i = 0; i < lactat.length; i++) {
-                        lactatstr += lactat[i] + '_';
+                        lactatstr += lactat[i]+'_';
                     }
                     //------------------------------------------------------------------------
 
@@ -1235,55 +1250,72 @@ function FillDataTempIntakes(data_db) {
 // END Of DownLoad Data section---------------------------------------------------------------
 
 //Users Form Section--------------------------------------------------------------------------
-var farmformtempl = "<div class='demo-container'>" +
-    "<div class='dx-field' style='margin-left: 30%;margin-right: 30%;'><div class='dx-field-label'><span class='dx-form-group-caption'>Select Farm:</span></div><div class='dx-field-value'><div id='select_farm'></div></div></div>" +
-    "<div id='form_A'></div>" +
-    "<hr><span class='dx-form-group-caption'>Alerts Destinations</span>" +
-    "<div class='dx-form-group-content>'" +
-    "<div id='PhonesList'></div><div id='EmailsList'></div></div></div>"//;
-    +"<div id = 'form_B'></div>";
+var farmformtempl = "<div class='demo-container'><div id='form-demo'><div class='widget-container'>"+
+                    "<div id='select_farm'></div><div id='form'></div></div></div></div>";
 
 function UserForm() {
     $("#PanelSWhow").html(farmformtempl);
 
     $.getJSON('admin.aspx?SP=GetFarmInfo',
         function (result) {
-
+           
             ShowUserForm(result);
-            ShowUserForm_B(result[0].userid);
-
-
             //----------------------------------------------
             $("#select_farm").dxSelectBox({
                 dataSource: result,
                 displayExpr: "Name",
-                valueExpr: "userid",
-                //key: "userid",
-                value: result[0].userid,
-                //width: "200",
+                //valueExpr: "AspNetUser_Id",
+                value: result[0],
+                width: "200",
                 onSelectionChanged: function (data) {
                     //DevExpress.ui.notify({ message: "Hello" + data.value, width: 300, shading: true }, "success", 1500);
-                    $("#form_A").dxForm("instance").option("formData", data.selectedItem);
-                    ShowUserForm_B(data.selectedItem.userid);
+                    $("#form").dxForm("instance").option("formData", data.selectedItem);
+                    //form.option("formData", data);
                 }
             });
             //----------------------------------------------
         });
+
     //---------------------------------------------------------------
-
 }
-
 function ShowUserForm(farminfo) {
 
-    $("#form_A").dxForm({
+    var form = $("#form").dxForm({
         formData: farminfo[0],
         readOnly: false,
         showColonAfterLabel: true,
         labelLocation: "left",
         minColWidth: 300,
-        colCount: 1,
+        colCount: 3,
 
         items: [
+            {
+                dataField: "Owner",
+                editorOptions: {
+                    value: farminfo[0].Owner
+                }
+            }//,
+            //{
+            //    dataField: "GeoPosition",
+            //    editorOptions: {
+            //        value: farminfo[0].GeoPosition,
+            //        width: 650
+            //    }
+            //}
+            , {
+                dataField: "Phone",
+                editorOptions: {
+                    mask: "+ (X00) 000-0000",
+                    maskRules: { "X": /[02-9]/ },
+                    value: farminfo[0].Phone
+                }
+            },
+            {
+                dataField: "Email",
+                editorOptions: {
+                    value: farminfo[0].email
+                }
+            },
             {
                 itemType: "group",
                 caption: "Alerts Dashboard",
@@ -1331,22 +1363,22 @@ function ShowUserForm(farminfo) {
                         editorOptions: {
                             value: false
                         }
-                    },
-                    {
-                        itemType: "button",
-                        horizontalAlignment: "left",
-                        buttonOptions: {
-                            text: "Save",
-                            type: "default",
-                            useSubmitBehavior: false,
-                            onClick: function () {
-                                //DevExpress.ui.notify({ message: "Hello", width: 300, shading: true }, "error", 500);
-                                var tt = $("#form").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
-                                SaveFarmInfo(tt);
-                            }
-                        }
                     }
                 ]
+            },
+            {
+                itemType: "button",
+                horizontalAlignment: "left",
+                buttonOptions: {
+                    text: "Save",
+                    type: "default",
+                    useSubmitBehavior: false,
+                    onClick: function () {
+                        //DevExpress.ui.notify({ message: "Hello", width: 300, shading: true }, "error", 500);
+                        var tt = $("#form").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
+                        SaveFarmInfo(tt);
+                    }
+                },
             }
         ]
     }).dxForm("instance");
@@ -1356,141 +1388,6 @@ function ShowUserForm(farminfo) {
     //form.option("colCount", data.value);
     //--------------------------------------------
 }
-//----Form B----------------------------------------------------------
-function ShowUserForm_B(uid) {
-    var SERVICE_URL = "Admin.aspx?SP=GetFarmPhoneList&";
-    var phonesStore = new DevExpress.data.CustomStore({
-
-        load: function (loadOptions) {
-            return $.getJSON(SERVICE_URL + "action=load&userid=" + uid);
-        },
-
-        byKey: function (key) {
-            return $.getJSON(SERVICE_URL + "/" + encodeURIComponent(key));
-        },
-
-        insert: function (values) {
-            return $.post(SERVICE_URL + "action=insert&userid=" + uid, values);
-        },
-
-        update: function (key, values) {
-            return $.ajax({
-                url: SERVICE_URL + "action=update&rec_id=" + key.id,
-                //method: "PUT",
-                data: values
-            });
-        },
-
-        remove: function (key) {
-            return $.ajax({
-                url: SERVICE_URL + "action=remove&rec_id=" + key.id,
-                //method: "DELETE",
-            });
-        }
-
-    });
-    var SERVICE_URL1 = "Admin.aspx?SP=GetFarmEmailList&";
-
-    var emailsStore = new DevExpress.data.CustomStore({
-
-        load: function (loadOptions) {
-            return $.getJSON(SERVICE_URL1 + "action=load&userid=" + uid);
-        },
-
-        byKey: function (key) {
-            return $.getJSON(SERVICE_URL1 + "/" + encodeURIComponent(key));
-        },
-
-        insert: function (values) {
-            return $.post(SERVICE_URL1 + "action=insert&userid=" + uid, values);
-        },
-
-        update: function (key, values) {
-            return $.ajax({
-                url: SERVICE_URL1 + "action=update&rec_id=" + key.id,
-                //method: "PUT",
-                data: values
-            });
-        },
-
-        remove: function (key) {
-            return $.ajax({
-                url: SERVICE_URL + "action=remove&rec_id=" + key.id,
-                //method: "DELETE",
-            });
-        }
-
-    });
-
-    $("#form_B").dxForm({
-        readOnly: false,
-        showColonAfterLabel: true,
-        labelLocation: "left",
-        minColWidth: 300,
-        colCount: 2,
-
-        items: [
-            {
-                editorType: "dxDataGrid",
-                editorOptions: {
-                    dataSource: phonesStore,
-                    repaintChangesOnly: true,
-                    key: "id",
-                    showBorders: true,
-                    editing: {
-                        refreshMode: "full",
-                        mode: "row",
-                        allowAdding: true,
-                        allowUpdating: true,
-                        allowDeleting: true,
-                        useIcons: true
-                    },
-                    scrolling: {
-                        mode: "virtual"
-                    },
-                    columns: ["Phone",
-                        {
-                            capture: "Status",
-                            dataField: "Status",
-                            dataType: "boolean"
-                        }]
-                }
-            },
-            {
-                editorType: "dxDataGrid",
-                editorOptions: { 
-                    dataSource: emailsStore,
-                    repaintChangesOnly: true,
-                    key: "id",
-                    showBorders: true,
-                    editing: {
-                        refreshMode: "full",
-                        mode: "row",
-                        allowAdding: true,
-                        allowUpdating: true,
-                        allowDeleting: true,
-                        useIcons: true
-                    },
-                    scrolling: {
-                        mode: "virtual"
-                    },
-                    columns: ["Email",
-                        {
-                            capture: "Status",
-                            dataField: "Status",
-                            dataType: "boolean"
-                        }]
-                }
-            },
-        ]
-    }).dxForm("instance");
-
-
-    //var form =$("#form").dxForm("instance");
-    //form.option("colCount", data.value);
-    //--------------------------------------------
-}
-
 function SaveFarmInfo(Pars) {
     //DevExpress.ui.notify({ message: "Data was saved! ", width: 300, shading: true }, "success", 500);
 
@@ -1508,3 +1405,4 @@ function Error_SaveFarmInfo(result) {
     DevExpress.ui.notify({ message: "Error " + result, width: 300, shading: true }, "error", 1500);
 }
 //End ----------Users Form Section------------------------------------------------------------
+//------------------------------------------------------

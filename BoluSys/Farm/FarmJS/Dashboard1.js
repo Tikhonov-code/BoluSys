@@ -259,7 +259,7 @@ $(function () {
         onCellPrepared: function (e) {
             if (e.area == "data") {
                 e.cellElement.css("text-align", "center");
-                e.cellElement.css("font-weight","bold");
+                e.cellElement.css("font-weight", "bold");
 
                 if (Number(e.cell.value) <= 5.0) {
                     e.cellElement.css("color", "green");
@@ -282,7 +282,7 @@ $(function () {
                     caption: "Gaps",
                     dataField: "Gaps",
                     dataType: "number",
-                   summaryType: "sum",
+                    summaryType: "sum",
                     format: "decimal",
                     area: "data"
                 },
@@ -295,5 +295,90 @@ $(function () {
             store: dataIntegrity
         }
     }).dxPivotGrid("instance");
+
+});
+
+
+//-----------Grid Data Lost Cows List-------------------------------------------------------------
+
+var dataLostCows = new DevExpress.data.CustomStore({
+    loadMode: "raw",
+    cacheRawData: true,
+    key: "bolus_id",
+    load: function (loadOptions) {
+        return $.getJSON('Dashboard1.aspx?SP=GetLostCowsList&period_hour=1');
+    }
+});
+
+///grid for Lost Cows List
+$(function () {
+   
+    $("#period_hour").dxNumberBox({
+        value: 1,
+        min: 1,
+        max: 8,
+        width: 50,
+        showSpinButtons: true,
+        onValueChanged: function (e) {
+            dataLostCows = new DevExpress.data.CustomStore({
+                loadMode: "raw",
+                cacheRawData: true,
+                key: "bolus_id",
+                load: function (loadOptions) {
+                    return $.getJSON('Dashboard1.aspx?SP=GetLostCowsList&period_hour='+e.value);
+                }
+            });
+
+            $("#lostCows_grid").dxDataGrid('instance').option('dataSource', dataLostCows);
+        }
+    });
+    $("#lostCows_grid").dxDataGrid({
+        dataSource: dataLostCows,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10],
+            showInfo: true
+        },
+        columns: [
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Animal_id",
+                dataField: "animal_id",
+                alignment: 'center',
+                width: 80,
+                cellTemplate: function (cellElement, cellInfo) {
+                    var d = new Date();
+                    var dt = d.getFullYear() + '-' + Number(d.getMonth() + 1) + '-' + d.getDate();
+                    $('<a/>')
+                        .attr({
+                            href: 'CowPage?bid_ext=' + cellInfo.key + '&dt_ext=' + dt
+                        })
+                        .text(cellInfo.value)
+                        .appendTo(cellElement);
+                }
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Date",
+                dataField: "lastdate",
+                dataType: "date",
+                format: "yyyy-MM-dd hh:mm:ss",
+                width: 150
+            },
+            {
+                cssClass: 'cls',
+                alignment: 'center',
+                caption: "Lactation Stage",
+                dataField: "Current_Stage_Of_Lactation",
+                width: 150
+            }
+        ]
+    });
 
 });
