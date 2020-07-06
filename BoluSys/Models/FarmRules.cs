@@ -7,6 +7,7 @@ namespace BoluSys.Models
 {
     public class FarmRules
     {
+        public string userid { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
 

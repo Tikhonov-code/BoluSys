@@ -68,6 +68,24 @@
           <Property Name="AspNetUser_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Bolus_ID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="FarmEmails">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AspNetUser_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Email" Type="nchar" MaxLength="256" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FarmPhones">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AspNetUser_ID" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Phone" Type="nchar" MaxLength="12" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Farms">
           <Key>
             <PropertyRef Name="id" />
@@ -77,6 +95,10 @@
           <Property Name="Owner" Type="nvarchar" MaxLength="350" />
           <Property Name="GeoPosition" Type="geography" />
           <Property Name="AspNetUser_Id" Type="nvarchar" MaxLength="128" />
+          <Property Name="Phones" Type="nvarchar(max)" />
+          <Property Name="Emails" Type="nvarchar(max)" />
+          <Property Name="PhoneStatus" Type="nvarchar(max)" />
+          <Property Name="EmailStatus" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -293,6 +315,8 @@
           <EntitySet Name="Cows_log" EntityType="Self.Cows_log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Farm_Alert_Rules" EntityType="Self.Farm_Alert_Rules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FarmCows" EntityType="Self.FarmCows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FarmEmails" EntityType="Self.FarmEmails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FarmPhones" EntityType="Self.FarmPhones" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Farms" EntityType="Self.Farms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MeasData" EntityType="Self.MeasData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SmsLogs" EntityType="Self.SmsLogs" Schema="dbo" store:Type="Tables" />
@@ -456,6 +480,8 @@
             <Parameter Name="user_id" Mode="In" Type="String" />
             <Parameter Name="result" Mode="InOut" Type="String" />
           </FunctionImport>
+          <EntitySet Name="FarmPhones" EntityType="DB_A4A060_csModel.FarmPhone" />
+          <EntitySet Name="FarmEmails" EntityType="DB_A4A060_csModel.FarmEmail" />
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -594,6 +620,10 @@
           <Property Name="Owner" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="GeoPosition" Type="Geography" />
           <Property Name="AspNetUser_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Phones" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Emails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <ComplexType Name="SP_GET_BolusDataGaps_Result">
           <Property Type="String" Name="Points" Nullable="true" MaxLength="72" />
@@ -671,6 +701,24 @@
           <Property Type="DateTime" Name="lastdate" Nullable="true" />
           <Property Type="String" Name="Current_Stage_Of_Lactation" Nullable="true" MaxLength="10" />
         </ComplexType>
+        <EntityType Name="FarmPhone">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUser_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" Nullable="false" MaxLength="12" FixedLength="true" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FarmEmail">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AspNetUser_ID" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="256" FixedLength="true" Unicode="true" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -884,6 +932,10 @@
           <EntitySetMapping Name="Farms">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Farm">
               <MappingFragment StoreEntitySet="Farms">
+                <ScalarProperty Name="EmailStatus" ColumnName="EmailStatus" />
+                <ScalarProperty Name="PhoneStatus" ColumnName="PhoneStatus" />
+                <ScalarProperty Name="Emails" ColumnName="Emails" />
+                <ScalarProperty Name="Phones" ColumnName="Phones" />
                 <ScalarProperty Name="AspNetUser_Id" ColumnName="AspNetUser_Id" />
                 <ScalarProperty Name="GeoPosition" ColumnName="GeoPosition" />
                 <ScalarProperty Name="Owner" ColumnName="Owner" />
@@ -987,6 +1039,26 @@
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="SP_GET_FarmLactationStat" FunctionName="DB_A4A060_csModel.Store.SP_GET_FarmLactationStat" />
+          <EntitySetMapping Name="FarmPhones">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.FarmPhone">
+              <MappingFragment StoreEntitySet="FarmPhones">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="AspNetUser_ID" ColumnName="AspNetUser_ID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FarmEmails">
+            <EntityTypeMapping TypeName="DB_A4A060_csModel.FarmEmail">
+              <MappingFragment StoreEntitySet="FarmEmails">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AspNetUser_ID" ColumnName="AspNetUser_ID" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

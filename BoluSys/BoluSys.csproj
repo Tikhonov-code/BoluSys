@@ -584,6 +584,13 @@
     <Compile Include="Models\FarmCow.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FarmEmail.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FarmPhone.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FarmPhoneList.cs" />
     <Compile Include="Models\FarmRules.cs" />
     <Compile Include="Models\Farm_Alert_Rules.cs">
       <DependentUpon>Model1.tt</DependentUpon>

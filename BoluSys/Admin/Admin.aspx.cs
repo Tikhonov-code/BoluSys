@@ -91,13 +91,218 @@ namespace BoluSys.Admin
                     GetFarmInfo();
                     break;
                 case "SaveFarmInfo":
-
                     SaveFarmInfo(Request.QueryString["data"]);
+                    break;
+                case "GetFarmPhoneList":
+                    GetFarmPhoneList(Request.QueryString["action"], Request.QueryString["userid"]);
+                    break;
+                case "GetFarmEmailList":
+                    GetFarmEmailList(Request.QueryString["action"], Request.QueryString["userid"]);
                     break;
                 default:
                     break;
             }
         }
+        //------------------------------------------------------------------------------
+        private void GetFarmPhoneList(string action, string userid)
+        {
+            switch (action)
+            {
+                case "load":
+                    GetFarmPhoneList_load(userid);
+                    break;
+                case "insert":
+                    GetFarmPhoneList_insert(userid);
+                    break;
+                case "remove":
+                    GetFarmPhoneList_remove();
+                    break;
+                case "update":
+                    GetFarmPhoneList_update();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void GetFarmPhoneList_update()
+        {
+            int id = Convert.ToInt16(Request.Params["rec_id"]);
+            string phone_new = Request.Params["Phone"];
+
+            FarmPhone fp_updated = new FarmPhone();
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                fp_updated = context.FarmPhones.Where(x => x.id == id).SingleOrDefault();
+                fp_updated.Phone = (phone_new != null) ? phone_new : fp_updated.Phone;
+                fp_updated.Status = (Request.Params["Status"] != null) ? Convert.ToBoolean(Request.Params["Status"]) : fp_updated.Status; ;
+
+                context.SaveChanges();
+            }
+            string res_json = JsonConvert.SerializeObject(fp_updated);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmPhoneList_remove()
+        {
+            int id = Convert.ToInt16(Request.Params["rec_id"]);
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var item = context.FarmPhones.Where(x => x.id == id).SingleOrDefault();
+                context.FarmPhones.Remove(item);
+                context.SaveChanges();
+            }
+            string res_json = JsonConvert.SerializeObject("OK");
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmPhoneList_insert(string userid)
+        {
+            FarmPhone fp = new FarmPhone();
+            fp.AspNetUser_ID = userid;
+            fp.Phone = Request.Params["Phone"];
+            fp.Status = Convert.ToBoolean(Request.Params["Status"]);
+
+            FarmPhone fp_insert = new FarmPhone();
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                context.FarmPhones.Add(fp);
+                context.SaveChanges();
+                //----------------------------
+                fp_insert = context.FarmPhones.Where(x => x.AspNetUser_ID == userid
+                                                      && x.Phone == fp.Phone
+                                                      && x.Status == fp.Status
+                ).SingleOrDefault();
+            }
+            string res_json = JsonConvert.SerializeObject(fp_insert);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmPhoneList_load(string userid)
+        {
+            List<FarmPhone> fp = new List<FarmPhone>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                fp = context.FarmPhones.Where(x => x.AspNetUser_ID == userid).ToList();
+            }
+            string res_json = JsonConvert.SerializeObject(fp);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+        //------------------------------------------------------------------------------
+
+        private void GetFarmEmailList(string action, string userid)
+        {
+            switch (action)
+            {
+                case "load":
+                    GetFarmEmailList_load(userid);
+                    break;
+                case "insert":
+                    GetFarmEmailList_insert(userid);
+                    break;
+                case "remove":
+                    GetFarmEmailList_remove();
+                    break;
+                case "update":
+                    GetFarmEmailList_update();
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void GetFarmEmailList_update()
+        {
+            int id = Convert.ToInt16(Request.Params["rec_id"]);
+            string email_new = Request.Params["Email"];
+
+            FarmEmail fp_updated = new FarmEmail();
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                fp_updated = context.FarmEmails.Where(x => x.id == id).SingleOrDefault();
+                fp_updated.Email = (email_new != null) ? email_new : fp_updated.Email;
+                fp_updated.Status = (Request.Params["Status"] != null) ? Convert.ToBoolean(Request.Params["Status"]) : fp_updated.Status; ;
+
+                context.SaveChanges();
+            }
+            string res_json = JsonConvert.SerializeObject(fp_updated);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmEmailList_remove()
+        {
+            int id = Convert.ToInt16(Request.Params["rec_id"]);
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                var item = context.FarmEmails.Where(x => x.id == id).SingleOrDefault();
+                context.FarmEmails.Remove(item);
+                context.SaveChanges();
+            }
+            string res_json = JsonConvert.SerializeObject("OK");
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmEmailList_insert(string userid)
+        {
+            FarmEmail fp = new FarmEmail();
+            fp.AspNetUser_ID = userid;
+            fp.Email = Request.Params["Email"];
+            fp.Status = Convert.ToBoolean(Request.Params["Status"]);
+
+            FarmEmail fp_insert = new FarmEmail();
+
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                context.FarmEmails.Add(fp);
+                context.SaveChanges();
+                //----------------------------
+                fp_insert = context.FarmEmails.Where(x => x.AspNetUser_ID == userid
+                                                      && x.Email == fp.Email
+                                                      && x.Status == fp.Status
+                ).SingleOrDefault();
+            }
+            string res_json = JsonConvert.SerializeObject(fp_insert);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+
+        private void GetFarmEmailList_load(string userid)
+        {
+            List<FarmEmail> fp = new List<FarmEmail>();
+            using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+            {
+                fp = context.FarmEmails.Where(x => x.AspNetUser_ID == userid).ToList();
+            }
+            string res_json = JsonConvert.SerializeObject(fp);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
+        }
+        //---------------------------------------------------------------------------------------
 
         [WebMethod]
         private void SaveFarmInfo(string data)
@@ -237,6 +442,7 @@ namespace BoluSys.Admin
                          join u in context.AspNetUsers on f.AspNetUser_Id equals u.Id
                          select new
                          {
+                             userid = f.AspNetUser_Id,
                              Name = f.Name,
                              Owner = f.Owner,
                              geoPosition = f.GeoPosition,
@@ -250,6 +456,7 @@ namespace BoluSys.Admin
                 foreach (var item in q)
                 {
                     FarmRules fr = new FarmRules();
+                    fr.userid = item.userid;
                     fr.Name = item.Name;
                     fr.Owner = item.Owner;
                     fr.geoPosition = item.geoPosition;
@@ -280,6 +487,7 @@ namespace BoluSys.Admin
                 var xf = qfr.Where(t => t.Name == item).Distinct().ToList();
                 //1.-------------------------------------
                 result += "{"
+                                + "\"userid\": \"" + xf[0].userid + "\","
                                 + "\"Name\": \"" + xf[0].Name + "\","
                                 + "\"Owner\": \"" + xf[0].Owner + "\","
                                 + "\"GeoPosition\": \"" + xf[0].geoPosition + "\","
@@ -633,7 +841,7 @@ namespace BoluSys.Admin
             finally
             {
                 con.Close();
-                if(rdr != null)rdr.Close();
+                if (rdr != null) rdr.Close();
             }
             string todaydate = DateTime.Now.Date.ToShortDateString();
             string res_json = "[{\"bolus_id\":0,\"animal_id\":0}]";//,\""+todaydate+"\":0}]";
@@ -679,14 +887,19 @@ namespace BoluSys.Admin
             cmd.Parameters.Add(new SqlParameter("@user_id", userid));
 
             string lacstr = "";
+
             if (lactat != "")
             {
-                lacstr = "\'" + lactat.Replace("_", "\',\'");
-                lacstr = lacstr.Substring(0, lacstr.Length - 3) + "\'";
+                lacstr = "\'\'" + lactat.Replace("_", "\'\',\'\'");
+                lacstr = lacstr.Substring(0, lacstr.Length - 3) + "\'\'";
             }
             else
             {
                 lacstr = "NoChoice";
+            }
+            if (lacstr.IndexOf(',') == -1)
+            {
+                lacstr = lacstr.Replace("''", "");
             }
             cmd.Parameters.Add(new SqlParameter("@lactat", lacstr));
 
@@ -713,7 +926,7 @@ namespace BoluSys.Admin
             {
                 Response.Clear();
                 Response.ContentType = "application/json;charset=UTF-8";
-                Response.Write("");
+                Response.Write(JsonConvert.SerializeObject(""));
                 Response.End();
             }
             var res_json = JsonConvert.SerializeObject(dt);

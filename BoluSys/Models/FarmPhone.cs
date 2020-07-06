@@ -12,16 +12,11 @@ namespace BoluSys.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Farm
+    public partial class FarmPhone
     {
         public int id { get; set; }
-        public string Name { get; set; }
-        public string Owner { get; set; }
-        public System.Data.Entity.Spatial.DbGeography GeoPosition { get; set; }
-        public string AspNetUser_Id { get; set; }
-        public string Phones { get; set; }
-        public string Emails { get; set; }
-        public string PhoneStatus { get; set; }
-        public string EmailStatus { get; set; }
+        public string AspNetUser_ID { get; set; }
+        public string Phone { get; set; }
+        public bool Status { get; set; }
     }
 }
