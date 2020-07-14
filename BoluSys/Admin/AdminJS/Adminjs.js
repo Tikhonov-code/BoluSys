@@ -540,7 +540,7 @@ var datagapsMap = "<div id='DataGapsDiv' " + tableborders + "><div class='row' s
     "</div>" +
     "<div class='container'><div id='GridGaps'></div></div></div>" +
     "</div >";
-var ds_cow_lac_stg = ["Undef","Open", "Dry", "Pregnant"];
+var ds_cow_lac_stg = ["Undef", "Open", "Dry", "Pregnant"];
 
 function AnimalListDef(userid) {
     $.getJSON('admin.aspx?SP=GetBolusesSet_GapsMap&userid=' + userid,
@@ -1241,7 +1241,7 @@ var farmformtempl = "<div class='demo-container'>" +
     "<hr><span class='dx-form-group-caption'>Alerts Destinations</span>" +
     "<div class='dx-form-group-content>'" +
     "<div id='PhonesList'></div><div id='EmailsList'></div></div></div>"//;
-    +"<div id = 'form_B'></div>";
+    + "<div id = 'form_B'></div>";
 
 function UserForm() {
     $("#PanelSWhow").html(farmformtempl);
@@ -1341,7 +1341,7 @@ function ShowUserForm(farminfo) {
                             useSubmitBehavior: false,
                             onClick: function () {
                                 //DevExpress.ui.notify({ message: "Hello", width: 300, shading: true }, "error", 500);
-                                var tt = $("#form").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
+                                var tt = $("#form_A").dxForm("instance").option("formData");//.option("formData", data.selectedItem);
                                 SaveFarmInfo(tt);
                             }
                         }
@@ -1389,8 +1389,8 @@ function ShowUserForm_B(uid) {
         }
 
     });
-    var SERVICE_URL1 = "Admin.aspx?SP=GetFarmEmailList&";
 
+    var SERVICE_URL1 = "Admin.aspx?SP=GetFarmEmailList&";
     var emailsStore = new DevExpress.data.CustomStore({
 
         load: function (loadOptions) {
@@ -1415,31 +1415,34 @@ function ShowUserForm_B(uid) {
 
         remove: function (key) {
             return $.ajax({
-                url: SERVICE_URL + "action=remove&rec_id=" + key.id,
+                url: SERVICE_URL1 + "action=remove&rec_id=" + key.id,
                 //method: "DELETE",
             });
         }
 
     });
-
+    //---------------------------------------------
+   // registerKeyHandler(key, handler)
+    //--------------------------------------------
     $("#form_B").dxForm({
         readOnly: false,
         showColonAfterLabel: true,
         labelLocation: "left",
         minColWidth: 300,
         colCount: 2,
-
+        
         items: [
             {
                 editorType: "dxDataGrid",
                 editorOptions: {
                     dataSource: phonesStore,
-                    repaintChangesOnly: true,
+                    //repaintChangesOnly: true,
                     key: "id",
                     showBorders: true,
+
                     editing: {
-                        refreshMode: "full",
-                        mode: "row",
+                        //refreshMode: "full",
+                        mode: "raw",
                         allowAdding: true,
                         allowUpdating: true,
                         allowDeleting: true,
@@ -1448,24 +1451,32 @@ function ShowUserForm_B(uid) {
                     scrolling: {
                         mode: "virtual"
                     },
-                    columns: ["Phone",
+                    columns: [
+                        {
+                            capture: "Phone",
+                            dataField: "Phone"
+                            
+                        },
                         {
                             capture: "Status",
                             dataField: "Status",
                             dataType: "boolean"
-                        }]
+                        }],
+                    //onRowUpdated: function (e) {
+                    //    alert("onRowUpdated");
+                    //},
                 }
             },
             {
                 editorType: "dxDataGrid",
-                editorOptions: { 
+                editorOptions: {
                     dataSource: emailsStore,
                     repaintChangesOnly: true,
                     key: "id",
                     showBorders: true,
                     editing: {
                         refreshMode: "full",
-                        mode: "row",
+                        mode: "raw",
                         allowAdding: true,
                         allowUpdating: true,
                         allowDeleting: true,
@@ -1474,23 +1485,36 @@ function ShowUserForm_B(uid) {
                     scrolling: {
                         mode: "virtual"
                     },
-                    columns: ["Email",
+                    columns: [
+                        {
+                            capture: "Email",
+                            dataField: "Email",
+                            dataType: "email",
+                            validationRules: [
+                                {
+                                    type: "required"
+                                },
+                                {
+                                    type: "email"
+                                }
+                            ]
+                        },
                         {
                             capture: "Status",
                             dataField: "Status",
                             dataType: "boolean"
-                        }]
+                        }
+                    ]
                 }
             },
         ]
     }).dxForm("instance");
-
+    //-------------------------------------------------
 
     //var form =$("#form").dxForm("instance");
     //form.option("colCount", data.value);
     //--------------------------------------------
 }
-
 function SaveFarmInfo(Pars) {
     //DevExpress.ui.notify({ message: "Data was saved! ", width: 300, shading: true }, "success", 500);
 
@@ -1508,3 +1532,12 @@ function Error_SaveFarmInfo(result) {
     DevExpress.ui.notify({ message: "Error " + result, width: 300, shading: true }, "error", 1500);
 }
 //End ----------Users Form Section------------------------------------------------------------
+$(function () {
+    $('form').keypress(function (event) {
+        if (event.keyCode == 13) {
+            console.log('okokok');
+            console.log('keypress');
+            event.preventDefault();
+        }
+    });
+});

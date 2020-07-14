@@ -296,6 +296,12 @@ namespace BoluSys.Admin
             {
                 fp = context.FarmEmails.Where(x => x.AspNetUser_ID == userid).ToList();
             }
+            //-----------------------------------------
+            foreach (var item in fp)
+            {
+                item.Email = item.Email.Trim();
+            }
+            //-----------------------------------------
             string res_json = JsonConvert.SerializeObject(fp);
             Response.Clear();
             Response.ContentType = "application/json;charset=UTF-8";
@@ -314,8 +320,8 @@ namespace BoluSys.Admin
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
-                    string farmname = farminfo[0].Name;
-                    var user_id = context.Farms.Where(x => x.Name == farmname).SingleOrDefault().AspNetUser_Id.ToString();
+                    string user_id = farminfo[0].Name;
+                    //var user_id = context.Farms.Where(x => x.AspNetUser_Id == uid).SingleOrDefault().AspNetUser_Id.ToString();
                     var frec = context.Farm_Alert_Rules.Where(x => x.AspNetUser_Id == user_id).ToList();
                     foreach (var item in frec)
                     {
