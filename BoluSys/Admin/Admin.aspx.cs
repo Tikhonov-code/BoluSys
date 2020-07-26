@@ -320,7 +320,7 @@ namespace BoluSys.Admin
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
-                    string user_id = farminfo[0].Name;
+                    string user_id = farminfo[0].userid;
                     //var user_id = context.Farms.Where(x => x.AspNetUser_Id == uid).SingleOrDefault().AspNetUser_Id.ToString();
                     var frec = context.Farm_Alert_Rules.Where(x => x.AspNetUser_Id == user_id).ToList();
                     foreach (var item in frec)
@@ -355,21 +355,23 @@ namespace BoluSys.Admin
         {
             List<FarmRules> result = new List<FarmRules>();
             string[] xdd = xd.Split(',');
-            string xdd_Name = GetValueOfField(xdd[0]);
-            string xdd_Owner = GetValueOfField(xdd[1]);
-            string xdd_geoPosition = GetValueOfField(xdd[2]);
-            string xdd_Phone = GetValueOfField(xdd[3]);
-            string xdd_Email = GetValueOfField(xdd[4]);
+            string xdd_userid = GetValueOfField(xdd[0]);
+            string xdd_Name = GetValueOfField(xdd[1]);
+            string xdd_Owner = GetValueOfField(xdd[2]);
+            string xdd_geoPosition = GetValueOfField(xdd[3]);
+            string xdd_Phone = GetValueOfField(xdd[4]);
+            string xdd_Email = GetValueOfField(xdd[5]);
 
 
-            Boolean Q405_SMS = GetValueOfFieldBool(xdd[5]);
-            Boolean Q405_email = GetValueOfFieldBool(xdd[6]);
-            Boolean Q41_SMS = GetValueOfFieldBool(xdd[7]);
-            Boolean Q41_email = GetValueOfFieldBool(xdd[8]);
-            Boolean WI20_SMS = GetValueOfFieldBool(xdd[9]);
-            Boolean WI20_email = GetValueOfFieldBool(xdd[10]);
+            Boolean Q405_SMS = GetValueOfFieldBool(xdd[6]);
+            Boolean Q405_email = GetValueOfFieldBool(xdd[7]);
+            Boolean Q41_SMS = GetValueOfFieldBool(xdd[8]);
+            Boolean Q41_email = GetValueOfFieldBool(xdd[9]);
+            Boolean WI20_SMS = GetValueOfFieldBool(xdd[10]);
+            Boolean WI20_email = GetValueOfFieldBool(xdd[11]);
 
             FarmRules r_Q405 = new FarmRules();
+            r_Q405.userid = xdd_userid;
             r_Q405.Alert_Name = "Q40.5";
             r_Q405.Name = xdd_Name;
             r_Q405.Owner = xdd_Owner;
@@ -382,6 +384,7 @@ namespace BoluSys.Admin
             r_Q405.Email = xdd_Email;
             //---------------------------------------
             FarmRules r_Q41 = new FarmRules();
+            r_Q41.userid = xdd_userid;
             r_Q41.Alert_Name = "Q41";
             r_Q41.Name = xdd_Name;
             r_Q41.Owner = xdd_Owner;
@@ -389,6 +392,7 @@ namespace BoluSys.Admin
             r_Q41.Email = xdd_Email;
             //---------------------------------------
             FarmRules r_WI20 = new FarmRules();
+            r_WI20.userid = xdd_userid;
             r_WI20.Alert_Name = "WI20";
             r_WI20.Name = xdd_Name;
             r_WI20.Owner = xdd_Owner;
