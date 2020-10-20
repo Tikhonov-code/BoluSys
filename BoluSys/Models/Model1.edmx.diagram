@@ -17,6 +17,7 @@
         <EntityTypeShape EntityType="DB_A4A060_csModel.AspNetUser" Width="1.5" PointX="0.75" PointY="6.75" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.FarmPhone" Width="1.5" PointX="7.375" PointY="3.75" />
         <EntityTypeShape EntityType="DB_A4A060_csModel.FarmEmail" Width="1.5" PointX="7.375" PointY="6.75" />
+        <EntityTypeShape EntityType="DB_A4A060_csModel.Prediction" Width="1.5" PointX="3.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

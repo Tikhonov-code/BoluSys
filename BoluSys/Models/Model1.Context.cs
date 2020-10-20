@@ -39,6 +39,7 @@ namespace BoluSys.Models
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<FarmPhone> FarmPhones { get; set; }
         public virtual DbSet<FarmEmail> FarmEmails { get; set; }
+        public virtual DbSet<Prediction> Predictions { get; set; }
     
         public virtual ObjectResult<SP_GET_FARM_STAT_Result> SP_GET_FARM_STAT(Nullable<System.DateTime> date, Nullable<double> temp_limit, Nullable<int> measurements)
         {

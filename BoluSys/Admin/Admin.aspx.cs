@@ -1093,6 +1093,15 @@ namespace BoluSys.Admin
         }
         private double[] GetTemperatureArr(string raw)
         {
+            try
+            {
+                byte[] payload1 = Convert.FromBase64String(raw);
+            }
+            catch (Exception ex)
+            {
+                string xx = ex.Message;
+                throw;
+            }
             byte[] payload = Convert.FromBase64String(raw);
             int len_payload = payload.Length;
             double[] tp = new double[16];

@@ -42,6 +42,7 @@
 
             </div>
         </div>
+        <button class="auto-style1" onclick="window.open('http://193.27.73.63/Predict/CPStart.html','_blank');">Predict</button>
         <%--        swagger   https://pilot001.data.thethingsnetwork.org/
     https://www.thethingsindustries.com/
         --%>
