@@ -225,6 +225,7 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Dashboard\dashboard.html" />
     <Content Include="Default.aspx" />
     <Content Include="dx\css\dx.common.css" />
     <Content Include="dx\css\dx.light.css" />
