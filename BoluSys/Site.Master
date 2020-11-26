@@ -15,8 +15,7 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="Content/MyMasterCSS/MasterCSS.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<%--    <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/19.1.9/js/dx.all.js"></script>--%>
-
+    <%--    <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/19.1.9/js/dx.all.js"></script>--%>
 </head>
 <body>
     <form runat="server">
@@ -39,59 +38,61 @@
                 <%--Site Scripts--%>
             </Scripts>
         </asp:ScriptManager>
-        <div class="col-md-4 text-center zoom" style="width: 100%; margin: 0 auto;">
-            <a href="https://www.cattlescan.ca/">
-                <img style="object-position: 50% 50%; width: 85px; height: 40px; object-fit: contain;" alt="" data-type="image" itemprop="image"
-                    title="Back to www.cattlescan.ca"
-                    src="https://static.wixstatic.com/media/9e470e_77ed1b034df34d43a7a7a975e3bee9a1~mv2.jpg/v1/fill/w_340,h_160,al_c,q_80,usm_0.66_1.00_0.01/9e470e_77ed1b034df34d43a7a7a975e3bee9a1~mv2.webp">
-            </a>
-        </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <div class="hline" style="width: 940px; margin: 0 auto;"></div>
-        <div class="navbar navbar-inverse ">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <asp:LoginView runat="server" ViewStateMode="Disabled">
-                        <AnonymousTemplate>
-                            <ul class="nav navbar-nav navbar-right">
-                                <%--<li><a runat="server" href="~/Account/Register">Register</a></li>--%>
-                                <li><a runat="server" href="~/Account/Login">Log in</a></li>
-                            </ul>
-                        </AnonymousTemplate>
-                        <LoggedInTemplate>
-                            <ul class="nav navbar-nav navbar-center" style="width:700px;">
-      <%--                          <li><a runat="server" href="~/">Home</a></li>
+        
+            <div class="col-md-4 text-center zoom" style="width: 100%; margin: 0 auto;">
+                <a href="https://www.cattlescan.ca/">
+                    <img style="object-position: 50% 50%; width: 85px; height: 40px; object-fit: contain;" alt="" data-type="image" itemprop="image"
+                        title="Back to www.cattlescan.ca"
+                        src="https://static.wixstatic.com/media/9e470e_77ed1b034df34d43a7a7a975e3bee9a1~mv2.jpg/v1/fill/w_340,h_160,al_c,q_80,usm_0.66_1.00_0.01/9e470e_77ed1b034df34d43a7a7a975e3bee9a1~mv2.webp">
+                </a>
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="hline" style="width: 940px; margin: 0 auto;"></div>
+            <div class="navbar navbar-inverse ">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <asp:LoginView runat="server" ViewStateMode="Disabled">
+                            <AnonymousTemplate>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <%--<li><a runat="server" href="~/Account/Register">Register</a></li>--%>
+                                    <li><a runat="server" href="~/Account/Login">Log in</a></li>
+                                </ul>
+                            </AnonymousTemplate>
+                            <LoggedInTemplate>
+                                <ul class="nav navbar-nav navbar-center" style="width: 700px;">
+                                    <%--                          <li><a runat="server" href="~/">Home</a></li>
                                 <li><a runat="server" href="~/About">About</a></li>
                                 <li><a runat="server" href="~/Contact">Contact</a></li>--%>
-                                <li><a runat="server" href="~/Farm/Dashboard1">Dashboard</a></li>
-                                <li><a runat="server" href="~/Dashboard/dashboard.html">Dashboard new</a></li>
-                                <%--<li><a runat="server" href="~/Farm/BolusChart?DateSearch=today">Animals</a></li>--%>
-                                <li><a runat="server" href="~/Farm/CowPage">Animals</a></li>
-<%--                                <li><a runat="server" href="~/Farm/Stat">Stat</a></li>--%>
-                            <%--</ul>
+                                    <li><a runat="server" href="~/Farm/Dashboard1">Dashboard</a></li>
+                                    <li><a runat="server" href="~/Default?dashboard=go">Herd</a></li>
+                                    <%--<li><a runat="server" href="~/Farm/BolusChart?DateSearch=today">Animals</a></li>--%>
+                                    <li><a runat="server" href="~/Farm/CowPage">Animals</a></li>
+                                    <%--<li><a runat="server" href="~/Farm/Stat">Stat</a></li>--%>
+                                    <%--</ul>
                             <ul class="nav navbar-nav navbar-right">--%>
-                                <%--<li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>--%>
-                                <li><a runat="server" href="#" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
-                                <li>
-                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
-                                </li>
-                            </ul>
-                        </LoggedInTemplate>
-                    </asp:LoginView>
+                                    <%--<li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>--%>
+                                    <li><a runat="server" href="#" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
+                                    <li>
+                                        <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                    </li>
+                                </ul>
+                            </LoggedInTemplate>
+                        </asp:LoginView>
+                    </div>
                 </div>
             </div>
-        </div>
+        
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>

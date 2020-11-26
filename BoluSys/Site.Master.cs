@@ -55,6 +55,7 @@ namespace BoluSys
                 // Set Anti-XSRF token
                 ViewState[AntiXsrfTokenKey] = Page.ViewStateUserKey;
                 ViewState[AntiXsrfUserNameKey] = Context.User.Identity.Name ?? String.Empty;
+                
             }
             else
             {
@@ -69,7 +70,7 @@ namespace BoluSys
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            ;
         }
 
         protected void Unnamed_LoggingOut(object sender, LoginCancelEventArgs e)
