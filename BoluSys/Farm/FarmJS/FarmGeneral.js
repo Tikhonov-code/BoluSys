@@ -46,3 +46,18 @@ function ConvertDateToMyF(dt) {
     var t = [mySQLDate, mySQLTime].join(" ");
     return t;
 }
+function ConvertDateToMyFShort(dt) {
+    var month, day, year, hours, minutes, seconds;
+    if (typeof dt === 'string' || dt instanceof String) {
+        return dt;
+    }
+    if (dt == "") {
+        return null;
+    }
+
+    m = ("0" + (dt.getMonth() + 1)).slice(-2);
+    d = ("0" + dt.getDate()).slice(-2);
+
+    var mySQLDate = [dt.getFullYear(), m, d].join("-");
+    return mySQLDate;
+}

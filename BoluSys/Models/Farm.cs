@@ -23,5 +23,7 @@ namespace BoluSys.Models
         public string Emails { get; set; }
         public string PhoneStatus { get; set; }
         public string EmailStatus { get; set; }
+        public Nullable<int> StationId { get; set; }
+        public Nullable<int> vas_dairy_id { get; set; }
     }
 }

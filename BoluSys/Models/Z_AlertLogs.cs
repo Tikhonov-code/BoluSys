@@ -20,5 +20,7 @@ namespace BoluSys.Models
         public string message { get; set; }
         public Nullable<System.DateTime> date_emailsent { get; set; }
         public string email { get; set; }
+        public Nullable<bool> read { get; set; }
+        public Nullable<bool> feedback { get; set; }
     }
 }

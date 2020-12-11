@@ -40,6 +40,17 @@
     <!------------------------------------------------------------->
     <div id="PanelSWhow"></div>
     <!------------------------------------------------------------->
+
+    <!---Fermer's feedback Section---------------------------------------------------------->
+    <div class="well well-sm" style="text-align: center; padding: 20px 0; border-width: thin; background-color: #dcefdc">
+        <h4>Table. Feedback Messages and Rectal Temperature Measurements</h4>
+    </div>
+    <div class="demo-container"> 
+        <div id="gridFermerFB"></div>
+    </div>
+    <!---END of Fermer's feedback Section---------------------------------------------------------->
+
+
     <style type="text/css">
         .first-group {
             padding: 20px;

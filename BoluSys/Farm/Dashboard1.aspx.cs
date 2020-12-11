@@ -113,8 +113,8 @@ namespace BoluSys.Farm
             TotalCowsNumberInfo = 0;
             using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
             {
-                var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
-                TotalCowsNumberInfo = bolusIdList.Count();
+                //var bolusIdList = context.FarmCows.Where(x => x.AspNetUser_ID == user_id).Select(bl => bl.Bolus_ID).ToArray();
+                TotalCowsNumberInfo = context.SP_Farm_TotalActiveCowsNumber(user_id).SingleOrDefault().Value;
             }
         }
 
@@ -136,7 +136,7 @@ namespace BoluSys.Farm
                 var q405 = context.FCN_Farm_TodayEventsList(dt, user_id, User.Identity.Name, "Q40.5").ToList();
                 CowsToCheckNumber = q405.Count();
 
-                //2. Сows Under Monitoring Last 24 hours---------------------------------------
+                //2. Сows Under Monitoring Last 24 hours---status=1------------------------------------
                 HealthyCowsNumber = context.FCN_Farm_CowsUnderMonitoring(dt, user_id, 24).Count();
             }
             Page.DataBind();

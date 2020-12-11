@@ -644,6 +644,12 @@
     <Compile Include="Models\SP_Admin_Z_AlertLogs_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SP_Farm_CowInfoStByBolus_ID_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SP_FermerFeedbackByBolusID_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SP_GET_AnimalIdList_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

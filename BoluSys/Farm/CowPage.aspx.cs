@@ -48,7 +48,8 @@ namespace BoluSys.Farm
                     GetTotalIntakes(Request.QueryString["DateFrom"], Request.QueryString["DateTo"], bid);
                     break;
                 case "GetCowInfoSt":
-                    bid = Convert.ToInt16(Request.QueryString["Bolus_id"]);
+                    string bidstr = Request.QueryString["Bolus_id"];
+                    bid = (string.IsNullOrEmpty(bidstr)) ? -1 : Convert.ToInt16(bidstr);
                     GetCowInfoSt(bid);
                     break;
                 case "GetCowsLogs":
@@ -82,10 +83,37 @@ namespace BoluSys.Farm
 
                     CowDataSaveUpdate(bolus_id, Date_of_Birth, Age_Lactation, Current_Stage_Of_Lactation, Calving_Due_Date, Actual_Calving_Date);
                     break;
+                case "FermerFeedback":
+                    bolus_id = Convert.ToInt16(Request.QueryString["bolus_id"]);
+                    FermerFeedback(bolus_id);
+                    break;
                 default:
                     break;
             }
 
+        }
+
+        private void FermerFeedback(int bolus_id)
+        {
+            List<SP_FermerFeedbackByBolusID_Result> result = new List<SP_FermerFeedbackByBolusID_Result>();
+            //---------------------
+            try
+            {
+                using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+                {
+                    //Temperature--------------------------------------------------------
+                    result = context.SP_FermerFeedbackByBolusID(bolus_id).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                result = null;
+            }
+            var res_json = JsonConvert.SerializeObject(result);
+            Response.Clear();
+            Response.ContentType = "application/json;charset=UTF-8";
+            Response.Write(res_json);
+            Response.End();
         }
 
         [WebMethod]
@@ -147,33 +175,63 @@ namespace BoluSys.Farm
         public static string GetCowInfoSt(int bolus_id)
         {
             string result = string.Empty;
-            Bolu cow_info = new Bolu();
+            SP_Farm_CowInfoStByBolus_ID_Result cow_infonull = new SP_Farm_CowInfoStByBolus_ID_Result();
+            if (bolus_id == -1) return JsonConvert.SerializeObject(cow_infonull);
+
+            SP_Farm_CowInfoStByBolus_ID_Result cow_info = new SP_Farm_CowInfoStByBolus_ID_Result();
             try
             {
                 using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
                 {
-                    var q = context.Bolus.Where(x => x.bolus_id == bolus_id).Select(x => new
-                    {
-                        Animal_ID = x.animal_id,
-                        Bolus_ID = x.bolus_id,
-                        BirthDate = x.Date_of_Birth,
-                        Current_Lactation = x.Age_Lactation,
-                        Lactation_Stage = x.Current_Stage_Of_Lactation,
-                        Lactation_Day = 0,
-                        x.Calving_Due_Date,
-                        x.Actual_Calving_Date
-                    }).SingleOrDefault();
-
-                    result = JsonConvert.SerializeObject(q);
+                    cow_info = context.SP_Farm_CowInfoStByBolus_ID(bolus_id).SingleOrDefault();
                 }
             }
             catch (Exception ex)
             {
-                var m = ex.Message;
                 cow_info = null;
             }
+            if (cow_info == null)
+            {
+                cow_infonull.Bolus_ID = bolus_id;
+                result = JsonConvert.SerializeObject(cow_infonull);
+            }
+            else
+            {
+                result = JsonConvert.SerializeObject(cow_info);
+            }
+
             return result;
         }
+        //public static string GetCowInfoSt(int bolus_id)
+        //{
+        //    string result = string.Empty;
+        //    Bolu cow_info = new Bolu();
+        //    try
+        //    {
+        //        using (DB_A4A060_csEntities context = new DB_A4A060_csEntities())
+        //        {
+        //            var q = context.Bolus.Where(x => x.bolus_id == bolus_id).Select(x => new
+        //            {
+        //                Animal_ID = x.animal_id,
+        //                Bolus_ID = x.bolus_id,
+        //                BirthDate = x.Date_of_Birth,
+        //                Current_Lactation = x.Age_Lactation,
+        //                Lactation_Stage = x.Current_Stage_Of_Lactation,
+        //                Lactation_Day = 0,
+        //                x.Calving_Due_Date,
+        //                x.Actual_Calving_Date
+        //            }).SingleOrDefault();
+
+        //            result = JsonConvert.SerializeObject(q);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var m = ex.Message;
+        //        cow_info = null;
+        //    }
+        //    return result;
+        //}
 
         [WebMethod]
         public static string GetTotalIntakes(string DateFrom, string DateTo, int bid)

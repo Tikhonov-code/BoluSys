@@ -1027,12 +1027,12 @@ function TTNRawConverter() {
     $("#PanelSWhow").html(TNNRConvert);
 
     $("#RawValue").dxTextBox({
-        value: "DuAOzg7FDqINeQ9rD3EPdw9/D3UPYw9RD04PXA9aD04=",
+        value: "D2gPZQ9vD3EPag9rD2QPgg+CD3UPZQ9kD1YPdg9vD10=",
         placeholder: "Paste Raw Value Here...",
         showClearButton: true
     });
     $("#TimeZ").dxTextBox({
-        value: "2020-02-02T08:59:36.612605468Z",
+        value: "2020-12-01T09:14:22.247612805Z",
         placeholder: "Paste Time Z Value Here...",
         showClearButton: true
     });

@@ -10,16 +10,15 @@
 namespace BoluSys.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Prediction
+    public partial class SP_FermerFeedbackByBolusID_Result
     {
-        public int id { get; set; }
-        public int bolus_id { get; set; }
-        public System.DateTime analysis_date { get; set; }
-        public double prob_calving { get; set; }
-        public double prop_missing { get; set; }
-        public double confidence { get; set; }
-        public Nullable<System.DateTime> date_stamp { get; set; }
+        public int alert_id { get; set; }
+        public bool visual_symptoms { get; set; }
+        public Nullable<double> rectal_temperature { get; set; }
+        public Nullable<System.DateTime> rectal_temperature_measuring_time { get; set; }
+        public string diagnosis { get; set; }
+        public string treatment_note { get; set; }
+        public string general_note { get; set; }
     }
 }

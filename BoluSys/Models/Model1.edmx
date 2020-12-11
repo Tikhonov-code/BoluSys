@@ -39,6 +39,7 @@
           <Property Name="Calving_Due_Date" Type="datetime" />
           <Property Name="Actual_Calving_Date" Type="datetime" />
           <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="current_lactation" Type="int" />
         </EntityType>
         <EntityType Name="Cows_log">
           <Key>
@@ -99,6 +100,8 @@
           <Property Name="Emails" Type="nvarchar(max)" />
           <Property Name="PhoneStatus" Type="nvarchar(max)" />
           <Property Name="EmailStatus" Type="nvarchar(max)" />
+          <Property Name="StationId" Type="int" />
+          <Property Name="vas_dairy_id" Type="int" />
         </EntityType>
         <EntityType Name="MeasData">
           <Key>
@@ -125,6 +128,7 @@
           <Property Name="prob_calving" Type="float" Nullable="false" />
           <Property Name="prop_missing" Type="float" Nullable="false" />
           <Property Name="confidence" Type="float" Nullable="false" />
+          <Property Name="date_stamp" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="SmsLogs">
           <Key>
@@ -163,6 +167,8 @@
           <Property Name="message" Type="varchar" MaxLength="500" />
           <Property Name="date_emailsent" Type="datetime2" Precision="7" />
           <Property Name="email" Type="varchar" MaxLength="100" />
+          <Property Name="read" Type="bit" />
+          <Property Name="feedback" Type="bit" />
         </EntityType>
         <Function Name="ChartsXY" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dt1" Type="datetime2" Mode="In" />
@@ -275,6 +281,15 @@
           <Parameter Name="dt0" Type="datetime" Mode="In" />
           <Parameter Name="dt1" Type="datetime" Mode="In" />
           <Parameter Name="user_id" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="SP_Farm_CowInfoStByBolus_ID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SP_Farm_TotalActiveCowsNumber" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="user_id" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="SP_FermerFeedbackByBolusID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="bolus_id" Type="int" Mode="In" />
         </Function>
         <Function Name="SP_GET_AnimalIdList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="user_id" Type="varchar" Mode="In" />
@@ -495,6 +510,15 @@
           <EntitySet Name="FarmPhones" EntityType="DB_A4A060_csModel.FarmPhone" />
           <EntitySet Name="FarmEmails" EntityType="DB_A4A060_csModel.FarmEmail" />
           <EntitySet Name="Predictions" EntityType="DB_A4A060_csModel.Prediction" />
+          <FunctionImport Name="SP_Farm_TotalActiveCowsNumber" ReturnType="Collection(Int32)">
+          <Parameter Name="user_id" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="SP_FermerFeedbackByBolusID" ReturnType="Collection(DB_A4A060_csModel.SP_FermerFeedbackByBolusID_Result)">
+          <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SP_Farm_CowInfoStByBolus_ID" ReturnType="Collection(DB_A4A060_csModel.SP_Farm_CowInfoStByBolus_ID_Result)">
+            <Parameter Name="bolus_id" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="SP_GET_FARM_STAT_Result">
           <Property Type="Int32" Name="ANIMAL_ID" Nullable="true" />
@@ -554,6 +578,7 @@
           <Property Name="Calving_Due_Date" Type="DateTime" Precision="3" />
           <Property Name="Actual_Calving_Date" Type="DateTime" Precision="3" />
           <Property Name="status" Type="Boolean" Nullable="false" />
+          <Property Name="current_lactation" Type="Int32" />
         </EntityType>
         <ComplexType Name="ChartsXY_sig_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -602,6 +627,8 @@
           <Property Name="message" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="date_emailsent" Type="DateTime" Precision="7" />
           <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="read" Type="Boolean" />
+          <Property Name="feedback" Type="Boolean" />
         </EntityType>
         <ComplexType Name="FCN_Farm_TodayEventsList_Result">
           <Property Type="Int32" Name="bolus_id" Nullable="false" />
@@ -637,6 +664,8 @@
           <Property Name="Emails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PhoneStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StationId" Type="Int32" />
+          <Property Name="vas_dairy_id" Type="Int32" />
         </EntityType>
         <ComplexType Name="SP_GET_BolusDataGaps_Result">
           <Property Type="String" Name="Points" Nullable="true" MaxLength="72" />
@@ -742,7 +771,28 @@
           <Property Name="prob_calving" Type="Double" Nullable="false" />
           <Property Name="prop_missing" Type="Double" Nullable="false" />
           <Property Name="confidence" Type="Double" Nullable="false" />
+          <Property Name="date_stamp" Type="DateTime" Precision="7" />
         </EntityType>
+        <ComplexType Name="SP_FermerFeedbackByBolusID_Result">
+          <Property Type="Int32" Name="alert_id" Nullable="false" />
+          <Property Type="Boolean" Name="visual_symptoms" Nullable="false" />
+          <Property Type="Double" Name="rectal_temperature" Nullable="true" />
+          <Property Type="DateTime" Name="rectal_temperature_measuring_time" Nullable="true" />
+          <Property Type="String" Name="diagnosis" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="treatment_note" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="general_note" Nullable="true" MaxLength="300" />
+        </ComplexType>
+        <ComplexType Name="SP_Farm_CowInfoStByBolus_ID_Result">
+          <Property Type="Int32" Name="Bolus_ID" Nullable="true" />
+          <Property Type="Int32" Name="Animal_ID" Nullable="true" />
+          <Property Type="Int32" Name="Group" Nullable="true" />
+          <Property Type="Int32" Name="Lactation_Number" Nullable="true" />
+          <Property Type="String" Name="Date_of_Birth" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="DIM" Nullable="true" />
+          <Property Type="DateTime" Name="DCC" Nullable="true" />
+          <Property Type="DateTime" Name="DUE" Nullable="true" />
+          <Property Type="String" Name="Lactation_Stage" Nullable="true" MaxLength="32" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -820,6 +870,7 @@
           <EntitySetMapping Name="Bolus">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Bolu">
               <MappingFragment StoreEntitySet="Bolus">
+                <ScalarProperty Name="current_lactation" ColumnName="current_lactation" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="Actual_Calving_Date" ColumnName="Actual_Calving_Date" />
                 <ScalarProperty Name="Calving_Due_Date" ColumnName="Calving_Due_Date" />
@@ -897,6 +948,8 @@
           <EntitySetMapping Name="Z_AlertLogs">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Z_AlertLogs">
               <MappingFragment StoreEntitySet="Z_AlertLogs">
+                <ScalarProperty Name="feedback" ColumnName="feedback" />
+                <ScalarProperty Name="read" ColumnName="read" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="date_emailsent" ColumnName="date_emailsent" />
                 <ScalarProperty Name="message" ColumnName="message" />
@@ -956,6 +1009,8 @@
           <EntitySetMapping Name="Farms">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Farm">
               <MappingFragment StoreEntitySet="Farms">
+                <ScalarProperty Name="vas_dairy_id" ColumnName="vas_dairy_id" />
+                <ScalarProperty Name="StationId" ColumnName="StationId" />
                 <ScalarProperty Name="EmailStatus" ColumnName="EmailStatus" />
                 <ScalarProperty Name="PhoneStatus" ColumnName="PhoneStatus" />
                 <ScalarProperty Name="Emails" ColumnName="Emails" />
@@ -1086,6 +1141,7 @@
           <EntitySetMapping Name="Predictions">
             <EntityTypeMapping TypeName="DB_A4A060_csModel.Prediction">
               <MappingFragment StoreEntitySet="Predictions">
+                <ScalarProperty Name="date_stamp" ColumnName="date_stamp" />
                 <ScalarProperty Name="confidence" ColumnName="confidence" />
                 <ScalarProperty Name="prop_missing" ColumnName="prop_missing" />
                 <ScalarProperty Name="prob_calving" ColumnName="prob_calving" />
@@ -1095,6 +1151,35 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_Farm_TotalActiveCowsNumber" FunctionName="DB_A4A060_csModel.Store.SP_Farm_TotalActiveCowsNumber" />
+          <FunctionImportMapping FunctionImportName="SP_FermerFeedbackByBolusID" FunctionName="DB_A4A060_csModel.Store.SP_FermerFeedbackByBolusID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_FermerFeedbackByBolusID_Result">
+                <ScalarProperty Name="alert_id" ColumnName="alert_id" />
+                <ScalarProperty Name="visual_symptoms" ColumnName="visual_symptoms" />
+                <ScalarProperty Name="rectal_temperature" ColumnName="rectal_temperature" />
+                <ScalarProperty Name="rectal_temperature_measuring_time" ColumnName="rectal_temperature_measuring_time" />
+                <ScalarProperty Name="diagnosis" ColumnName="diagnosis" />
+                <ScalarProperty Name="treatment_note" ColumnName="treatment_note" />
+                <ScalarProperty Name="general_note" ColumnName="general_note" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SP_Farm_CowInfoStByBolus_ID" FunctionName="DB_A4A060_csModel.Store.SP_Farm_CowInfoStByBolus_ID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A4A060_csModel.SP_Farm_CowInfoStByBolus_ID_Result">
+                <ScalarProperty Name="Bolus_ID" ColumnName="Bolus_ID" />
+                <ScalarProperty Name="Animal_ID" ColumnName="Animal_ID" />
+                <ScalarProperty Name="Group" ColumnName="Group" />
+                <ScalarProperty Name="Lactation_Number" ColumnName="Lactation_Number" />
+                <ScalarProperty Name="Date_of_Birth" ColumnName="Date_of_Birth" />
+                <ScalarProperty Name="DIM" ColumnName="DIM" />
+                <ScalarProperty Name="DCC" ColumnName="DCC" />
+                <ScalarProperty Name="DUE" ColumnName="DUE" />
+                <ScalarProperty Name="Lactation_Stage" ColumnName="Lactation_Stage" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

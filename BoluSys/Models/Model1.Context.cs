@@ -476,5 +476,32 @@ namespace BoluSys.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SP_GET_FarmLactationStat", user_idParameter, result);
         }
+    
+        public virtual ObjectResult<Nullable<int>> SP_Farm_TotalActiveCowsNumber(string user_id)
+        {
+            var user_idParameter = user_id != null ?
+                new ObjectParameter("user_id", user_id) :
+                new ObjectParameter("user_id", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("SP_Farm_TotalActiveCowsNumber", user_idParameter);
+        }
+    
+        public virtual ObjectResult<SP_FermerFeedbackByBolusID_Result> SP_FermerFeedbackByBolusID(Nullable<int> bolus_id)
+        {
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_FermerFeedbackByBolusID_Result>("SP_FermerFeedbackByBolusID", bolus_idParameter);
+        }
+    
+        public virtual ObjectResult<SP_Farm_CowInfoStByBolus_ID_Result> SP_Farm_CowInfoStByBolus_ID(Nullable<int> bolus_id)
+        {
+            var bolus_idParameter = bolus_id.HasValue ?
+                new ObjectParameter("bolus_id", bolus_id) :
+                new ObjectParameter("bolus_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_Farm_CowInfoStByBolus_ID_Result>("SP_Farm_CowInfoStByBolus_ID", bolus_idParameter);
+        }
     }
 }
