@@ -568,18 +568,10 @@ function Success_GetCowInfo(result) {
     var r = JSON.parse(result.d);
     //-----------------------------------------------------
     //r.DUE = ConvertDateToMyF(new Date(r.DUE));
-    //r.DCC = ConvertDateToMyF(new Date(r.DCC));
-    //r.DIM = ConvertDateToMyF(new Date(r.DIM));
+    r.DCC = CalculateDaysNum(r.DCC);
+    r.DIM = CalculateDaysNum(r.DIM);//ConvertDateToMyF(new Date(r.DIM));
     //-----------------------------------------------------
-    //r.BirthDate = ConvertDateToMyF(new Date(r.BirthDate));
-    //r.Calving_Due_Date = ConvertDateToMyF(new Date(r.Calving_Due_Date));
-    //r.Actual_Calving_Date = ConvertDateToMyF(new Date(r.Actual_Calving_Date));
-    //---------------------------------------------------------------------------
-    //var ac_date = new Date(r.Actual_Calving_Date);
-    //var today = new Date();
-    //// To calculate the number of days between two dates 
-    //var Difference_In_Days = Math.round((today - ac_date) / (1000 * 3600 * 24));
-    //r.Lactation_Day = Difference_In_Days;
+    
     cow_data_block(r);
     return;
 }
@@ -587,6 +579,17 @@ function Error_GetCowInfo(xhr, status, error) {
     return false;
 }
 
+function CalculateDaysNum(dat) {
+    var result = 0;
+    switch (dat) {
+        case null:
+            break;
+        default:
+            result =Math.max( Math.floor((Date.now() - Date.parse(dat)) / 3600000 / 24), 0);//days
+            break;
+    }
+    return result;
+}
 //===============================================================
 
 //--Personal Data Section------------------------------------------------------
@@ -594,94 +597,8 @@ function Error_GetCowInfo(xhr, status, error) {
 function cow_data_block(cow_data0) {
     CowsLogShow(cow_data0.Bolus_ID);
     var cow_data = cow_data0;
-    //var cow_data = cow_data0,
-    //    popup = null,
-    //popupOptions = {
-    //    width: 450,
-    //    height: 300,
-    //    contentTemplate: function () {
-    //        var Openselected = '';
-    //        var Dryselected = '';
-    //        var Pregnantselected = '';
-    //        switch (cow_data.lac_stage) {
-    //            case "Open":
-    //                Openselected = "selected";
-    //                break;
-    //            case "Dry":
-    //                Dryselected = "selected";
-    //                break;
-    //            case "Pregnant":
-    //                Pregnantselected = "selected";
-    //                break;
-    //            default:
-    //        }
-    //        return $("<div />").append(
-    //            //<input id="Text1" type="text" />
-
-    //            //$("<table><tr height='30'><td width='150px'>Birth Date:</td><td></td><td><input id='cow_bd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.BirthDate)) + "/></td></tr>" +
-    //            $("<table><tr height='30'><td width='150px'>Birth Date:</td><td></td><td><div id='cow_bd'></div></td></tr>" +
-    //                "<tr height='30'><td width='150px'>Current Lactation:</td><td></td><td><input id='cow_clac' type='number' value='" + cow_data.Current_Lactation + "' min='0' max='9'/></td></tr>" +
-    //                "<tr height='30'><td width='150px'>Lactation Stage:</td><td></td><td><select id='cow_lac_stg'>" +
-    //                "<option value='Open' " + Openselected + ">Open</option>" +
-    //                "<option value='Dry' " + Dryselected + ">Dry</option>" +
-    //                "<option value='Pregnant' " + Pregnantselected + ">Pregnant</option></select></td></tr>" +
-    //                //"<tr height='30'><td width='150px'>Calving Due Date:</td><td></td><td><input id='cow_cdd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Calving_Due_Date)) + "/></td></tr>" +
-    //                "<tr height='30'><td width='150px'>Calving Due Date:</td><td></td><td><div id='cow_cdd'></div></td></tr>" +
-    //                //"<tr height='30'><td width='150px'>Actual Calving Date:</td><td></td><td><input id='cow_acd' type='date' value=" + ConvertDateToMyF(new Date(cow_data.Actual_Calving_Date)) + "/></td></tr>" +
-    //                "<tr height='30'><td width='150px'>Actual Calving Date:</td><td></td><td><div id='cow_acd'></div></td></tr>" +
-    //                "<tr></tr><tr height='30'><td></td><td></td><td style='text-align: right; hight:'><input class='btn btn-success' type='button' value='Save' onclick='CowDataSave(" + cow_data.Bolus_ID + ");'>" +
-    //                "</td></tr></table>")
-    //        );
-    //    },
-
-    //    showTitle: true,
-    //    title: "Information Animail_ID: " + cow_data0.Animal_ID,
-    //    visible: false,
-    //    dragEnabled: false,
-    //    closeOnOutsideClick: true
-    //};
-
-    //var showInfo = function (data) {
-    //    cow_data = data;
-
-    //    if (popup) {
-    //        popup.option("contentTemplate", popupOptions.contentTemplate.bind(this));
-    //    } else {
-    //        popup = $("#popup").dxPopup(popupOptions).dxPopup("instance");
-    //    }
-
-    //    popup.show();
-    //    //-----------------------------------
-    //    $("#cow_bd").dxDateBox({
-    //        placeholder: "10/16/2018",
-    //        showClearButton: true,
-    //        useMaskBehavior: true,
-    //        displayFormat: "shortdate",
-    //        type: "date",
-    //        value: ConvertDateToMyF(new Date(cow_data.BirthDate))
-    //    });
-    //    var xcow_cdd = cow_data.Calving_Due_Date;
-    //    if (xcow_cdd == "N/A") {
-    //        xcow_cdd = new Date();
-    //    }
-
-    //    $("#cow_cdd").dxDateBox({
-    //        placeholder: "10/16/2018",
-    //        showClearButton: true,
-    //        useMaskBehavior: true,
-    //        displayFormat: "shortdate",
-    //        type: "date",
-    //        value: ConvertDateToMyF(new Date(xcow_cdd))
-    //    });
-    //    var xcow_acd = cow_data.Actual_Calving_Date;
-    //    if (xcow_acd == "N/A") {
-    //        xcow_acd = new Date();
-    //    }
-    //    $("#cow_acd").dxDateBox({
-    //        type: "datetime",
-    //        value: ConvertDateToMyF(new Date(xcow_acd))
-    //    });
-    //};
+   
+    
     //===================================
 
     $("#CowInfo_form").dxForm({
